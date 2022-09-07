@@ -48,7 +48,8 @@ current implementation (Game.cpp, line 871)
 10. https://arxiv.org/abs/1412.6980
 11. https://arxiv.org/abs/1509.01549
 12. https://arxiv.org/abs/1609.04747
-13. https://arxiv.org/abs/1712.01815
+13. https://arxiv.org/abs/1704.08863
+14. https://arxiv.org/abs/1712.01815
 
 # Additional resources (source codes)
 1. https://github.com/zamar/spsa
