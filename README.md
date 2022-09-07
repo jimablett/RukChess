@@ -6,11 +6,11 @@ In 1999, I came across the source code for a chess program (which is now availab
 
 original code (vern.orig.c, line 175)
 
->s{ } ?"!":">"
+    s{ } ?"!":">"
 
 current implementation (Game.cpp, line 871)
 
->InCheck ? '!' : '>'
+    InCheck ? '!' : '>'
 
 # Graphical User Interface (GUI)
 1. [Arena Chess GUI](http://www.playwitharena.de/)
