@@ -12,7 +12,7 @@ current implementation (Game.cpp, line 871)
 
     InCheck ? '!' : '>'
 
-# Console Interface
+# Console (terminal) User Interface (TUI)
 
 ![print_screen_1](resources/print_screen_1.jpg)
 ![print_screen_2](resources/print_screen_2.jpg)
@@ -23,7 +23,7 @@ current implementation (Game.cpp, line 871)
 1. [Arena Chess GUI](http://www.playwitharena.de/)
 2. [Cute Chess](https://cutechess.com/)
 
-# Web User Interface
+# Web User Interface (Web UI)
 1. [RukChessWeb](https://github.com/Ilya-Ruk/RukChessWeb)
 
 # Chess programs (source codes)
