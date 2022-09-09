@@ -12,6 +12,13 @@ current implementation (Game.cpp, line 871)
 
     InCheck ? '!' : '>'
 
+# Console Interface
+
+![print_screen_1](resources/print_screen_1.jpg)
+![print_screen_2](resources/print_screen_2.jpg)
+![print_screen_3](resources/print_screen_3.jpg)
+![print_screen_4](resources/print_screen_4.jpg)
+
 # Graphical User Interface (GUI)
 1. [Arena Chess GUI](http://www.playwitharena.de/)
 2. [Cute Chess](https://cutechess.com/)
