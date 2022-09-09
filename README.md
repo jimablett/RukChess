@@ -16,6 +16,9 @@ current implementation (Game.cpp, line 871)
 1. [Arena Chess GUI](http://www.playwitharena.de/)
 2. [Cute Chess](https://cutechess.com/)
 
+# Web User Interface
+1. [RukChessWeb](https://github.com/Ilya-Ruk/RukChessWeb)
+
 # Chess programs (source codes)
 1. https://www.ioccc.org/years.html#1992_vern
 2. http://www.tckerrigan.com/Chess/TSCP/
