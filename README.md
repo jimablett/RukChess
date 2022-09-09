@@ -1,5 +1,5 @@
 # RukChess 3.0
-Chess engine with console interface, UCI support and several evaluation functions (including NNUE)
+Chess engine with console interface, UCI support and several evaluation functions (including NNUE).
 
 # Inspiration
 In 1999, I came across the source code for a chess program (which is now available at https://www.ioccc.org/years.html#1992_vern) and I became interested in understanding how a computer could play chess. More than 20 years have passed since then, but in my code you can still find a line of code from that program:
