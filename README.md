@@ -26,6 +26,9 @@ current implementation (Game.cpp, line 871)
 # Web User Interface (Web UI)
 1. [RukChessWeb](https://github.com/Ilya-Ruk/RukChessWeb)
 
+# Strength
+For RukChess 3.0 NNUE2 with the rukchess.nnue (in release) network (epoch 40) the strength is approximately 3169 ELO.
+
 # Chess programs (source codes)
 1. https://www.ioccc.org/years.html#1992_vern
 2. http://www.tckerrigan.com/Chess/TSCP/
