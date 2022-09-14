@@ -63,7 +63,7 @@ void MakeMove(BoardItem* Board, const MoveItem Move)
 			Board->Hash ^= PassantHash[Board->PassantSquare];
 		}
 
-		if (Move.Type & MOVE_CASTLE_KING) { // White Î-Î
+		if (Move.Type & MOVE_CASTLE_KING) { // White O-O
 			Board->Pieces[63] = EMPTY;
 
 			Board->BB_WhitePieces &= ~BB_SQUARE(63);
@@ -79,7 +79,7 @@ void MakeMove(BoardItem* Board, const MoveItem Move)
 			Board->Hash ^= PieceHash[WHITE][ROOK][61];
 		}
 
-		if (Move.Type & MOVE_CASTLE_QUEEN) { // White Î-Î-Î
+		if (Move.Type & MOVE_CASTLE_QUEEN) { // White O-O-O
 			Board->Pieces[56] = EMPTY;
 
 			Board->BB_WhitePieces &= ~BB_SQUARE(56);
@@ -145,7 +145,7 @@ void MakeMove(BoardItem* Board, const MoveItem Move)
 			Board->Hash ^= PassantHash[Board->PassantSquare];
 		}
 
-		if (Move.Type & MOVE_CASTLE_KING) { // Black Î-Î
+		if (Move.Type & MOVE_CASTLE_KING) { // Black O-O
 			Board->Pieces[7] = EMPTY;
 
 			Board->BB_BlackPieces &= ~BB_SQUARE(7);
@@ -161,7 +161,7 @@ void MakeMove(BoardItem* Board, const MoveItem Move)
 			Board->Hash ^= PieceHash[BLACK][ROOK][5];
 		}
 
-		if (Move.Type & MOVE_CASTLE_QUEEN) { // Black Î-Î-Î
+		if (Move.Type & MOVE_CASTLE_QUEEN) { // Black O-O-O
 			Board->Pieces[0] = EMPTY;
 
 			Board->BB_BlackPieces &= ~BB_SQUARE(0);
@@ -259,7 +259,7 @@ void UnmakeMove(BoardItem* Board)
 		Board->BB_WhitePieces |= BB_SQUARE(Info->From);
 		Board->BB_Pieces[WHITE][Info->PieceFrom] |= BB_SQUARE(Info->From);
 
-		if (Info->Type & MOVE_CASTLE_KING) { // White Î-Î
+		if (Info->Type & MOVE_CASTLE_KING) { // White O-O
 			Board->Pieces[61] = EMPTY;
 
 			Board->BB_WhitePieces &= ~BB_SQUARE(61);
@@ -271,7 +271,7 @@ void UnmakeMove(BoardItem* Board)
 			Board->BB_Pieces[WHITE][ROOK] |= BB_SQUARE(63);
 		}
 
-		if (Info->Type & MOVE_CASTLE_QUEEN) { // White Î-Î-Î
+		if (Info->Type & MOVE_CASTLE_QUEEN) { // White O-O-O
 			Board->Pieces[59] = EMPTY;
 
 			Board->BB_WhitePieces &= ~BB_SQUARE(59);
@@ -326,7 +326,7 @@ void UnmakeMove(BoardItem* Board)
 		Board->BB_BlackPieces |= BB_SQUARE(Info->From);
 		Board->BB_Pieces[BLACK][Info->PieceFrom] |= BB_SQUARE(Info->From);
 
-		if (Info->Type & MOVE_CASTLE_KING) { // Black Î-Î
+		if (Info->Type & MOVE_CASTLE_KING) { // Black O-O
 			Board->Pieces[5] = EMPTY;
 
 			Board->BB_BlackPieces &= ~BB_SQUARE(5);
@@ -338,7 +338,7 @@ void UnmakeMove(BoardItem* Board)
 			Board->BB_Pieces[BLACK][ROOK] |= BB_SQUARE(7);
 		}
 
-		if (Info->Type & MOVE_CASTLE_QUEEN) { // Black Î-Î-Î
+		if (Info->Type & MOVE_CASTLE_QUEEN) { // Black O-O-O
 			Board->Pieces[3] = EMPTY;
 
 			Board->BB_BlackPieces &= ~BB_SQUARE(3);

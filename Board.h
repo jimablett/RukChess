@@ -93,17 +93,17 @@
 
 #define MOVE_CAPTURE							   16	// Capture move
 
-#define MOVE_CASTLE_KING						   32	// Î-Î
-#define MOVE_CASTLE_QUEEN						   64	// Î-Î-Î
+#define MOVE_CASTLE_KING						   32	// O-O
+#define MOVE_CASTLE_QUEEN						   64	// O-O-O
 
 #define MOVE_NULL								  128	// Null move
 
 // Castle permission flags (part 1)
 
-#define CASTLE_WHITE_KING							1	// White Î-Î
-#define CASTLE_WHITE_QUEEN						    2	// White Î-Î-Î
-#define CASTLE_BLACK_KING						    4	// Black Î-Î
-#define CASTLE_BLACK_QUEEN							8	// Black Î-Î-Î
+#define CASTLE_WHITE_KING							1	// White O-O
+#define CASTLE_WHITE_QUEEN						    2	// White O-O-O
+#define CASTLE_BLACK_KING						    4	// Black O-O
+#define CASTLE_BLACK_QUEEN							8	// Black O-O-O
 
 typedef struct {
 	int Type;

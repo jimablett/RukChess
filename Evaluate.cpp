@@ -1109,18 +1109,18 @@ SCORE Evaluate(BoardItem* Board)
 				if (Board->BB_Pieces[BLACK][QUEEN] && (Board->BB_Pieces[BLACK][KNIGHT] || Board->BB_Pieces[BLACK][BISHOP] || Board->BB_Pieces[BLACK][ROOK])) {
 					KingOpening = EvaluateWhiteKingOpening(Square, WhitePawns, BlackPawns);
 
-					if (Board->CastleFlags & (CASTLE_WHITE_KING | CASTLE_WHITE_QUEEN)) { // White Î-Î/Î-Î-Î
+					if (Board->CastleFlags & (CASTLE_WHITE_KING | CASTLE_WHITE_QUEEN)) { // White O-O/O-O-O
 						KingOpeningKingSide = EvaluateWhiteKingOpening(62, WhitePawns, BlackPawns); // g1
 						KingOpeningQueenSide = EvaluateWhiteKingOpening(58, WhitePawns, BlackPawns); // c1
 
 						ScoreOpening += (KingOpening + MAX(KingOpeningKingSide, KingOpeningQueenSide)) / 2;
 					}
-					else if (Board->CastleFlags & CASTLE_WHITE_KING) { // White Î-Î
+					else if (Board->CastleFlags & CASTLE_WHITE_KING) { // White O-O
 						KingOpeningKingSide = EvaluateWhiteKingOpening(62, WhitePawns, BlackPawns); // g1
 
 						ScoreOpening += (KingOpening + KingOpeningKingSide) / 2;
 					}
-					else if (Board->CastleFlags & CASTLE_WHITE_QUEEN) { // White Î-Î-Î
+					else if (Board->CastleFlags & CASTLE_WHITE_QUEEN) { // White O-O-O
 						KingOpeningQueenSide = EvaluateWhiteKingOpening(58, WhitePawns, BlackPawns); // c1
 
 						ScoreOpening += (KingOpening + KingOpeningQueenSide) / 2;
@@ -1479,18 +1479,18 @@ SCORE Evaluate(BoardItem* Board)
 				if (Board->BB_Pieces[WHITE][QUEEN] && (Board->BB_Pieces[WHITE][KNIGHT] || Board->BB_Pieces[WHITE][BISHOP] || Board->BB_Pieces[WHITE][ROOK])) {
 					KingOpening = EvaluateBlackKingOpening(Square, WhitePawns, BlackPawns);
 
-					if (Board->CastleFlags & (CASTLE_BLACK_KING | CASTLE_BLACK_QUEEN)) { // Black Î-Î/Î-Î-Î
+					if (Board->CastleFlags & (CASTLE_BLACK_KING | CASTLE_BLACK_QUEEN)) { // Black O-O/O-O-O
 						KingOpeningKingSide = EvaluateBlackKingOpening(6, WhitePawns, BlackPawns); // g8
 						KingOpeningQueenSide = EvaluateBlackKingOpening(2, WhitePawns, BlackPawns); // c8
 
 						ScoreOpening -= (KingOpening + MAX(KingOpeningKingSide, KingOpeningQueenSide)) / 2;
 					}
-					else if (Board->CastleFlags & CASTLE_BLACK_KING) { // Black Î-Î
+					else if (Board->CastleFlags & CASTLE_BLACK_KING) { // Black O-O
 						KingOpeningKingSide = EvaluateBlackKingOpening(6, WhitePawns, BlackPawns); // g8
 
 						ScoreOpening -= (KingOpening + KingOpeningKingSide) / 2;
 					}
-					else if (Board->CastleFlags & CASTLE_BLACK_QUEEN) { // Black Î-Î-Î
+					else if (Board->CastleFlags & CASTLE_BLACK_QUEEN) { // Black O-O-O
 						KingOpeningQueenSide = EvaluateBlackKingOpening(2, WhitePawns, BlackPawns); // c8
 
 						ScoreOpening -= (KingOpening + KingOpeningQueenSide) / 2;

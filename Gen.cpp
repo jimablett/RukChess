@@ -427,7 +427,7 @@ void GenerateAllMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMoveCo
 			(Board->CastleFlags & CASTLE_WHITE_KING)
 			&& Board->Pieces[61] == EMPTY && Board->Pieces[62] == EMPTY // f1/g1
 			&& !IsSquareAttacked(Board, 60, Board->CurrentColor) && !IsSquareAttacked(Board, 61, Board->CurrentColor) && !IsSquareAttacked(Board, 62, Board->CurrentColor) // e1/f1/g1
-		) { // White Î-Î
+		) { // White O-O
 			AddMove(Board, MoveList, GenMoveCount, 60, 62, MOVE_CASTLE_KING); // e1 -> g1
 		}
 
@@ -435,7 +435,7 @@ void GenerateAllMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMoveCo
 			(Board->CastleFlags & CASTLE_WHITE_QUEEN)
 			&& Board->Pieces[59] == EMPTY && Board->Pieces[58] == EMPTY && Board->Pieces[57] == EMPTY // d1/c1/b1
 			&& !IsSquareAttacked(Board, 60, Board->CurrentColor) && !IsSquareAttacked(Board, 59, Board->CurrentColor) && !IsSquareAttacked(Board, 58, Board->CurrentColor) // e1/d1/c1
-		) { // White Î-Î-Î
+		) { // White O-O-O
 			AddMove(Board, MoveList, GenMoveCount, 60, 58, MOVE_CASTLE_QUEEN); // e1 -> c1
 		}
 	}
@@ -444,7 +444,7 @@ void GenerateAllMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMoveCo
 			(Board->CastleFlags & CASTLE_BLACK_KING)
 			&& Board->Pieces[5] == EMPTY && Board->Pieces[6] == EMPTY // f8/g8
 			&& !IsSquareAttacked(Board, 4, Board->CurrentColor) && !IsSquareAttacked(Board, 5, Board->CurrentColor) && !IsSquareAttacked(Board, 6, Board->CurrentColor) // e8/f8/g8
-		) { // Black Î-Î
+		) { // Black O-O
 			AddMove(Board, MoveList, GenMoveCount, 4, 6, MOVE_CASTLE_KING); // e8 -> g8
 		}
 
@@ -452,7 +452,7 @@ void GenerateAllMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMoveCo
 			(Board->CastleFlags & CASTLE_BLACK_QUEEN)
 			&& Board->Pieces[3] == EMPTY && Board->Pieces[2] == EMPTY && Board->Pieces[1] == EMPTY // d8/c8/b8
 			&& !IsSquareAttacked(Board, 4, Board->CurrentColor) && !IsSquareAttacked(Board, 3, Board->CurrentColor) && !IsSquareAttacked(Board, 2, Board->CurrentColor) // e8/d8/c8
-		) { // Black Î-Î-Î
+		) { // Black O-O-O
 			AddMove(Board, MoveList, GenMoveCount, 4, 2, MOVE_CASTLE_QUEEN); // e8 -> c8
 		}
 	}
