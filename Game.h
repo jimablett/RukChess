@@ -9,9 +9,9 @@
 #include "Def.h"
 #include "Types.h"
 
-#define PRINT_MODE_NORMAL	0
-#define PRINT_MODE_UCI		1
-#define PRINT_MODE_TESTS	2
+#define PRINT_MODE_NORMAL   0
+#define PRINT_MODE_UCI      1
+#define PRINT_MODE_TESTS    2
 
 extern int MaxThreads;
 extern int MaxDepth;
@@ -30,7 +30,7 @@ extern int CompletedDepth;
 
 extern volatile BOOL StopSearch;
 
-extern int PrintMode; // 0 - Normal; 1 - UCI; 2 - Tests
+extern int PrintMode;
 
 void PrintBestMoves(const BoardItem* Board, const int Depth, const MoveItem* BestMoves, const int BestScore);
 void SaveBestMoves(MoveItem* BestMoves, const MoveItem BestMove, const MoveItem* TempBestMoves);

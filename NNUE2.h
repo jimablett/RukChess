@@ -10,11 +10,9 @@
 #include "Types.h"
 
 #ifdef NNUE_EVALUATION_FUNCTION_2
-
 void ReadNetwork(void);
 
 int NetworkEvaluate(BoardItem* Board);
-
 #endif // NNUE_EVALUATION_FUNCTION_2
 
 #endif // !NNUE2_H

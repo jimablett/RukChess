@@ -9,10 +9,10 @@
 #include "Def.h"
 #include "Types.h"
 
-#define HASH_EXACT			1
-#define HASH_ALPHA			2
-#define HASH_BETA			4
-#define HASH_STATIC_SCORE	8
+#define HASH_EXACT          1
+#define HASH_ALPHA          2
+#define HASH_BETA           4
+#define HASH_STATIC_SCORE   8
 
 extern U64 PieceHash[2][6][64]; // [Color][Piece][Square]
 extern U64 ColorHash;
@@ -35,8 +35,8 @@ void LoadHash(const U64 Hash, int* Depth, const int Ply, int* Score, int* Static
 
 int FullHash(void);
 
-#if defined(HASH_PREFETCH) && (defined(HASH_SCORE) || defined(HASH_MOVE))
+#if defined(HASH_PREFETCH) && (defined(HASH_SCORE) || defined(HASH_MOVE) || defined(QUIESCENCE_HASH_SCORE) || defined(QUIESCENCE_HASH_MOVE))
 void Prefetch(const U64 Hash);
-#endif // HASH_PREFETCH && (HASH_SCORE || HASH_MOVE)
+#endif // HASH_PREFETCH && (HASH_SCORE || HASH_MOVE || QUIESCENCE_HASH_SCORE || QUIESCENCE_HASH_MOVE)
 
 #endif // !HASH_H

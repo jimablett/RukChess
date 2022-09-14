@@ -8,18 +8,18 @@
 #include "Def.h"
 #include "Types.h"
 
-#define ABS(Value)			((Value) < 0 ? -(Value) : (Value))
+#define ABS(Value)          ((Value) < 0 ? -(Value) : (Value))
 
-#define MAX(First, Second)	((First) >= (Second) ? (First) : (Second))
-#define MIN(First, Second)	((First) < (Second) ? (First) : (Second))
+#define MAX(First, Second)  ((First) >= (Second) ? (First) : (Second))
+#define MIN(First, Second)  ((First) < (Second) ? (First) : (Second))
 
 /*
-	Time in milliseconds since midnight (00:00:00), January 1, 1970, coordinated universal time (UTC)
+    Time in milliseconds since midnight (00:00:00), January 1, 1970, coordinated universal time (UTC)
 */
 U64 Clock(void);
 
 /*
-	https://prng.di.unimi.it/splitmix64.c
+    https://prng.di.unimi.it/splitmix64.c
 */
 U64 Rand64(void);
 

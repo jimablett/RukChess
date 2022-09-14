@@ -35,7 +35,7 @@ int CompletedDepth;
 
 volatile BOOL StopSearch;
 
-int PrintMode; // 0 - Normal; 1 - UCI; 2 - Tests
+int PrintMode;
 
 void PrintBestMoves(const BoardItem* Board, const int Depth, const MoveItem* BestMoves, const int BestScore)
 {
