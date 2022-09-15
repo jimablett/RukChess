@@ -13,14 +13,14 @@
 #include "Types.h"
 
 const char BoardName[][64] = {
-	"a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8",
-	"a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7",
-	"a6", "b6", "c6", "d6", "e6", "f6", "g6", "h6",
-	"a5", "b5", "c5", "d5", "e5", "f5", "g5", "h5",
-	"a4", "b4", "c4", "d4", "e4", "f4", "g4", "h4",
-	"a3", "b3", "c3", "d3", "e3", "f3", "g3", "h3",
-	"a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2",
-	"a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1"
+    "a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8",
+    "a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7",
+    "a6", "b6", "c6", "d6", "e6", "f6", "g6", "h6",
+    "a5", "b5", "c5", "d5", "e5", "f5", "g5", "h5",
+    "a4", "b4", "c4", "d4", "e4", "f4", "g4", "h4",
+    "a3", "b3", "c3", "d3", "e3", "f3", "g3", "h3",
+    "a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2",
+    "a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1"
 };
 
 const char PiecesCharWhite[6] = { 'P', 'N', 'B', 'R', 'Q', 'K' };
@@ -29,26 +29,26 @@ const char PiecesCharBlack[6] = { 'p', 'n', 'b', 'r', 'q', 'k' };
 // Castle permission flags (part 2)
 
 const int CastleMask[64] = {
-	 7, 15, 15, 15,  3, 15, 15, 11,
-	15, 15, 15, 15, 15, 15, 15, 15,
-	15, 15, 15, 15, 15, 15, 15, 15,
-	15, 15, 15, 15, 15, 15, 15, 15,
-	15, 15, 15, 15, 15, 15, 15, 15,
-	15, 15, 15, 15, 15, 15, 15, 15,
-	15, 15, 15, 15, 15, 15, 15, 15,
-	13, 15, 15, 15, 12, 15, 15, 14
+     7, 15, 15, 15,  3, 15, 15, 11,
+    15, 15, 15, 15, 15, 15, 15, 15,
+    15, 15, 15, 15, 15, 15, 15, 15,
+    15, 15, 15, 15, 15, 15, 15, 15,
+    15, 15, 15, 15, 15, 15, 15, 15,
+    15, 15, 15, 15, 15, 15, 15, 15,
+    15, 15, 15, 15, 15, 15, 15, 15,
+    13, 15, 15, 15, 12, 15, 15, 14
 };
 
 /*
-	Algebraic notation (https://en.wikipedia.org/wiki/Algebraic_notation_(chess))
+    Algebraic notation (https://en.wikipedia.org/wiki/Algebraic_notation_(chess))
 
-	Examples:
-		Moves: c5, Nf3, Bdb8, R1a3, Qh4e1
-		Captures: exd5, Bxe5, Bdxb8, R1xa3, Qh4xe1
-		Pawn promotion: e8=Q
-		Castling: O-O, O-O-O
-		Check: +
-		Checkmate: #
+    Examples:
+        Moves: c5, Nf3, Bdb8, R1a3, Qh4e1
+        Captures: exd5, Bxe5, Bdxb8, R1xa3, Qh4xe1
+        Pawn promotion: e8=Q
+        Castling: O-O, O-O-O
+        Check: +
+        Checkmate: #
 */
 const char MoveFirstChar[] = "abcdefghNBRQKO";
 const char MoveSubsequentChar[] = "abcdefgh012345678x=NBRQ-O+#";
@@ -67,692 +67,692 @@ int LateMoveReductionTable[64][64]; // [LMR depth][Move number]
 
 BOOL IsSquareAttacked(const BoardItem* Board, const int Square, const int Color)
 {
-	int EnemyColor = CHANGE_COLOR(Color);
+    int EnemyColor = CHANGE_COLOR(Color);
 
-	U64 Attackers = 0ULL;
+    U64 Attackers = 0ULL;
 
-	// Pawns
-	Attackers |= PawnAttacks(BB_SQUARE(Square), Color) & Board->BB_Pieces[EnemyColor][PAWN];
+    // Pawns
+    Attackers |= PawnAttacks(BB_SQUARE(Square), Color) & Board->BB_Pieces[EnemyColor][PAWN];
 
-	// Knights
-	Attackers |= KnightAttacks(Square) & Board->BB_Pieces[EnemyColor][KNIGHT];
+    // Knights
+    Attackers |= KnightAttacks(Square) & Board->BB_Pieces[EnemyColor][KNIGHT];
 
-	// Bishops or Queens
-	Attackers |= BishopAttacks(Square, (Board->BB_WhitePieces | Board->BB_BlackPieces)) & (Board->BB_Pieces[EnemyColor][BISHOP] | Board->BB_Pieces[EnemyColor][QUEEN]);
+    // Bishops or Queens
+    Attackers |= BishopAttacks(Square, (Board->BB_WhitePieces | Board->BB_BlackPieces)) & (Board->BB_Pieces[EnemyColor][BISHOP] | Board->BB_Pieces[EnemyColor][QUEEN]);
 
-	// Rooks or Queens
-	Attackers |= RookAttacks(Square, (Board->BB_WhitePieces | Board->BB_BlackPieces)) & (Board->BB_Pieces[EnemyColor][ROOK] | Board->BB_Pieces[EnemyColor][QUEEN]);
+    // Rooks or Queens
+    Attackers |= RookAttacks(Square, (Board->BB_WhitePieces | Board->BB_BlackPieces)) & (Board->BB_Pieces[EnemyColor][ROOK] | Board->BB_Pieces[EnemyColor][QUEEN]);
 
-	// Kings
-	Attackers |= KingAttacks(Square) & Board->BB_Pieces[EnemyColor][KING];
+    // Kings
+    Attackers |= KingAttacks(Square) & Board->BB_Pieces[EnemyColor][KING];
 
-	return (bool)Attackers;
+    return (bool)Attackers;
 }
 
 BOOL IsInCheck(const BoardItem* Board, const int Color)
 {
-	int KingSquare = LSB(Board->BB_Pieces[Color][KING]);
+    int KingSquare = LSB(Board->BB_Pieces[Color][KING]);
 
-	return IsSquareAttacked(Board, KingSquare, Color);
+    return IsSquareAttacked(Board, KingSquare, Color);
 }
 
 void NotateMove(BoardItem* Board, const MoveItem Move, char* Result)
 {
-	int From = MOVE_FROM(Move.Move);
-	int To = MOVE_TO(Move.Move);
+    int From = MOVE_FROM(Move.Move);
+    int To = MOVE_TO(Move.Move);
 
-	int PieceFrom = PIECE(Board->Pieces[From]);
+    int PieceFrom = PIECE(Board->Pieces[From]);
 
-	int GenMoveCount;
-	MoveItem MoveList[MAX_GEN_MOVES];
+    int GenMoveCount;
+    MoveItem MoveList[MAX_GEN_MOVES];
 
-	BOOL GiveCheck;
-	BOOL LegalMoves = FALSE;
+    BOOL GiveCheck;
+    BOOL LegalMoves = FALSE;
 
-	BOOL Ambiguous = FALSE;
-	BOOL AmbiguousFile = FALSE;
-	BOOL AmbiguousRank = FALSE;
+    BOOL Ambiguous = FALSE;
+    BOOL AmbiguousFile = FALSE;
+    BOOL AmbiguousRank = FALSE;
 
-	BOOL ShowFileFrom = FALSE;
-	BOOL ShowRankFrom = FALSE;
+    BOOL ShowFileFrom = FALSE;
+    BOOL ShowRankFrom = FALSE;
 
-	if (PieceFrom == PAWN && (Move.Type & MOVE_CAPTURE)) {
-		ShowFileFrom = TRUE;
-	}
+    if (PieceFrom == PAWN && (Move.Type & MOVE_CAPTURE)) {
+        ShowFileFrom = TRUE;
+    }
 
-	GenMoveCount = 0;
-	GenerateAllMoves(Board, MoveList, &GenMoveCount);
+    GenMoveCount = 0;
+    GenerateAllMoves(Board, MoveList, &GenMoveCount);
 
-	for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
-		if (MOVE_TO(MoveList[MoveNumber].Move) != To) {
-			continue; // Next move
-		}
+    for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
+        if (MOVE_TO(MoveList[MoveNumber].Move) != To) {
+            continue; // Next move
+        }
 
-		if (MOVE_FROM(MoveList[MoveNumber].Move) == From) {
-			continue; // Next move
-		}
+        if (MOVE_FROM(MoveList[MoveNumber].Move) == From) {
+            continue; // Next move
+        }
 
-		if (PIECE(Board->Pieces[MOVE_FROM(MoveList[MoveNumber].Move)]) != PieceFrom) {
-			continue; // Next move
-		}
+        if (PIECE(Board->Pieces[MOVE_FROM(MoveList[MoveNumber].Move)]) != PieceFrom) {
+            continue; // Next move
+        }
 
-		if ((MoveList[MoveNumber].Type & MOVE_PAWN_PROMOTE) && MOVE_PROMOTE_PIECE(MoveList[MoveNumber].Move) != QUEEN) {
-			continue; // Next move
-		}
+        if ((MoveList[MoveNumber].Type & MOVE_PAWN_PROMOTE) && MOVE_PROMOTE_PIECE(MoveList[MoveNumber].Move) != QUEEN) {
+            continue; // Next move
+        }
 
-		MakeMove(Board, MoveList[MoveNumber]);
+        MakeMove(Board, MoveList[MoveNumber]);
 
-		if (IsInCheck(Board, CHANGE_COLOR(Board->CurrentColor))) {
-			UnmakeMove(Board);
+        if (IsInCheck(Board, CHANGE_COLOR(Board->CurrentColor))) {
+            UnmakeMove(Board);
 
-			continue; // Next move
-		}
+            continue; // Next move
+        }
 
-		Ambiguous = TRUE;
+        Ambiguous = TRUE;
 
-		if (FILE(MOVE_FROM(MoveList[MoveNumber].Move)) == FILE(From)) {
-			AmbiguousFile = TRUE;
-		}
+        if (FILE(MOVE_FROM(MoveList[MoveNumber].Move)) == FILE(From)) {
+            AmbiguousFile = TRUE;
+        }
 
-		if (RANK(MOVE_FROM(MoveList[MoveNumber].Move)) == RANK(From)) {
-			AmbiguousRank = TRUE;
-		}
+        if (RANK(MOVE_FROM(MoveList[MoveNumber].Move)) == RANK(From)) {
+            AmbiguousRank = TRUE;
+        }
 
-		UnmakeMove(Board);
-	}
+        UnmakeMove(Board);
+    }
 
-	if (Ambiguous) {
-		if (AmbiguousFile && AmbiguousRank) {
-			ShowFileFrom = TRUE;
-			ShowRankFrom = TRUE;
-		}
-		else if (AmbiguousFile) {
-			ShowRankFrom = TRUE;
-		}
-		else if (AmbiguousRank) {
-			ShowFileFrom = TRUE;
-		}
-		else {
-			ShowFileFrom = TRUE;
-		}
-	}
+    if (Ambiguous) {
+        if (AmbiguousFile && AmbiguousRank) {
+            ShowFileFrom = TRUE;
+            ShowRankFrom = TRUE;
+        }
+        else if (AmbiguousFile) {
+            ShowRankFrom = TRUE;
+        }
+        else if (AmbiguousRank) {
+            ShowFileFrom = TRUE;
+        }
+        else {
+            ShowFileFrom = TRUE;
+        }
+    }
 
-	MakeMove(Board, Move);
+    MakeMove(Board, Move);
 
-	GiveCheck = IsInCheck(Board, Board->CurrentColor);
+    GiveCheck = IsInCheck(Board, Board->CurrentColor);
 
-	if (GiveCheck) {
-		GenMoveCount = 0;
-		GenerateAllMoves(Board, MoveList, &GenMoveCount);
+    if (GiveCheck) {
+        GenMoveCount = 0;
+        GenerateAllMoves(Board, MoveList, &GenMoveCount);
 
-		for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
-			MakeMove(Board, MoveList[MoveNumber]);
+        for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
+            MakeMove(Board, MoveList[MoveNumber]);
 
-			if (IsInCheck(Board, CHANGE_COLOR(Board->CurrentColor))) {
-				UnmakeMove(Board);
+            if (IsInCheck(Board, CHANGE_COLOR(Board->CurrentColor))) {
+                UnmakeMove(Board);
 
-				continue; // Next move
-			}
+                continue; // Next move
+            }
 
-			LegalMoves = TRUE;
+            LegalMoves = TRUE;
 
-			UnmakeMove(Board);
+            UnmakeMove(Board);
 
-			break;
-		}
-	}
+            break;
+        }
+    }
 
-	UnmakeMove(Board);
+    UnmakeMove(Board);
 
-	if (Move.Type == MOVE_CASTLE_KING) {
-		strcpy_s(Result, 4, "O-O\0");
-		Result += 3;
-	}
-	else if (Move.Type == MOVE_CASTLE_QUEEN) {
-		strcpy_s(Result, 6, "O-O-O\0");
-		Result += 5;
-	}
-	else {
-		switch (PieceFrom) {
-			case KNIGHT:
-				*Result++ = 'N';
-				break;
+    if (Move.Type == MOVE_CASTLE_KING) {
+        strcpy_s(Result, 4, "O-O\0");
+        Result += 3;
+    }
+    else if (Move.Type == MOVE_CASTLE_QUEEN) {
+        strcpy_s(Result, 6, "O-O-O\0");
+        Result += 5;
+    }
+    else {
+        switch (PieceFrom) {
+        case KNIGHT:
+            *Result++ = 'N';
+            break;
 
-			case BISHOP:
-				*Result++ = 'B';
-				break;
+        case BISHOP:
+            *Result++ = 'B';
+            break;
 
-			case ROOK:
-				*Result++ = 'R';
-				break;
+        case ROOK:
+            *Result++ = 'R';
+            break;
 
-			case QUEEN:
-				*Result++ = 'Q';
-				break;
+        case QUEEN:
+            *Result++ = 'Q';
+            break;
 
-			case KING:
-				*Result++ = 'K';
-				break;
-		}
+        case KING:
+            *Result++ = 'K';
+            break;
+        }
 
-		if (ShowFileFrom) {
-			*Result++ = 'a' + (char)FILE(From);
-		}
+        if (ShowFileFrom) {
+            *Result++ = 'a' + (char)FILE(From);
+        }
 
-		if (ShowRankFrom) {
-			*Result++ = '8' - (char)RANK(From);
-		}
+        if (ShowRankFrom) {
+            *Result++ = '8' - (char)RANK(From);
+        }
 
-		if (Move.Type & MOVE_CAPTURE) {
-			*Result++ = 'x';
-		}
+        if (Move.Type & MOVE_CAPTURE) {
+            *Result++ = 'x';
+        }
 
-		*Result++ = 'a' + (char)FILE(To);
-		*Result++ = '8' - (char)RANK(To);
+        *Result++ = 'a' + (char)FILE(To);
+        *Result++ = '8' - (char)RANK(To);
 
-		if (Move.Type & MOVE_PAWN_PROMOTE) {
-			*Result++ = '=';
+        if (Move.Type & MOVE_PAWN_PROMOTE) {
+            *Result++ = '=';
 
-			switch (MOVE_PROMOTE_PIECE(Move.Move)) {
-				case QUEEN:
-					*Result++ = 'Q';
-					break;
+            switch (MOVE_PROMOTE_PIECE(Move.Move)) {
+            case QUEEN:
+                *Result++ = 'Q';
+                break;
 
-				case ROOK:
-					*Result++ = 'R';
-					break;
+            case ROOK:
+                *Result++ = 'R';
+                break;
 
-				case BISHOP:
-					*Result++ = 'B';
-					break;
+            case BISHOP:
+                *Result++ = 'B';
+                break;
 
-				case KNIGHT:
-					*Result++ = 'N';
-					break;
-			}
-		}
-	}
+            case KNIGHT:
+                *Result++ = 'N';
+                break;
+            }
+        }
+    }
 
-	if (GiveCheck) {
-		if (LegalMoves) { // Check
-			*Result++ = '+';
-		}
-		else { // Checkmate
-			*Result++ = '#';
-		}
-	}
+    if (GiveCheck) {
+        if (LegalMoves) { // Check
+            *Result++ = '+';
+        }
+        else { // Checkmate
+            *Result++ = '#';
+        }
+    }
 
-	*Result = '\0'; // Nul
+    *Result = '\0'; // Nul
 }
 
 int PositionRepeat1(const BoardItem* Board)
 {
-	if (Board->FiftyMove < 4) {
-		return 0;
-	}
+    if (Board->FiftyMove < 4) {
+        return 0;
+    }
 
-	for (int Index = (Board->HalfMoveNumber - 2); Index >= (Board->HalfMoveNumber - Board->FiftyMove); Index -= 2) {
-		if (Board->MoveTable[Index].Hash == Board->Hash) {
-			return 1;
-		}
-	}
+    for (int Index = (Board->HalfMoveNumber - 2); Index >= (Board->HalfMoveNumber - Board->FiftyMove); Index -= 2) {
+        if (Board->MoveTable[Index].Hash == Board->Hash) {
+            return 1;
+        }
+    }
 
-	return 0;
+    return 0;
 }
 
 int PositionRepeat2(const BoardItem* Board)
 {
-	int RepeatCounter = 0;
+    int RepeatCounter = 0;
 
-	if (Board->FiftyMove < 4) {
-		return 0;
-	}
+    if (Board->FiftyMove < 4) {
+        return 0;
+    }
 
-	for (int Index = (Board->HalfMoveNumber - 2); Index >= (Board->HalfMoveNumber - Board->FiftyMove); Index -= 2) {
-		if (Board->MoveTable[Index].Hash == Board->Hash) {
-			++RepeatCounter;
-		}
-	}
+    for (int Index = (Board->HalfMoveNumber - 2); Index >= (Board->HalfMoveNumber - Board->FiftyMove); Index -= 2) {
+        if (Board->MoveTable[Index].Hash == Board->Hash) {
+            ++RepeatCounter;
+        }
+    }
 
-	return RepeatCounter;
+    return RepeatCounter;
 }
 
 BOOL IsInsufficientMaterial(const BoardItem* Board)
 {
-	if (POPCNT(Board->BB_WhitePieces | Board->BB_BlackPieces) <= 3) { // KK or KxK
-		if (Board->BB_Pieces[WHITE][PAWN] | Board->BB_Pieces[BLACK][PAWN]) { // KPK
-			return FALSE;
-		}
+    if (POPCNT(Board->BB_WhitePieces | Board->BB_BlackPieces) <= 3) { // KK or KxK
+        if (Board->BB_Pieces[WHITE][PAWN] | Board->BB_Pieces[BLACK][PAWN]) { // KPK
+            return FALSE;
+        }
 
-		if (Board->BB_Pieces[WHITE][ROOK] | Board->BB_Pieces[BLACK][ROOK]) { // KRK
-			return FALSE;
-		}
+        if (Board->BB_Pieces[WHITE][ROOK] | Board->BB_Pieces[BLACK][ROOK]) { // KRK
+            return FALSE;
+        }
 
-		if (Board->BB_Pieces[WHITE][QUEEN] | Board->BB_Pieces[BLACK][QUEEN]) { // KQK
-			return FALSE;
-		}
+        if (Board->BB_Pieces[WHITE][QUEEN] | Board->BB_Pieces[BLACK][QUEEN]) { // KQK
+            return FALSE;
+        }
 
-		return TRUE;
-	}
+        return TRUE;
+    }
 
-	return FALSE;
+    return FALSE;
 }
 
 void PrintBoard(BoardItem* Board)
 {
-	printf("\n");
+    printf("\n");
 
-	printf("     a   b   c   d   e   f   g   h\n");
+    printf("     a   b   c   d   e   f   g   h\n");
 
-	for (int Square = 0; Square < 64; ++Square) {
-		if ((Square % 8) == 0) {
-			printf("   +---+---+---+---+---+---+---+---+\n");
-			printf(" %d |", 8 - Square / 8);
-		}
+    for (int Square = 0; Square < 64; ++Square) {
+        if ((Square % 8) == 0) {
+            printf("   +---+---+---+---+---+---+---+---+\n");
+            printf(" %d |", 8 - Square / 8);
+        }
 
-		if (Board->Pieces[Square] == EMPTY) {
-			printf("   |");
-		}
-		else if (COLOR(Board->Pieces[Square]) == WHITE) {
-			printf(" %c |", PiecesCharWhite[PIECE(Board->Pieces[Square])]);
-		}
-		else { // BLACK
-			printf(" %c |", PiecesCharBlack[PIECE(Board->Pieces[Square])]);
-		}
+        if (Board->Pieces[Square] == EMPTY) {
+            printf("   |");
+        }
+        else if (COLOR(Board->Pieces[Square]) == WHITE) {
+            printf(" %c |", PiecesCharWhite[PIECE(Board->Pieces[Square])]);
+        }
+        else { // BLACK
+            printf(" %c |", PiecesCharBlack[PIECE(Board->Pieces[Square])]);
+        }
 
-		if (((Square + 1) % 8) == 0) {
-			printf(" %d\n", 8 - Square / 8);
-		}
-	}
+        if (((Square + 1) % 8) == 0) {
+            printf(" %d\n", 8 - Square / 8);
+        }
+    }
 
-	printf("   +---+---+---+---+---+---+---+---+\n");
-	printf("     a   b   c   d   e   f   g   h\n");
+    printf("   +---+---+---+---+---+---+---+---+\n");
+    printf("     a   b   c   d   e   f   g   h\n");
 /*
-	printf("\n");
+    printf("\n");
 
-	printf("Hash = 0x%016llx\n", Board->Hash);
+    printf("Hash = 0x%016llx\n", Board->Hash);
 */
-	printf("\n");
+    printf("\n");
 
-	printf("Static evaluate = %.2f\n", (double)Evaluate(Board) / 100.0);
+    printf("Static evaluate = %.2f\n", (double)Evaluate(Board) / 100.0);
 }
 
 void PrintBitMask(const U64 Mask)
 {
-	for (int Square = 0; Square < 64; ++Square) {
-		if (Square > 0 && (Square % 8) == 0) {
-			printf("\n");
-		}
+    for (int Square = 0; Square < 64; ++Square) {
+        if (Square > 0 && (Square % 8) == 0) {
+            printf("\n");
+        }
 
-		if (Mask & BB_SQUARE(Square)) {
-			printf("x");
-		}
-		else {
-			printf("-");
-		}
-	}
+        if (Mask & BB_SQUARE(Square)) {
+            printf("x");
+        }
+        else {
+            printf("-");
+        }
+    }
 
-	printf("\n");
+    printf("\n");
 }
 
 int SetFen(BoardItem* Board, char* Fen)
 {
-	char* Part = Fen;
+    char* Part = Fen;
 
-	int Square;
+    int Square;
 
-	int File;
-	int Rank;
+    int File;
+    int Rank;
 
-	int MoveNumber;
+    int MoveNumber;
 
-	// Clear board
+    // Clear board
 
-	for (Square = 0; Square < 64; ++Square) {
-		Board->Pieces[Square] = EMPTY;
-	}
+    for (Square = 0; Square < 64; ++Square) {
+        Board->Pieces[Square] = EMPTY;
+    }
 
-	Board->BB_WhitePieces = 0ULL;
-	Board->BB_BlackPieces = 0ULL;
+    Board->BB_WhitePieces = 0ULL;
+    Board->BB_BlackPieces = 0ULL;
 
-	for (int Color = 0; Color < 2; ++Color) {
-		for (int Piece = 0; Piece < 6; ++Piece) {
-			Board->BB_Pieces[Color][Piece] = 0ULL;
-		}
-	}
+    for (int Color = 0; Color < 2; ++Color) {
+        for (int Piece = 0; Piece < 6; ++Piece) {
+            Board->BB_Pieces[Color][Piece] = 0ULL;
+        }
+    }
 
-	// Load pieces
+    // Load pieces
 
-	Square = 0;
+    Square = 0;
 
-	while (*Part != ' ') {
-		if (*Part == 'P') { // White pawn
-			Board->Pieces[Square] = PIECE_AND_COLOR(PAWN, WHITE);
+    while (*Part != ' ') {
+        if (*Part == 'P') { // White pawn
+            Board->Pieces[Square] = PIECE_AND_COLOR(PAWN, WHITE);
 
-			Board->BB_WhitePieces |= BB_SQUARE(Square);
-			Board->BB_Pieces[WHITE][PAWN] |= BB_SQUARE(Square);
+            Board->BB_WhitePieces |= BB_SQUARE(Square);
+            Board->BB_Pieces[WHITE][PAWN] |= BB_SQUARE(Square);
 
-			++Square;
-		}
-		else if (*Part == 'p') { // Black pawn
-			Board->Pieces[Square] = PIECE_AND_COLOR(PAWN, BLACK);
+            ++Square;
+        }
+        else if (*Part == 'p') { // Black pawn
+            Board->Pieces[Square] = PIECE_AND_COLOR(PAWN, BLACK);
 
-			Board->BB_BlackPieces |= BB_SQUARE(Square);
-			Board->BB_Pieces[BLACK][PAWN] |= BB_SQUARE(Square);
+            Board->BB_BlackPieces |= BB_SQUARE(Square);
+            Board->BB_Pieces[BLACK][PAWN] |= BB_SQUARE(Square);
 
-			++Square;
-		}
-		else if (*Part == 'N') { // White knight
-			Board->Pieces[Square] = PIECE_AND_COLOR(KNIGHT, WHITE);
+            ++Square;
+        }
+        else if (*Part == 'N') { // White knight
+            Board->Pieces[Square] = PIECE_AND_COLOR(KNIGHT, WHITE);
 
-			Board->BB_WhitePieces |= BB_SQUARE(Square);
-			Board->BB_Pieces[WHITE][KNIGHT] |= BB_SQUARE(Square);
+            Board->BB_WhitePieces |= BB_SQUARE(Square);
+            Board->BB_Pieces[WHITE][KNIGHT] |= BB_SQUARE(Square);
 
-			++Square;
-		}
-		else if (*Part == 'n') { // Black knight
-			Board->Pieces[Square] = PIECE_AND_COLOR(KNIGHT, BLACK);
+            ++Square;
+        }
+        else if (*Part == 'n') { // Black knight
+            Board->Pieces[Square] = PIECE_AND_COLOR(KNIGHT, BLACK);
 
-			Board->BB_BlackPieces |= BB_SQUARE(Square);
-			Board->BB_Pieces[BLACK][KNIGHT] |= BB_SQUARE(Square);
+            Board->BB_BlackPieces |= BB_SQUARE(Square);
+            Board->BB_Pieces[BLACK][KNIGHT] |= BB_SQUARE(Square);
 
-			++Square;
-		}
-		else if (*Part == 'B') { // White bishop
-			Board->Pieces[Square] = PIECE_AND_COLOR(BISHOP, WHITE);
+            ++Square;
+        }
+        else if (*Part == 'B') { // White bishop
+            Board->Pieces[Square] = PIECE_AND_COLOR(BISHOP, WHITE);
 
-			Board->BB_WhitePieces |= BB_SQUARE(Square);
-			Board->BB_Pieces[WHITE][BISHOP] |= BB_SQUARE(Square);
+            Board->BB_WhitePieces |= BB_SQUARE(Square);
+            Board->BB_Pieces[WHITE][BISHOP] |= BB_SQUARE(Square);
 
-			++Square;
-		}
-		else if (*Part == 'b') { // Black bishop
-			Board->Pieces[Square] = PIECE_AND_COLOR(BISHOP, BLACK);
+            ++Square;
+        }
+        else if (*Part == 'b') { // Black bishop
+            Board->Pieces[Square] = PIECE_AND_COLOR(BISHOP, BLACK);
 
-			Board->BB_BlackPieces |= BB_SQUARE(Square);
-			Board->BB_Pieces[BLACK][BISHOP] |= BB_SQUARE(Square);
+            Board->BB_BlackPieces |= BB_SQUARE(Square);
+            Board->BB_Pieces[BLACK][BISHOP] |= BB_SQUARE(Square);
 
-			++Square;
-		}
-		else if (*Part == 'R') { // White rook
-			Board->Pieces[Square] = PIECE_AND_COLOR(ROOK, WHITE);
+            ++Square;
+        }
+        else if (*Part == 'R') { // White rook
+            Board->Pieces[Square] = PIECE_AND_COLOR(ROOK, WHITE);
 
-			Board->BB_WhitePieces |= BB_SQUARE(Square);
-			Board->BB_Pieces[WHITE][ROOK] |= BB_SQUARE(Square);
+            Board->BB_WhitePieces |= BB_SQUARE(Square);
+            Board->BB_Pieces[WHITE][ROOK] |= BB_SQUARE(Square);
 
-			++Square;
-		}
-		else if (*Part == 'r') { // Black rook
-			Board->Pieces[Square] = PIECE_AND_COLOR(ROOK, BLACK);
+            ++Square;
+        }
+        else if (*Part == 'r') { // Black rook
+            Board->Pieces[Square] = PIECE_AND_COLOR(ROOK, BLACK);
 
-			Board->BB_BlackPieces |= BB_SQUARE(Square);
-			Board->BB_Pieces[BLACK][ROOK] |= BB_SQUARE(Square);
+            Board->BB_BlackPieces |= BB_SQUARE(Square);
+            Board->BB_Pieces[BLACK][ROOK] |= BB_SQUARE(Square);
 
-			++Square;
-		}
-		else if (*Part == 'Q') { // White queen
-			Board->Pieces[Square] = PIECE_AND_COLOR(QUEEN, WHITE);
+            ++Square;
+        }
+        else if (*Part == 'Q') { // White queen
+            Board->Pieces[Square] = PIECE_AND_COLOR(QUEEN, WHITE);
 
-			Board->BB_WhitePieces |= BB_SQUARE(Square);
-			Board->BB_Pieces[WHITE][QUEEN] |= BB_SQUARE(Square);
+            Board->BB_WhitePieces |= BB_SQUARE(Square);
+            Board->BB_Pieces[WHITE][QUEEN] |= BB_SQUARE(Square);
 
-			++Square;
-		}
-		else if (*Part == 'q') { // Black queen
-			Board->Pieces[Square] = PIECE_AND_COLOR(QUEEN, BLACK);
+            ++Square;
+        }
+        else if (*Part == 'q') { // Black queen
+            Board->Pieces[Square] = PIECE_AND_COLOR(QUEEN, BLACK);
 
-			Board->BB_BlackPieces |= BB_SQUARE(Square);
-			Board->BB_Pieces[BLACK][QUEEN] |= BB_SQUARE(Square);
+            Board->BB_BlackPieces |= BB_SQUARE(Square);
+            Board->BB_Pieces[BLACK][QUEEN] |= BB_SQUARE(Square);
 
-			++Square;
-		}
-		else if (*Part == 'K') { // White king
-			Board->Pieces[Square] = PIECE_AND_COLOR(KING, WHITE);
+            ++Square;
+        }
+        else if (*Part == 'K') { // White king
+            Board->Pieces[Square] = PIECE_AND_COLOR(KING, WHITE);
 
-			Board->BB_WhitePieces |= BB_SQUARE(Square);
-			Board->BB_Pieces[WHITE][KING] |= BB_SQUARE(Square);
+            Board->BB_WhitePieces |= BB_SQUARE(Square);
+            Board->BB_Pieces[WHITE][KING] |= BB_SQUARE(Square);
 
-			++Square;
-		}
-		else if (*Part == 'k') { // Black king
-			Board->Pieces[Square] = PIECE_AND_COLOR(KING, BLACK);
+            ++Square;
+        }
+        else if (*Part == 'k') { // Black king
+            Board->Pieces[Square] = PIECE_AND_COLOR(KING, BLACK);
 
-			Board->BB_BlackPieces |= BB_SQUARE(Square);
-			Board->BB_Pieces[BLACK][KING] |= BB_SQUARE(Square);
+            Board->BB_BlackPieces |= BB_SQUARE(Square);
+            Board->BB_Pieces[BLACK][KING] |= BB_SQUARE(Square);
 
-			++Square;
-		}
-		else if (*Part >= '1' && *Part <= '8') { // Empty square(s)
-			Square += *Part - '0';
-		}
+            ++Square;
+        }
+        else if (*Part >= '1' && *Part <= '8') { // Empty square(s)
+            Square += *Part - '0';
+        }
 
-		++Part;
-	} // while
+        ++Part;
+    } // while
 
-	// Load color
+    // Load color
 
-	++Part; // Space
+    ++Part; // Space
 
-	if (*Part == 'w') {
-		Board->CurrentColor = WHITE;
+    if (*Part == 'w') {
+        Board->CurrentColor = WHITE;
 
-		++Part;
-	}
-	else { // 'b'
-		Board->CurrentColor = BLACK;
+        ++Part;
+    }
+    else { // 'b'
+        Board->CurrentColor = BLACK;
 
-		++Part;
-	}
+        ++Part;
+    }
 
-	// Load castle flags
+    // Load castle flags
 
-	++Part; // Space
+    ++Part; // Space
 
-	Board->CastleFlags = 0;
+    Board->CastleFlags = 0;
 
-	if (*Part == '-') {
-		++Part;
-	}
-	else {
-		while (*Part != ' ') {
-			if (*Part == 'K') { // White O-O
-				Board->CastleFlags |= CASTLE_WHITE_KING;
-			}
-			else if (*Part == 'Q') { // White O-O-O
-				Board->CastleFlags |= CASTLE_WHITE_QUEEN;
-			}
-			else if (*Part == 'k') { // Black O-O
-				Board->CastleFlags |= CASTLE_BLACK_KING;
-			}
-			else if (*Part == 'q') { // Black O-O-O
-				Board->CastleFlags |= CASTLE_BLACK_QUEEN;
-			}
+    if (*Part == '-') {
+        ++Part;
+    }
+    else {
+        while (*Part != ' ') {
+            if (*Part == 'K') { // White O-O
+                Board->CastleFlags |= CASTLE_WHITE_KING;
+            }
+            else if (*Part == 'Q') { // White O-O-O
+                Board->CastleFlags |= CASTLE_WHITE_QUEEN;
+            }
+            else if (*Part == 'k') { // Black O-O
+                Board->CastleFlags |= CASTLE_BLACK_KING;
+            }
+            else if (*Part == 'q') { // Black O-O-O
+                Board->CastleFlags |= CASTLE_BLACK_QUEEN;
+            }
 
-			++Part;
-		}
-	}
+            ++Part;
+        }
+    }
 
-	// Load en passant square
+    // Load en passant square
 
-	++Part; // Space
+    ++Part; // Space
 
-	if (*Part == '-') {
-		Board->PassantSquare = -1;
+    if (*Part == '-') {
+        Board->PassantSquare = -1;
 
-		++Part;
-	}
-	else {
-		File = Part[0] - 'a';
-		Rank = 7 - (Part[1] - '1');
+        ++Part;
+    }
+    else {
+        File = Part[0] - 'a';
+        Rank = 7 - (Part[1] - '1');
 
-		Board->PassantSquare = SQUARE(Rank, File);
+        Board->PassantSquare = SQUARE(Rank, File);
 
-		Part += 2;
-	}
+        Part += 2;
+    }
 
-	// Load fifty move
+    // Load fifty move
 
-	++Part; // Space
+    ++Part; // Space
 
-	Board->FiftyMove = atoi(Part);
+    Board->FiftyMove = atoi(Part);
 
-	while (*Part != ' ') {
-		++Part;
-	}
+    while (*Part != ' ') {
+        ++Part;
+    }
 
-	// Load move number
+    // Load move number
 
-	++Part; // Space
+    ++Part; // Space
 
-	MoveNumber = atoi(Part);
+    MoveNumber = atoi(Part);
 
-	Board->HalfMoveNumber = (MoveNumber - 1) * 2 + Board->CurrentColor;
+    Board->HalfMoveNumber = (MoveNumber - 1) * 2 + Board->CurrentColor;
 
-	while (*Part != ' ' && *Part != '\r' && *Part != '\n' && *Part != '\0') {
-		++Part;
-	}
+    while (*Part != ' ' && *Part != '\r' && *Part != '\n' && *Part != '\0') {
+        ++Part;
+    }
 
-	if (*Part == ' ') {
-		++Part; // Space
-	}
+    if (*Part == ' ') {
+        ++Part; // Space
+    }
 
-	InitHash(Board);
+    InitHash(Board);
 
-	memset(Board->MoveTable, 0, sizeof(Board->MoveTable));
+    memset(Board->MoveTable, 0, sizeof(Board->MoveTable));
 
-	#if defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
-	Board->Accumulator.AccumulationComputed = FALSE;
-	#endif // NNUE_EVALUATION_FUNCTION/NNUE_EVALUATION_FUNCTION_2
+#if defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
+    Board->Accumulator.AccumulationComputed = FALSE;
+#endif // NNUE_EVALUATION_FUNCTION/NNUE_EVALUATION_FUNCTION_2
 
-	return (int)(Part - Fen);
+    return (int)(Part - Fen);
 }
 
 void GetFen(const BoardItem* Board, char* Fen)
 {
-	int EmptyCount = 0;
+    int EmptyCount = 0;
 
-	// Save pieces
+    // Save pieces
 
-	for (int Square = 0; Square < 64; ++Square) {
-		if (Square > 0 && (Square % 8) == 0) {
-			if (EmptyCount > 0) {
-				Fen += sprintf_s(Fen, MAX_FEN_LENGTH, "%d", EmptyCount);
+    for (int Square = 0; Square < 64; ++Square) {
+        if (Square > 0 && (Square % 8) == 0) {
+            if (EmptyCount > 0) {
+                Fen += sprintf_s(Fen, MAX_FEN_LENGTH, "%d", EmptyCount);
 
-				EmptyCount = 0;
-			}
+                EmptyCount = 0;
+            }
 
-			*Fen++ = '/';
-		}
+            *Fen++ = '/';
+        }
 
-		if (Board->Pieces[Square] == EMPTY) {
-			++EmptyCount;
+        if (Board->Pieces[Square] == EMPTY) {
+            ++EmptyCount;
 
-			continue; // Next square
-		}
+            continue; // Next square
+        }
 
-		if (EmptyCount > 0) {
-			Fen += sprintf_s(Fen, MAX_FEN_LENGTH, "%d", EmptyCount);
+        if (EmptyCount > 0) {
+            Fen += sprintf_s(Fen, MAX_FEN_LENGTH, "%d", EmptyCount);
 
-			EmptyCount = 0;
-		}
+            EmptyCount = 0;
+        }
 
-		if (COLOR(Board->Pieces[Square]) == WHITE) {
-			Fen += sprintf_s(Fen, MAX_FEN_LENGTH, "%c", PiecesCharWhite[PIECE(Board->Pieces[Square])]);
-		}
-		else { // BLACK
-			Fen += sprintf_s(Fen, MAX_FEN_LENGTH, "%c", PiecesCharBlack[PIECE(Board->Pieces[Square])]);
-		}
-	}
+        if (COLOR(Board->Pieces[Square]) == WHITE) {
+            Fen += sprintf_s(Fen, MAX_FEN_LENGTH, "%c", PiecesCharWhite[PIECE(Board->Pieces[Square])]);
+        }
+        else { // BLACK
+            Fen += sprintf_s(Fen, MAX_FEN_LENGTH, "%c", PiecesCharBlack[PIECE(Board->Pieces[Square])]);
+        }
+    }
 
-	if (EmptyCount > 0) {
-		Fen += sprintf_s(Fen, MAX_FEN_LENGTH, "%d", EmptyCount);
-	}
+    if (EmptyCount > 0) {
+        Fen += sprintf_s(Fen, MAX_FEN_LENGTH, "%d", EmptyCount);
+    }
 
-	// Save color
+    // Save color
 
-	*Fen++ = ' ';
+    *Fen++ = ' ';
 
-	if (Board->CurrentColor == WHITE) {
-		*Fen++ = 'w';
-	}
-	else { // BLACK
-		*Fen++ = 'b';
-	}
+    if (Board->CurrentColor == WHITE) {
+        *Fen++ = 'w';
+    }
+    else { // BLACK
+        *Fen++ = 'b';
+    }
 
-	// Save castle flags
+    // Save castle flags
 
-	*Fen++ = ' ';
+    *Fen++ = ' ';
 
-	if (!Board->CastleFlags) {
-		*Fen++ = '-';
-	}
-	else {
-		if (Board->CastleFlags & CASTLE_WHITE_KING) { // White O-O
-			*Fen++ = 'K';
-		}
+    if (!Board->CastleFlags) {
+        *Fen++ = '-';
+    }
+    else {
+        if (Board->CastleFlags & CASTLE_WHITE_KING) { // White O-O
+            *Fen++ = 'K';
+        }
 
-		if (Board->CastleFlags & CASTLE_WHITE_QUEEN) { // White O-O-O
-			*Fen++ = 'Q';
-		}
+        if (Board->CastleFlags & CASTLE_WHITE_QUEEN) { // White O-O-O
+            *Fen++ = 'Q';
+        }
 
-		if (Board->CastleFlags & CASTLE_BLACK_KING) { // Black O-O
-			*Fen++ = 'k';
-		}
+        if (Board->CastleFlags & CASTLE_BLACK_KING) { // Black O-O
+            *Fen++ = 'k';
+        }
 
-		if (Board->CastleFlags & CASTLE_BLACK_QUEEN) { // Black O-O-O
-			*Fen++ = 'q';
-		}
-	}
+        if (Board->CastleFlags & CASTLE_BLACK_QUEEN) { // Black O-O-O
+            *Fen++ = 'q';
+        }
+    }
 
-	// Save en passant square
+    // Save en passant square
 
-	*Fen++ = ' ';
+    *Fen++ = ' ';
 
-	if (Board->PassantSquare == -1) {
-		*Fen++ = '-';
-	}
-	else {
-		Fen += sprintf_s(Fen, MAX_FEN_LENGTH, "%s", BoardName[Board->PassantSquare]);
-	}
+    if (Board->PassantSquare == -1) {
+        *Fen++ = '-';
+    }
+    else {
+        Fen += sprintf_s(Fen, MAX_FEN_LENGTH, "%s", BoardName[Board->PassantSquare]);
+    }
 
-	// Save fifty move
+    // Save fifty move
 
-	*Fen++ = ' ';
+    *Fen++ = ' ';
 
-	Fen += sprintf_s(Fen, MAX_FEN_LENGTH, "%d", Board->FiftyMove);
+    Fen += sprintf_s(Fen, MAX_FEN_LENGTH, "%d", Board->FiftyMove);
 
-	// Save move number
+    // Save move number
 
-	*Fen++ = ' ';
+    *Fen++ = ' ';
 
-	Fen += sprintf_s(Fen, MAX_FEN_LENGTH, "%d", Board->HalfMoveNumber / 2 + 1);
+    Fen += sprintf_s(Fen, MAX_FEN_LENGTH, "%d", Board->HalfMoveNumber / 2 + 1);
 
-	*Fen = '\0'; // Nul
+    *Fen = '\0'; // Nul
 }
 
 U64 CountLegalMoves(const int Depth)
 {
-	int GenMoveCount;
-	MoveItem MoveList[MAX_GEN_MOVES];
+    int GenMoveCount;
+    MoveItem MoveList[MAX_GEN_MOVES];
 
-	U64 LegalMoves = 0ULL;
+    U64 LegalMoves = 0ULL;
 
-	if (Depth == 0) {
-		return 1ULL;
-	}
+    if (Depth == 0) {
+        return 1ULL;
+    }
 
-	GenMoveCount = 0;
-	GenerateAllMoves(&CurrentBoard, MoveList, &GenMoveCount);
+    GenMoveCount = 0;
+    GenerateAllMoves(&CurrentBoard, MoveList, &GenMoveCount);
 
-	for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
-		MakeMove(&CurrentBoard, MoveList[MoveNumber]);
+    for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
+        MakeMove(&CurrentBoard, MoveList[MoveNumber]);
 
-		if (!IsInCheck(&CurrentBoard, CHANGE_COLOR(CurrentBoard.CurrentColor))) {
-			LegalMoves += CountLegalMoves(Depth - 1);
-		}
+        if (!IsInCheck(&CurrentBoard, CHANGE_COLOR(CurrentBoard.CurrentColor))) {
+            LegalMoves += CountLegalMoves(Depth - 1);
+        }
 
-		UnmakeMove(&CurrentBoard);
-	}
+        UnmakeMove(&CurrentBoard);
+    }
 
-	return LegalMoves;
+    return LegalMoves;
 }

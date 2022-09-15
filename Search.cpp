@@ -197,7 +197,7 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
                     || (HashFlag == HASH_ALPHA && HashScore <= Alpha)
                     || (HashFlag == HASH_EXACT)
                 ) {
-#if defined(MOVES_SORT_HEURISTIC) || defined(KILLER_MOVE)
+#if defined(MOVES_SORT_HEURISTIC) || defined(KILLER_MOVE) || defined(COUNTER_MOVE)
                     if (HashMove) {
                         if (
                             Board->Pieces[MOVE_TO(HashMove)] == EMPTY
@@ -230,7 +230,7 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
 #endif // MOVES_SORT_HEURISTIC
                         }
                     }
-#endif // MOVES_SORT_HEURISTIC || KILLER_MOVE
+#endif // MOVES_SORT_HEURISTIC || KILLER_MOVE || COUNTER_MOVE
 
                     return HashScore;
                 }
@@ -387,7 +387,7 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
 
     for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
 #if defined(MOVES_SORT_MVV_LVA) && defined(BAD_CAPTURE_LAST)
-        NextMove:
+NextMove:
 #endif // MOVES_SORT_MVV_LVA && BAD_CAPTURE_LAST
 
 #if defined(MOVES_SORT_SEE) || defined(MOVES_SORT_MVV_LVA) || defined(MOVES_SORT_HEURISTIC) || defined(MOVES_SORT_SQUARE_SCORE)
@@ -439,7 +439,7 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
 #if !defined(ROOT_SPLITTING) && !defined(PV_SPLITTING)
         if (omp_get_thread_num() == 0) { // Master thread
             if (Ply == 0 && PrintMode == PRINT_MODE_UCI && (Clock() - TimeStart) >= 3000) {
-                #pragma omp critical
+#pragma omp critical
                 {
                     printf("info depth %d currmovenumber %d currmove %s%s", Depth, MoveNumber + 1, BoardName[MOVE_FROM(MoveList[MoveNumber].Move)], BoardName[MOVE_TO(MoveList[MoveNumber].Move)]);
 
@@ -653,7 +653,7 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
                     ++Board->CutoffCount;
 #endif // DEBUG_STATISTIC
 
-#if defined(MOVES_SORT_HEURISTIC) || defined(KILLER_MOVE)
+#if defined(MOVES_SORT_HEURISTIC) || defined(KILLER_MOVE) || defined(COUNTER_MOVE)
                     if (!(BestMove.Type & (MOVE_CAPTURE | MOVE_PAWN_PROMOTE))) { // Not capture/promote move
 #ifdef MOVES_SORT_HEURISTIC
                         UpdateHeuristic(Board, BestMove.Move, BONUS(Depth));
@@ -671,7 +671,7 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
                         UpdateCounterMove(Board, BestMove.Move);
 #endif // COUNTER_MOVE
                     }
-#endif // MOVES_SORT_HEURISTIC || KILLER_MOVE
+#endif // MOVES_SORT_HEURISTIC || KILLER_MOVE || COUNTER_MOVE
 
                     break;
                 }

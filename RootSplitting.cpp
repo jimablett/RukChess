@@ -283,7 +283,7 @@ NextMove0:
 					++Board->CutoffCount;
 					#endif // DEBUG_STATISTIC
 
-					#if defined(MOVES_SORT_HEURISTIC) || defined(KILLER_MOVE)
+#if defined(MOVES_SORT_HEURISTIC) || defined(KILLER_MOVE) || defined(COUNTER_MOVE)
 					if (!(BestMove.Type & (MOVE_CAPTURE | MOVE_PAWN_PROMOTE))) { // Not capture/promote move
 						#ifdef MOVES_SORT_HEURISTIC
 						UpdateHeuristic(Board, BestMove.Move, BONUS(Depth));
@@ -301,7 +301,7 @@ NextMove0:
 						UpdateCounterMove(Board, BestMove.Move);
 						#endif // COUNTER_MOVE
 					}
-					#endif // MOVES_SORT_HEURISTIC || KILLER_MOVE
+#endif // MOVES_SORT_HEURISTIC || KILLER_MOVE || COUNTER_MOVE
 
 					goto Root_Done;
 				}
@@ -509,7 +509,7 @@ NextMove:
 					++Board->CutoffCount;
 					#endif // DEBUG_STATISTIC
 
-					#if defined(MOVES_SORT_HEURISTIC) || defined(KILLER_MOVE)
+#if defined(MOVES_SORT_HEURISTIC) || defined(KILLER_MOVE) || defined(COUNTER_MOVE)
 					if (!(BestMove.Type & (MOVE_CAPTURE | MOVE_PAWN_PROMOTE))) { // Not capture/promote move
 						#ifdef MOVES_SORT_HEURISTIC
 						UpdateHeuristic(Board, BestMove.Move, BONUS(Depth));
@@ -527,7 +527,7 @@ NextMove:
 						UpdateCounterMove(Board, BestMove.Move);
 						#endif // COUNTER_MOVE
 					}
-					#endif // MOVES_SORT_HEURISTIC || KILLER_MOVE
+#endif // MOVES_SORT_HEURISTIC || KILLER_MOVE || COUNTER_MOVE
 
 					Cutoff = TRUE;
 				}

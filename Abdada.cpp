@@ -264,7 +264,7 @@ int ABDADA_Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Pl
 					|| (HashFlag == HASH_ALPHA && HashScore <= Alpha)
 					|| (HashFlag == HASH_EXACT)
 				) {
-					#if defined(MOVES_SORT_HEURISTIC) || defined(KILLER_MOVE)
+#if defined(MOVES_SORT_HEURISTIC) || defined(KILLER_MOVE) || defined(COUNTER_MOVE)
 					if (HashMove) {
 						if (
 							Board->Pieces[MOVE_TO(HashMove)] == EMPTY
@@ -297,7 +297,7 @@ int ABDADA_Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Pl
 							#endif // MOVES_SORT_HEURISTIC
 						}
 					}
-					#endif // MOVES_SORT_HEURISTIC || KILLER_MOVE
+#endif // MOVES_SORT_HEURISTIC || KILLER_MOVE || COUNTER_MOVE
 
 					return HashScore;
 				}
@@ -468,7 +468,7 @@ int ABDADA_Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Pl
 						|| (HashFlag == HASH_ALPHA && HashScore <= Alpha)
 						|| (HashFlag == HASH_EXACT)
 					) {
-						#if defined(MOVES_SORT_HEURISTIC) || defined(KILLER_MOVE)
+#if defined(MOVES_SORT_HEURISTIC) || defined(KILLER_MOVE) || defined(COUNTER_MOVE)
 						if (HashMove) {
 							if (
 								Board->Pieces[MOVE_TO(HashMove)] == EMPTY
@@ -501,7 +501,7 @@ int ABDADA_Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Pl
 								#endif // MOVES_SORT_HEURISTIC
 							}
 						}
-						#endif // MOVES_SORT_HEURISTIC || KILLER_MOVE
+#endif // MOVES_SORT_HEURISTIC || KILLER_MOVE || COUNTER_MOVE
 
 //						printf("h");
 
@@ -805,7 +805,7 @@ NextMove:
 					++Board->CutoffCount;
 					#endif // DEBUG_STATISTIC
 
-					#if defined(MOVES_SORT_HEURISTIC) || defined(KILLER_MOVE)
+#if defined(MOVES_SORT_HEURISTIC) || defined(KILLER_MOVE) || defined(COUNTER_MOVE)
 					if (!(BestMove.Type & (MOVE_CAPTURE | MOVE_PAWN_PROMOTE))) { // Not capture/promote move
 						#ifdef MOVES_SORT_HEURISTIC
 						UpdateHeuristic(Board, BestMove.Move, BONUS(Depth));
@@ -823,7 +823,7 @@ NextMove:
 						UpdateCounterMove(Board, BestMove.Move);
 						#endif // COUNTER_MOVE
 					}
-					#endif // MOVES_SORT_HEURISTIC || KILLER_MOVE
+#endif // MOVES_SORT_HEURISTIC || KILLER_MOVE || COUNTER_MOVE
 
 					goto ABDADA_Done;
 				}
@@ -1057,7 +1057,7 @@ NextMove:
 					++Board->CutoffCount;
 					#endif // DEBUG_STATISTIC
 
-					#if defined(MOVES_SORT_HEURISTIC) || defined(KILLER_MOVE)
+#if defined(MOVES_SORT_HEURISTIC) || defined(KILLER_MOVE) || defined(COUNTER_MOVE)
 					if (!(BestMove.Type & (MOVE_CAPTURE | MOVE_PAWN_PROMOTE))) { // Not capture/promote move
 						#ifdef MOVES_SORT_HEURISTIC
 						UpdateHeuristic(Board, BestMove.Move, BONUS(Depth));
@@ -1075,7 +1075,7 @@ NextMove:
 						UpdateCounterMove(Board, BestMove.Move);
 						#endif // COUNTER_MOVE
 					}
-					#endif // MOVES_SORT_HEURISTIC || KILLER_MOVE
+#endif // MOVES_SORT_HEURISTIC || KILLER_MOVE || COUNTER_MOVE
 
 					break;
 				}

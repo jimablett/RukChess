@@ -12,730 +12,730 @@
 #include "Types.h"
 #include "Utils.h"
 
-#define MAX_CHILDREN		  32
+#define MAX_CHILDREN        32
 
-#define STAGE_NONE			   1
-#define STAGE_TAG			   2
-#define STAGE_NOTATION		   3
-#define STAGE_MOVE			   4
-#define STAGE_COMMENT		   5
+#define STAGE_NONE          1
+#define STAGE_TAG           2
+#define STAGE_NOTATION      3
+#define STAGE_MOVE          4
+#define STAGE_COMMENT       5
 
-#define MAX_BOOK_PLY		  24 // 12 moves
-#define MIN_BOOK_ELO		   0
-#define MIN_BOOK_GAMES		  50
+#define MAX_BOOK_PLY        24 // 12 moves
+#define MIN_BOOK_ELO        0
+#define MIN_BOOK_GAMES      50
 
 typedef struct Node {
-	MoveItem Move;
+    MoveItem Move;
 
-	int White;
-	int Black;
-	int Draw;
+    int White;
+    int Black;
+    int Draw;
 
-	int Total;
+    int Total;
 
-	struct Node* Children[MAX_CHILDREN];
+    struct Node* Children[MAX_CHILDREN];
 } NodeItem; // 288 bytes
 
 typedef struct {
-	U64 Hash;
+    U64 Hash;
 
-	int From;
-	int To;
+    int From;
+    int To;
 
-	int Total;
+    int Total;
 } BookItem; // 24 bytes
 
 struct {
-	int Count;
+    int Count;
 
-	BookItem* Item;
+    BookItem* Item;
 } BookStore;
 
 BOOL UseBook;
 
 NodeItem* CreateNode(const MoveItem Move)
 {
-	NodeItem* Node = (NodeItem*)calloc(1, sizeof(NodeItem));
+    NodeItem* Node = (NodeItem*)calloc(1, sizeof(NodeItem));
 
-	Node->Move = Move;
+    Node->Move = Move;
 
-	return Node;
+    return Node;
 }
 
 void FreeNode(NodeItem* Node)
 {
-	NodeItem* ChildNode;
+    NodeItem* ChildNode;
 
-	for (int Index = 0; Index < MAX_CHILDREN; ++Index) {
-		ChildNode = Node->Children[Index];
+    for (int Index = 0; Index < MAX_CHILDREN; ++Index) {
+        ChildNode = Node->Children[Index];
 
-		if (ChildNode) {
-			FreeNode(ChildNode);
-		}
-	}
+        if (ChildNode) {
+            FreeNode(ChildNode);
+        }
+    }
 
-	free(Node);
+    free(Node);
 }
 
 void PrintNode(BoardItem* Board, const NodeItem* Node, FILE* FileOut)
 {
-	NodeItem* ChildNode;
+    NodeItem* ChildNode;
 
-	int Total = 0;
+    int Total = 0;
 
-	for (int Index = 0; Index < MAX_CHILDREN; ++Index) {
-		ChildNode = Node->Children[Index];
+    for (int Index = 0; Index < MAX_CHILDREN; ++Index) {
+        ChildNode = Node->Children[Index];
 
-		if (ChildNode) {
-			Total += ChildNode->Total;
-		}
-	}
+        if (ChildNode) {
+            Total += ChildNode->Total;
+        }
+    }
 
-	if (Total < MIN_BOOK_GAMES) {
-		return;
-	}
+    if (Total < MIN_BOOK_GAMES) {
+        return;
+    }
 
-	for (int Index = 0; Index < MAX_CHILDREN; ++Index) {
-		ChildNode = Node->Children[Index];
+    for (int Index = 0; Index < MAX_CHILDREN; ++Index) {
+        ChildNode = Node->Children[Index];
 
-		if (ChildNode) {
-//			printf("0x%016llx %s %s %d\n", Board->Hash, BoardName[MOVE_FROM(ChildNode->Move.Move)], BoardName[MOVE_TO(ChildNode->Move.Move)], ChildNode->Total);
+        if (ChildNode) {
+//          printf("0x%016llx %s %s %d\n", Board->Hash, BoardName[MOVE_FROM(ChildNode->Move.Move)], BoardName[MOVE_TO(ChildNode->Move.Move)], ChildNode->Total);
 
-			fprintf(FileOut, "0x%016llx %d %d %d\n", Board->Hash, MOVE_FROM(ChildNode->Move.Move), MOVE_TO(ChildNode->Move.Move), ChildNode->Total);
+            fprintf(FileOut, "0x%016llx %d %d %d\n", Board->Hash, MOVE_FROM(ChildNode->Move.Move), MOVE_TO(ChildNode->Move.Move), ChildNode->Total);
 
-			MakeMove(Board, ChildNode->Move);
+            MakeMove(Board, ChildNode->Move);
 
-			PrintNode(Board, ChildNode, FileOut);
+            PrintNode(Board, ChildNode, FileOut);
 
-			UnmakeMove(Board);
-		}
-	}
+            UnmakeMove(Board);
+        }
+    }
 }
 
 void GenerateBook(void)
 {
-	FILE* FileIn;
-	FILE* FileOut;
+    FILE* FileIn;
+    FILE* FileOut;
 
-	int GameNumber;
+    int GameNumber;
 
-	int Result;
+    int Result;
 
-	int Elo;
-	int MinElo;
+    int Elo;
+    int MinElo;
 
-	char MoveString[16];
-	char* Move;
+    char MoveString[16];
+    char* Move;
 
-	int Ply;
+    int Ply;
 
-	NodeItem* RootNode = CreateNode({ 0, 0, 0 });
-	NodeItem* Node;
-	NodeItem* ChildNode;
+    NodeItem* RootNode = CreateNode({ 0, 0, 0 });
+    NodeItem* Node;
+    NodeItem* ChildNode;
 
-	BOOL Error;
+    BOOL Error;
 
-	int Stage;
+    int Stage;
 
-	char Buf[4096];
-	char* Part;
+    char Buf[4096];
+    char* Part;
 
-	char FenString[MAX_FEN_LENGTH];
-	char* Fen;
+    char FenString[MAX_FEN_LENGTH];
+    char* Fen;
 
-	int GenMoveCount;
-	MoveItem MoveList[MAX_GEN_MOVES];
+    int GenMoveCount;
+    MoveItem MoveList[MAX_GEN_MOVES];
 
-	BOOL MoveFound;
+    BOOL MoveFound;
 
-	char NotateMoveStr[16];
+    char NotateMoveStr[16];
 
-//	printf("NodeItem = %zd\n", sizeof(NodeItem));
+//  printf("NodeItem = %zd\n", sizeof(NodeItem));
 
-	printf("\n");
+    printf("\n");
 
-	printf("Generate book...\n");
+    printf("Generate book...\n");
 
-	fopen_s(&FileIn, "book.pgn", "r");
+    fopen_s(&FileIn, "book.pgn", "r");
 
-	if (FileIn == NULL) { // File open error
-		printf("File 'book.pgn' open error!\n");
+    if (FileIn == NULL) { // File open error
+        printf("File 'book.pgn' open error!\n");
 
-		Sleep(3000);
+        Sleep(3000);
 
-		exit(0);
-	}
+        exit(0);
+    }
 
-	fopen_s(&FileOut, "book.txt", "w");
+    fopen_s(&FileOut, "book.txt", "w");
 
-	if (FileOut == NULL) { // File create (open) error
-		printf("File 'book.txt' create (open) error!\n");
+    if (FileOut == NULL) { // File create (open) error
+        printf("File 'book.txt' create (open) error!\n");
 
-		Sleep(3000);
+        Sleep(3000);
 
-		exit(0);
-	}
+        exit(0);
+    }
 
-	// No cache used
-	InitHashTable(1);
-	ClearHash();
+    // No cache used
+    InitHashTable(1);
+    ClearHash();
 
-	// Only the main thread is used
-	omp_set_num_threads(1);
+    // Only the main thread is used
+    omp_set_num_threads(1);
 
-	// Prepare new game
+    // Prepare new game
 
-	GameNumber = 1;
+    GameNumber = 1;
 
-	Result = 0; // Draw default
+    Result = 0; // Draw default
 
-	MinElo = INT_MAX;
+    MinElo = INT_MAX;
 
-	Move = MoveString;
-	*Move = '\0'; // Nul
+    Move = MoveString;
+    *Move = '\0'; // Nul
 
-	Ply = 0;
+    Ply = 0;
 
-	Node = RootNode;
+    Node = RootNode;
 
-	Error = FALSE;
+    Error = FALSE;
 
-	SetFen(&CurrentBoard, StartFen);
+    SetFen(&CurrentBoard, StartFen);
 
-	Stage = STAGE_NONE;
+    Stage = STAGE_NONE;
 
-	while (fgets(Buf, sizeof(Buf), FileIn) != NULL) {
-		Part = Buf;
+    while (fgets(Buf, sizeof(Buf), FileIn) != NULL) {
+        Part = Buf;
 
-		if (*Part == '\r' || *Part == '\n') { // Empty string
-			if (Stage == STAGE_NOTATION) {
-				// Prepare new game
+        if (*Part == '\r' || *Part == '\n') { // Empty string
+            if (Stage == STAGE_NOTATION) {
+                // Prepare new game
 
-				++GameNumber;
+                ++GameNumber;
 
-				Result = 0; // Draw default
+                Result = 0; // Draw default
 
-				MinElo = INT_MAX;
+                MinElo = INT_MAX;
 
-				Move = MoveString;
-				*Move = '\0'; // Nul
+                Move = MoveString;
+                *Move = '\0'; // Nul
 
-				Ply = 0;
+                Ply = 0;
 
-				Node = RootNode;
+                Node = RootNode;
 
-				Error = FALSE;
+                Error = FALSE;
 
-				SetFen(&CurrentBoard, StartFen);
+                SetFen(&CurrentBoard, StartFen);
 
-				Stage = STAGE_NONE;
-			}
+                Stage = STAGE_NONE;
+            }
 
-			continue; // Next string
-		}
+            continue; // Next string
+        }
 
-		if (*Part == '[') { // Tag
-			if (Stage == STAGE_NONE) {
-				if (GameNumber > 1 && ((GameNumber - 1) % 10000) == 0) {
-					printf("\n");
+        if (*Part == '[') { // Tag
+            if (Stage == STAGE_NONE) {
+                if (GameNumber > 1 && ((GameNumber - 1) % 10000) == 0) {
+                    printf("\n");
 
-					printf("Game number = %d\n", GameNumber - 1);
+                    printf("Game number = %d\n", GameNumber - 1);
 
-					printf("  White = %d Black = %d Draw = %d Total = %d\n", RootNode->White, RootNode->Black, RootNode->Draw, RootNode->Total);
-					printf("  White = %.1f%% Black = %.1f%% Draw = %.1f%%\n", 100.0 * (double)RootNode->White / (double)RootNode->Total, 100.0 * (double)RootNode->Black / (double)RootNode->Total, 100.0 * (double)RootNode->Draw / (double)RootNode->Total);
-					printf("  White score = %.1f%%\n", 100.0 * ((double)RootNode->White + (double)RootNode->Draw / 2.0) / (double)RootNode->Total);
-				}
+                    printf("  White = %d Black = %d Draw = %d Total = %d\n", RootNode->White, RootNode->Black, RootNode->Draw, RootNode->Total);
+                    printf("  White = %.1f%% Black = %.1f%% Draw = %.1f%%\n", 100.0 * (double)RootNode->White / (double)RootNode->Total, 100.0 * (double)RootNode->Black / (double)RootNode->Total, 100.0 * (double)RootNode->Draw / (double)RootNode->Total);
+                    printf("  White score = %.1f%%\n", 100.0 * ((double)RootNode->White + (double)RootNode->Draw / 2.0) / (double)RootNode->Total);
+                }
 
-				Stage = STAGE_TAG;
-			}
+                Stage = STAGE_TAG;
+            }
 
-			if (!strncmp(Part, "[Result \"1-0\"]", 14)) { // Result 1-0
-				Result = 1; // White win
+            if (!strncmp(Part, "[Result \"1-0\"]", 14)) { // Result 1-0
+                Result = 1; // White win
 
-//				printf("Result = %d\n", Result);
-			}
-			else if (!strncmp(Part, "[Result \"1/2-1/2\"]", 18)) { // Result 1/2-1/2
-				Result = 0; // Draw
+//              printf("Result = %d\n", Result);
+            }
+            else if (!strncmp(Part, "[Result \"1/2-1/2\"]", 18)) { // Result 1/2-1/2
+                Result = 0; // Draw
 
-//				printf("Result = %d\n", Result);
-			}
-			else if (!strncmp(Part, "[Result \"0-1\"]", 14)) { // Result 0-1
-				Result = -1; // Black win
+//              printf("Result = %d\n", Result);
+            }
+            else if (!strncmp(Part, "[Result \"0-1\"]", 14)) { // Result 0-1
+                Result = -1; // Black win
 
-//				printf("Result = %d\n", Result);
-			}
-			else if (!strncmp(Part, "[FEN \"", 6)) { // FEN
-				Part += 6;
+//              printf("Result = %d\n", Result);
+            }
+            else if (!strncmp(Part, "[FEN \"", 6)) { // FEN
+                Part += 6;
 
-				Fen = FenString;
+                Fen = FenString;
 
-				while (*Part != '"') {
-					*Fen++ = *Part++; // Copy FEN
-				}
+                while (*Part != '"') {
+                    *Fen++ = *Part++; // Copy FEN
+                }
 
-				*Fen = '\0'; // Nul
+                *Fen = '\0'; // Nul
 
-//				printf("FEN = %s\n", FenString);
+//              printf("FEN = %s\n", FenString);
 
-				SetFen(&CurrentBoard, FenString);
-			}
-			else if (!strncmp(Part, "[WhiteElo \"", 11)) { // WhiteElo
-				Part += 11;
+                SetFen(&CurrentBoard, FenString);
+            }
+            else if (!strncmp(Part, "[WhiteElo \"", 11)) { // WhiteElo
+                Part += 11;
 
-				Elo = atoi(Part);
+                Elo = atoi(Part);
 
-				MinElo = MIN(MinElo, Elo);
+                MinElo = MIN(MinElo, Elo);
 
-//				printf("WhiteElo = %d MinElo = %d\n", Elo, MinElo);
-			}
-			else if (!strncmp(Part, "[BlackElo \"", 11)) { // BlackElo
-				Part += 11;
+//              printf("WhiteElo = %d MinElo = %d\n", Elo, MinElo);
+            }
+            else if (!strncmp(Part, "[BlackElo \"", 11)) { // BlackElo
+                Part += 11;
 
-				Elo = atoi(Part);
+                Elo = atoi(Part);
 
-				MinElo = MIN(MinElo, Elo);
+                MinElo = MIN(MinElo, Elo);
 
-//				printf("BlackElo = %d MinElo = %d\n", Elo, MinElo);
-			}
+//              printf("BlackElo = %d MinElo = %d\n", Elo, MinElo);
+            }
 
-			continue; // Next string
-		} // if
+            continue; // Next string
+        } // if
 
-		if (Stage == STAGE_TAG) {
-			Stage = STAGE_NOTATION;
+        if (Stage == STAGE_TAG) {
+            Stage = STAGE_NOTATION;
 
-			if (MinElo >= MIN_BOOK_ELO) {
-				if (Result == 1) { // White win
-					++RootNode->White;
+            if (MinElo >= MIN_BOOK_ELO) {
+                if (Result == 1) { // White win
+                    ++RootNode->White;
 
-					++RootNode->Total;
-				}
-				else if (Result == 0) { // Draw
-					++RootNode->Draw;
+                    ++RootNode->Total;
+                }
+                else if (Result == 0) { // Draw
+                    ++RootNode->Draw;
 
-					++RootNode->Total;
-				}
-				else if (Result == -1) { // Black win
-					++RootNode->Black;
+                    ++RootNode->Total;
+                }
+                else if (Result == -1) { // Black win
+                    ++RootNode->Black;
 
-					++RootNode->Total;
-				}
-			}
-		}
+                    ++RootNode->Total;
+                }
+            }
+        }
 
-		while (*Part != '\0') { // Scan string
-			if (*Part == '{') { // Comment (open)
-				Stage = STAGE_COMMENT;
-			}
-			else if (*Part == '}') { // Comment (close)
-				Stage = STAGE_NOTATION;
-			}
+        while (*Part != '\0') { // Scan string
+            if (*Part == '{') { // Comment (open)
+                Stage = STAGE_COMMENT;
+            }
+            else if (*Part == '}') { // Comment (close)
+                Stage = STAGE_NOTATION;
+            }
 
-			if (Stage == STAGE_NOTATION) {
-				if (strchr(MoveFirstChar, *Part) != NULL) {
-					Stage = STAGE_MOVE;
+            if (Stage == STAGE_NOTATION) {
+                if (strchr(MoveFirstChar, *Part) != NULL) {
+                    Stage = STAGE_MOVE;
 
-					Move = MoveString;
+                    Move = MoveString;
 
-					*Move++ = *Part; // Copy move (first char)
-				}
-			}
-			else if (Stage == STAGE_MOVE) {
-				if (strchr(MoveSubsequentChar, *Part) != NULL) {
-					*Move++ = *Part; // Copy move (subsequent char)
-				}
-				else { // End of move
-					Stage = STAGE_NOTATION;
+                    *Move++ = *Part; // Copy move (first char)
+                }
+            }
+            else if (Stage == STAGE_MOVE) {
+                if (strchr(MoveSubsequentChar, *Part) != NULL) {
+                    *Move++ = *Part; // Copy move (subsequent char)
+                }
+                else { // End of move
+                    Stage = STAGE_NOTATION;
 
-					*Move = '\0'; // Nul
+                    *Move = '\0'; // Nul
 
-					if (Error || Ply >= MAX_BOOK_PLY || MinElo < MIN_BOOK_ELO) {
-						++Part;
+                    if (Error || Ply >= MAX_BOOK_PLY || MinElo < MIN_BOOK_ELO) {
+                        ++Part;
 
-						continue; // Next string
-					}
+                        continue; // Next string
+                    }
 
-//					printf("Ply = %d Result = %d Move = %s\n", Ply, Result, MoveString);
+//                  printf("Ply = %d Result = %d Move = %s\n", Ply, Result, MoveString);
 
-					GenMoveCount = 0;
-					GenerateAllMoves(&CurrentBoard, MoveList, &GenMoveCount);
+                    GenMoveCount = 0;
+                    GenerateAllMoves(&CurrentBoard, MoveList, &GenMoveCount);
 
-					MoveFound = FALSE;
+                    MoveFound = FALSE;
 
-					for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
-						NotateMove(&CurrentBoard, MoveList[MoveNumber], NotateMoveStr);
+                    for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
+                        NotateMove(&CurrentBoard, MoveList[MoveNumber], NotateMoveStr);
 
-						if (strcmp(MoveString, NotateMoveStr) == 0) {
-							MakeMove(&CurrentBoard, MoveList[MoveNumber]);
+                        if (strcmp(MoveString, NotateMoveStr) == 0) {
+                            MakeMove(&CurrentBoard, MoveList[MoveNumber]);
 
-							if (IsInCheck(&CurrentBoard, CHANGE_COLOR(CurrentBoard.CurrentColor))) {
-								UnmakeMove(&CurrentBoard);
+                            if (IsInCheck(&CurrentBoard, CHANGE_COLOR(CurrentBoard.CurrentColor))) {
+                                UnmakeMove(&CurrentBoard);
 
-								PrintBoard(&CurrentBoard);
+                                PrintBoard(&CurrentBoard);
 
-								printf("\n");
+                                printf("\n");
 
-								printf("Move = %s check\n", MoveString);
+                                printf("Move = %s check\n", MoveString);
 
-								printf("\n");
+                                printf("\n");
 
-								printf("Gen. move = %s%s", BoardName[MOVE_FROM(MoveList[MoveNumber].Move)], BoardName[MOVE_TO(MoveList[MoveNumber].Move)]);
+                                printf("Gen. move = %s%s", BoardName[MOVE_FROM(MoveList[MoveNumber].Move)], BoardName[MOVE_TO(MoveList[MoveNumber].Move)]);
 
-								if (MoveList[MoveNumber].Type & MOVE_PAWN_PROMOTE) {
-									printf("%c", PiecesCharBlack[MOVE_PROMOTE_PIECE(MoveList[MoveNumber].Move)]);
-								}
+                                if (MoveList[MoveNumber].Type & MOVE_PAWN_PROMOTE) {
+                                    printf("%c", PiecesCharBlack[MOVE_PROMOTE_PIECE(MoveList[MoveNumber].Move)]);
+                                }
 
-								printf(" (%s)\n", NotateMoveStr);
+                                printf(" (%s)\n", NotateMoveStr);
 
-								continue; // Next move
-							}
+                                continue; // Next move
+                            }
 
-							MoveFound = TRUE;
+                            MoveFound = TRUE;
 
-							ChildNode = nullptr;
+                            ChildNode = nullptr;
 
-							for (int Index = 0; Index < MAX_CHILDREN; ++Index) {
-								if (Node->Children[Index]) {
-									if (Node->Children[Index]->Move.Move == MoveList[MoveNumber].Move) {
-										ChildNode = Node->Children[Index];
+                            for (int Index = 0; Index < MAX_CHILDREN; ++Index) {
+                                if (Node->Children[Index]) {
+                                    if (Node->Children[Index]->Move.Move == MoveList[MoveNumber].Move) {
+                                        ChildNode = Node->Children[Index];
 
-										break; // for (children)
-									}
-								}
-								else {
-									ChildNode = CreateNode(MoveList[MoveNumber]);
+                                        break; // for (children)
+                                    }
+                                }
+                                else {
+                                    ChildNode = CreateNode(MoveList[MoveNumber]);
 
-									Node->Children[Index] = ChildNode;
+                                    Node->Children[Index] = ChildNode;
 
-									break; // for (children)
-								}
-							}
+                                    break; // for (children)
+                                }
+                            }
 
-							if (ChildNode == nullptr) {
-								Error = TRUE;
+                            if (ChildNode == nullptr) {
+                                Error = TRUE;
 
-								printf("\n");
+                                printf("\n");
 
-								printf("No child node\n");
-							}
-							else {
-								if (Result == 1) { // White win
-									++ChildNode->White;
+                                printf("No child node\n");
+                            }
+                            else {
+                                if (Result == 1) { // White win
+                                    ++ChildNode->White;
 
-									++ChildNode->Total;
-								}
-								else if (Result == 0) { // Draw
-									++ChildNode->Draw;
+                                    ++ChildNode->Total;
+                                }
+                                else if (Result == 0) { // Draw
+                                    ++ChildNode->Draw;
 
-									++ChildNode->Total;
-								}
-								else if (Result == -1) { // Black win
-									++ChildNode->Black;
+                                    ++ChildNode->Total;
+                                }
+                                else if (Result == -1) { // Black win
+                                    ++ChildNode->Black;
 
-									++ChildNode->Total;
-								}
+                                    ++ChildNode->Total;
+                                }
 
-								Node = ChildNode;
-							}
+                                Node = ChildNode;
+                            }
 
-							break; // for (moves)
-						} // if
-					} // for
+                            break; // for (moves)
+                        } // if
+                    } // for
 
-					if (!MoveFound) { // No move found
-						Error = TRUE;
+                    if (!MoveFound) { // No move found
+                        Error = TRUE;
 
-						PrintBoard(&CurrentBoard);
+                        PrintBoard(&CurrentBoard);
 
-						printf("\n");
+                        printf("\n");
 
-						printf("Move = %s not found\n", MoveString);
+                        printf("Move = %s not found\n", MoveString);
 
-						printf("\n");
+                        printf("\n");
 
-						printf("Gen. moves =");
+                        printf("Gen. moves =");
 
-						for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
-							NotateMove(&CurrentBoard, MoveList[MoveNumber], NotateMoveStr);
+                        for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
+                            NotateMove(&CurrentBoard, MoveList[MoveNumber], NotateMoveStr);
 
-							printf(" %s%s", BoardName[MOVE_FROM(MoveList[MoveNumber].Move)], BoardName[MOVE_TO(MoveList[MoveNumber].Move)]);
+                            printf(" %s%s", BoardName[MOVE_FROM(MoveList[MoveNumber].Move)], BoardName[MOVE_TO(MoveList[MoveNumber].Move)]);
 
-							if (MoveList[MoveNumber].Type & MOVE_PAWN_PROMOTE) {
-								printf("%c", PiecesCharBlack[MOVE_PROMOTE_PIECE(MoveList[MoveNumber].Move)]);
-							}
+                            if (MoveList[MoveNumber].Type & MOVE_PAWN_PROMOTE) {
+                                printf("%c", PiecesCharBlack[MOVE_PROMOTE_PIECE(MoveList[MoveNumber].Move)]);
+                            }
 
-							printf(" (%s)", NotateMoveStr);
-						}
+                            printf(" (%s)", NotateMoveStr);
+                        }
 
-						printf("\n");
-					}
+                        printf("\n");
+                    }
 
-					++Ply;
-				}
-			}
+                    ++Ply;
+                }
+            }
 
-			++Part;
-		} // while
-	} // while
+            ++Part;
+        } // while
+    } // while
 
-	printf("\n");
+    printf("\n");
 
-	printf("Game number = %d\n", GameNumber - 1);
+    printf("Game number = %d\n", GameNumber - 1);
 
-	printf("  White = %d Black = %d Draw = %d Total = %d\n", RootNode->White, RootNode->Black, RootNode->Draw, RootNode->Total);
-	printf("  White = %.1f%% Black = %.1f%% Draw = %.1f%%\n", 100.0 * (double)RootNode->White / (double)RootNode->Total, 100.0 * (double)RootNode->Black / (double)RootNode->Total, 100.0 * (double)RootNode->Draw / (double)RootNode->Total);
-	printf("  White score = %.1f%%\n", 100.0 * ((double)RootNode->White + (double)RootNode->Draw / 2.0) / (double)RootNode->Total);
+    printf("  White = %d Black = %d Draw = %d Total = %d\n", RootNode->White, RootNode->Black, RootNode->Draw, RootNode->Total);
+    printf("  White = %.1f%% Black = %.1f%% Draw = %.1f%%\n", 100.0 * (double)RootNode->White / (double)RootNode->Total, 100.0 * (double)RootNode->Black / (double)RootNode->Total, 100.0 * (double)RootNode->Draw / (double)RootNode->Total);
+    printf("  White score = %.1f%%\n", 100.0 * ((double)RootNode->White + (double)RootNode->Draw / 2.0) / (double)RootNode->Total);
 
-	// Prepare new game
+    // Prepare new game
 
-	SetFen(&CurrentBoard, StartFen);
+    SetFen(&CurrentBoard, StartFen);
 
-	PrintNode(&CurrentBoard, RootNode, FileOut);
+    PrintNode(&CurrentBoard, RootNode, FileOut);
 
-	fclose(FileOut);
-	fclose(FileIn);
+    fclose(FileOut);
+    fclose(FileIn);
 
-	FreeNode(RootNode);
+    FreeNode(RootNode);
 
-	printf("\n");
+    printf("\n");
 
-	printf("Generate book...DONE\n");
+    printf("Generate book...DONE\n");
 }
 
 int HashCompare(const void* BookItem1, const void* BookItem2)
 {
-	U64 Hash1 = ((BookItem*)BookItem1)->Hash;
-	U64 Hash2 = ((BookItem*)BookItem2)->Hash;
+    U64 Hash1 = ((BookItem*)BookItem1)->Hash;
+    U64 Hash2 = ((BookItem*)BookItem2)->Hash;
 
-	if (Hash1 < Hash2) {
-		return -1;
-	}
+    if (Hash1 < Hash2) {
+        return -1;
+    }
 
-	if (Hash1 > Hash2) {
-		return 1;
-	}
+    if (Hash1 > Hash2) {
+        return 1;
+    }
 
-	return 0;
+    return 0;
 }
 
 BOOL LoadBook(void)
 {
-	FILE* File;
+    FILE* File;
 
-	char Buf[512];
-	char* Part;
+    char Buf[512];
+    char* Part;
 
-	int PositionNumber;
+    int PositionNumber;
 
-	char HashString[256];
-	char* HashPointer;
+    char HashString[256];
+    char* HashPointer;
 
-	U64 Hash;
+    U64 Hash;
 
-	int From;
-	int To;
+    int From;
+    int To;
 
-	int Total;
+    int Total;
 
-	BookItem* BookItemPointer;
+    BookItem* BookItemPointer;
 
-//	printf("BookItem = %zd\n", sizeof(BookItem));
+//  printf("BookItem = %zd\n", sizeof(BookItem));
 
-	printf("\n");
+    printf("\n");
 
-	printf("Load book...\n");
+    printf("Load book...\n");
 
-	fopen_s(&File, "book.txt", "r");
+    fopen_s(&File, "book.txt", "r");
 
-	if (File == NULL) { // File open error
-		printf("File 'book.txt' open error!\n");
+    if (File == NULL) { // File open error
+        printf("File 'book.txt' open error!\n");
 
-		return FALSE;
-	}
+        return FALSE;
+    }
 
-	// The first cycle to get the number of book items
+    // The first cycle to get the number of book items
 
-	BookStore.Count = 0;
+    BookStore.Count = 0;
 
-	while (fgets(Buf, sizeof(Buf), File) != NULL) {
-		++BookStore.Count;
-	}
+    while (fgets(Buf, sizeof(Buf), File) != NULL) {
+        ++BookStore.Count;
+    }
 
-	// Allocate memory to store book
+    // Allocate memory to store book
 
-	BookStore.Item = (BookItem*)malloc(BookStore.Count * sizeof(BookItem));
+    BookStore.Item = (BookItem*)malloc(BookStore.Count * sizeof(BookItem));
 
-	if (BookStore.Item == NULL) { // Allocate memory error
-		printf("Allocate memory to store book error!\n");
+    if (BookStore.Item == NULL) { // Allocate memory error
+        printf("Allocate memory to store book error!\n");
 
-		Sleep(3000);
+        Sleep(3000);
 
-		exit(0);
-	}
+        exit(0);
+    }
 
-	// Set the pointer to the beginning of the file
+    // Set the pointer to the beginning of the file
 
-	fseek(File, 0, SEEK_SET);
+    fseek(File, 0, SEEK_SET);
 
-	// The second cycle for reading book
+    // The second cycle for reading book
 
-	PositionNumber = 0;
+    PositionNumber = 0;
 
-	while (fgets(Buf, sizeof(Buf), File) != NULL) {
-		Part = Buf;
+    while (fgets(Buf, sizeof(Buf), File) != NULL) {
+        Part = Buf;
 
-		HashPointer = HashString;
+        HashPointer = HashString;
 
-		while (*Part != ' ') {
-			*HashPointer++ = *Part++; // Copy hash
-		}
+        while (*Part != ' ') {
+            *HashPointer++ = *Part++; // Copy hash
+        }
 
-		*HashPointer = '\0'; // Nul
+        *HashPointer = '\0'; // Nul
 
-		Hash = strtoull(HashString, NULL, 16);
+        Hash = strtoull(HashString, NULL, 16);
 
-		if (Hash == 0) { // Hash error
-			continue; // Next string
-		}
+        if (Hash == 0) { // Hash error
+            continue; // Next string
+        }
 
-		++Part; // Space
+        ++Part; // Space
 
-		From = atoi(Part);
+        From = atoi(Part);
 
-		if (From < 0 || From > 63) {
-			continue; // Next string
-		}
+        if (From < 0 || From > 63) {
+            continue; // Next string
+        }
 
-		while (*Part != ' ') {
-			++Part;
-		}
+        while (*Part != ' ') {
+            ++Part;
+        }
 
-		++Part; // Space
+        ++Part; // Space
 
-		To = atoi(Part);
+        To = atoi(Part);
 
-		if (To < 0 || To > 63) {
-			continue; // Next string
-		}
+        if (To < 0 || To > 63) {
+            continue; // Next string
+        }
 
-		while (*Part != ' ') {
-			++Part;
-		}
+        while (*Part != ' ') {
+            ++Part;
+        }
 
-		++Part; // Space
+        ++Part; // Space
 
-		Total = atoi(Part);
+        Total = atoi(Part);
 
-		if (Total < MIN_BOOK_GAMES) {
-			continue; // Next string
-		}
+        if (Total < MIN_BOOK_GAMES) {
+            continue; // Next string
+        }
 
-		BookItemPointer = &BookStore.Item[PositionNumber];
+        BookItemPointer = &BookStore.Item[PositionNumber];
 
-		BookItemPointer->Hash = Hash;
+        BookItemPointer->Hash = Hash;
 
-		BookItemPointer->From = From;
-		BookItemPointer->To = To;
+        BookItemPointer->From = From;
+        BookItemPointer->To = To;
 
-		BookItemPointer->Total = Total;
+        BookItemPointer->Total = Total;
 
-		++PositionNumber;
-	} // while
+        ++PositionNumber;
+    } // while
 
-	qsort(BookStore.Item, BookStore.Count, sizeof(BookItem), HashCompare); // TODO: Move to GenerateBook
+    qsort(BookStore.Item, BookStore.Count, sizeof(BookItem), HashCompare); // TODO: Move to GenerateBook
 /*
-	for (int Index = 0; Index < BookStore.Count; ++Index) {
-		BookItemPointer = &BookStore.Item[Index];
+    for (int Index = 0; Index < BookStore.Count; ++Index) {
+        BookItemPointer = &BookStore.Item[Index];
 
-		printf("0x%016llx %s %s %d\n", BookItemPointer->Hash, BoardName[BookItemPointer->From], BoardName[BookItemPointer->To], BookItemPointer->Total);
-	}
+        printf("0x%016llx %s %s %d\n", BookItemPointer->Hash, BoardName[BookItemPointer->From], BoardName[BookItemPointer->To], BookItemPointer->Total);
+    }
 */
-	fclose(File);
+    fclose(File);
 
-	printf("Load book...DONE (%d)\n", BookStore.Count);
+    printf("Load book...DONE (%d)\n", BookStore.Count);
 
-	return TRUE;
+    return TRUE;
 }
 
 BOOL GetBookMove(const BoardItem* Board, MoveItem* BestMoves)
 {
-	int FirstIndex;
-	int BookCount;
+    int FirstIndex;
+    int BookCount;
 
-	int Total;
-	int Selected;
-	int Offset;
+    int Total;
+    int Selected;
+    int Offset;
 
-	BookItem* BookItemPointer;
+    BookItem* BookItemPointer;
 
-	int GenMoveCount;
-	MoveItem MoveList[MAX_GEN_MOVES];
+    int GenMoveCount;
+    MoveItem MoveList[MAX_GEN_MOVES];
 
-	U64 RandomValue;
+    U64 RandomValue;
 
-	FirstIndex = -1;
-	BookCount = 0;
+    FirstIndex = -1;
+    BookCount = 0;
 
-	Total = 0;
+    Total = 0;
 
-	for (int Index = 0; Index < BookStore.Count; ++Index) {
-		BookItemPointer = &BookStore.Item[Index];
+    for (int Index = 0; Index < BookStore.Count; ++Index) {
+        BookItemPointer = &BookStore.Item[Index];
 
-		if (BookItemPointer->Hash == Board->Hash) { // Position hash found in book
-			if (FirstIndex < 0) {
-				FirstIndex = Index;
-			}
+        if (BookItemPointer->Hash == Board->Hash) { // Position hash found in book
+            if (FirstIndex < 0) {
+                FirstIndex = Index;
+            }
 
-			++BookCount;
+            ++BookCount;
 
-			Total += BookItemPointer->Total;
-		}
-	}
+            Total += BookItemPointer->Total;
+        }
+    }
 
-//	printf("BookCount = %d\n", BookCount);
+//  printf("BookCount = %d\n", BookCount);
 
-	if (BookCount == 0) { // No moves found in book
-		return FALSE;
-	}
+    if (BookCount == 0) { // No moves found in book
+        return FALSE;
+    }
 
-	GenMoveCount = 0;
-	GenerateAllMoves(Board, MoveList, &GenMoveCount);
+    GenMoveCount = 0;
+    GenerateAllMoves(Board, MoveList, &GenMoveCount);
 
-	// Weighted random choice
+    // Weighted random choice
 
-	SetRandState(Clock());
+    SetRandState(Clock());
 
-	RandomValue = Rand64();
+    RandomValue = Rand64();
 
-	Selected = (int)(RandomValue & 0x7FFFFFFF) % Total;
+    Selected = (int)(RandomValue & 0x7FFFFFFF) % Total;
 
-//	printf("Total = %d Selected = %d\n", Total, Selected);
+//  printf("Total = %d Selected = %d\n", Total, Selected);
 
-	Offset = 0;
+    Offset = 0;
 
-	for (int Index = FirstIndex, Count = 0; Count < BookCount; ++Index, ++Count) {
-		BookItemPointer = &BookStore.Item[Index];
+    for (int Index = FirstIndex, Count = 0; Count < BookCount; ++Index, ++Count) {
+        BookItemPointer = &BookStore.Item[Index];
 
-		Offset += BookItemPointer->Total;
+        Offset += BookItemPointer->Total;
 
-		if (Selected < Offset) {
-			for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
-				if (
-					MOVE_FROM(MoveList[MoveNumber].Move) == BookItemPointer->From
-					&& MOVE_TO(MoveList[MoveNumber].Move) == BookItemPointer->To
-				) { // Valid book move
-//					printf("0x%016llx %s %s %d\n", BookItemPointer->Hash, BoardName[BookItemPointer->From], BoardName[BookItemPointer->To], BookItemPointer->Total);
+        if (Selected < Offset) {
+            for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
+                if (
+                    MOVE_FROM(MoveList[MoveNumber].Move) == BookItemPointer->From
+                    && MOVE_TO(MoveList[MoveNumber].Move) == BookItemPointer->To
+                ) { // Valid book move
+//                  printf("0x%016llx %s %s %d\n", BookItemPointer->Hash, BoardName[BookItemPointer->From], BoardName[BookItemPointer->To], BookItemPointer->Total);
 
-					BestMoves[0] = MoveList[MoveNumber];
-					BestMoves[1] = { 0, 0, 0 };
+                    BestMoves[0] = MoveList[MoveNumber];
+                    BestMoves[1] = { 0, 0, 0 };
 
-					return TRUE;
-				}
-			}
+                    return TRUE;
+                }
+            }
 
-			return FALSE;
-		}
-	}
+            return FALSE;
+        }
+    }
 
-	return FALSE;
+    return FALSE;
 }
