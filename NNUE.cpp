@@ -13,57 +13,57 @@
 #ifdef NNUE_EVALUATION_FUNCTION
 
 /*
-	https://tests.stockfishchess.org/nns
+    https://tests.stockfishchess.org/nns
 */
-#define NNUE_FILE						"nn-62ef826d1a6d.nnue" // 28.11.2020
+#define NNUE_FILE                       "nn-62ef826d1a6d.nnue" // 28.11.2020
 
-#define NNUE_VERSION					0x7AF32F16U
-#define NNUE_HASH						0x3E5AA6EEU
-#define NNUE_ARC_LENGTH					177
+#define NNUE_VERSION                    0x7AF32F16U
+#define NNUE_HASH                       0x3E5AA6EEU
+#define NNUE_ARC_LENGTH                 177
 
-#define NNUE_HEADER_1					0x5D69D7B8U
-#define NNUE_HEADER_2					0x63337156U
+#define NNUE_HEADER_1                   0x5D69D7B8U
+#define NNUE_HEADER_2                   0x63337156U
 
-#define NNUE_FILE_SIZE					21022697
+#define NNUE_FILE_SIZE                  21022697
 
-#define HALF_FEATURE_INPUT_DIMENSION	41024 // 64 king squares x 641 (64 squares x 5 pieces x 2 colors + 1)
-#define HALF_FEATURE_OUTPUT_DIMENSION	256
+#define HALF_FEATURE_INPUT_DIMENSION    41024 // 64 king squares x 641 (64 squares x 5 pieces x 2 colors + 1)
+#define HALF_FEATURE_OUTPUT_DIMENSION   256
 
-#define INPUT_DIMENSION					512 // 256 x 2
-#define HIDDEN_1_DIMENSION				32
-#define HIDDEN_2_DIMENSION				32
-#define OUTPUT_DIMENSION				1
+#define INPUT_DIMENSION                 512 // 256 x 2
+#define HIDDEN_1_DIMENSION              32
+#define HIDDEN_2_DIMENSION              32
+#define OUTPUT_DIMENSION                1
 
-#define SHIFT							6 // Divide by 64
-#define SCALE							16
+#define SHIFT                           6 // Divide by 64
+#define SCALE                           16
 
-#define WHITE_PAWN						(1)
-#define BLACK_PAWN						(1 * 64 + 1)
-#define WHITE_KNIGHT					(2 * 64 + 1)
-#define BLACK_KNIGHT					(3 * 64 + 1)
-#define WHITE_BISHOP					(4 * 64 + 1)
-#define BLACK_BISHOP					(5 * 64 + 1)
-#define WHITE_ROOK						(6 * 64 + 1)
-#define BLACK_ROOK						(7 * 64 + 1)
-#define WHITE_QUEEN						(8 * 64 + 1)
-#define BLACK_QUEEN						(9 * 64 + 1)
-#define PIECES_END						(10 * 64 + 1)
+#define WHITE_PAWN                      (1)
+#define BLACK_PAWN                      (1 * 64 + 1)
+#define WHITE_KNIGHT                    (2 * 64 + 1)
+#define BLACK_KNIGHT                    (3 * 64 + 1)
+#define WHITE_BISHOP                    (4 * 64 + 1)
+#define BLACK_BISHOP                    (5 * 64 + 1)
+#define WHITE_ROOK                      (6 * 64 + 1)
+#define BLACK_ROOK                      (7 * 64 + 1)
+#define WHITE_QUEEN                     (8 * 64 + 1)
+#define BLACK_QUEEN                     (9 * 64 + 1)
+#define PIECES_END                      (10 * 64 + 1)
 
 #ifdef USE_NNUE_AVX2
 
-#define NUM_REGS						(HALF_FEATURE_OUTPUT_DIMENSION * 16 / 256) // Half feature output dimension x 16 bits (I16) / 256 bits (AVX2 register size)
+#define NUM_REGS                        (HALF_FEATURE_OUTPUT_DIMENSION * 16 / 256) // Half feature output dimension x 16 bits (I16) / 256 bits (AVX2 register size)
 
 #endif // USE_NNUE_AVX2
 
 const int PieceToIndex[2][16] = { // [Perspective][PieceWithColor]
-	{
-		WHITE_PAWN, WHITE_KNIGHT, WHITE_BISHOP, WHITE_ROOK, WHITE_QUEEN, 0, 0, 0,
-		BLACK_PAWN, BLACK_KNIGHT, BLACK_BISHOP, BLACK_ROOK, BLACK_QUEEN, 0, 0, 0
-	},
-	{
-		BLACK_PAWN, BLACK_KNIGHT, BLACK_BISHOP, BLACK_ROOK, BLACK_QUEEN, 0, 0, 0,
-		WHITE_PAWN, WHITE_KNIGHT, WHITE_BISHOP, WHITE_ROOK, WHITE_QUEEN, 0, 0, 0
-	}
+    {
+        WHITE_PAWN, WHITE_KNIGHT, WHITE_BISHOP, WHITE_ROOK, WHITE_QUEEN, 0, 0, 0,
+        BLACK_PAWN, BLACK_KNIGHT, BLACK_BISHOP, BLACK_ROOK, BLACK_QUEEN, 0, 0, 0
+    },
+    {
+        BLACK_PAWN, BLACK_KNIGHT, BLACK_BISHOP, BLACK_ROOK, BLACK_QUEEN, 0, 0, 0,
+        WHITE_PAWN, WHITE_KNIGHT, WHITE_BISHOP, WHITE_ROOK, WHITE_QUEEN, 0, 0, 0
+    }
 };
 
 _declspec(align(64)) I16 InputBiases[HALF_FEATURE_OUTPUT_DIMENSION]; // 256
@@ -80,782 +80,782 @@ _declspec(align(64)) I8 OutputWeights[HIDDEN_2_DIMENSION * OUTPUT_DIMENSION]; //
 
 I32 ReadInt32(FILE* File)
 {
-	char Buf[sizeof(I32) + 1]; // 4 bytes + 1
-	char* Part = Buf;
+    char Buf[sizeof(I32) + 1]; // 4 bytes + 1
+    char* Part = Buf;
 
-	I8 Byte;
+    I8 Byte;
 
-	I32 Result = 0;
+    I32 Result = 0;
 
-	if (fread_s(Buf, sizeof(Buf), sizeof(char), sizeof(I32), File) != sizeof(I32)) {
-		printf("File '%s' read error!\n", NNUE_FILE);
+    if (fread_s(Buf, sizeof(Buf), sizeof(char), sizeof(I32), File) != sizeof(I32)) {
+        printf("File '%s' read error!\n", NNUE_FILE);
 
-		Sleep(3000);
+        Sleep(3000);
 
-		exit(0);
-	}
+        exit(0);
+    }
 
-	for (int Index = 0; Index < sizeof(I32); ++Index) { // 4
-		Byte = *Part;
+    for (int Index = 0; Index < sizeof(I32); ++Index) { // 4
+        Byte = *Part;
 
-		Result |= (Byte & 0xFF) << (Index << 3);
+        Result |= (Byte & 0xFF) << (Index << 3);
 
-		++Part;
-	}
+        ++Part;
+    }
 
-	return Result;
+    return Result;
 }
 
 I16 ReadInt16(FILE* File)
 {
-	char Buf[sizeof(I16) + 1]; // 2 bytes + 1
-	char* Part = Buf;
+    char Buf[sizeof(I16) + 1]; // 2 bytes + 1
+    char* Part = Buf;
 
-	I8 Byte;
+    I8 Byte;
 
-	I16 Result = 0;
+    I16 Result = 0;
 
-	if (fread_s(Buf, sizeof(Buf), sizeof(char), sizeof(I16), File) != sizeof(I16)) {
-		printf("File '%s' read error!\n", NNUE_FILE);
+    if (fread_s(Buf, sizeof(Buf), sizeof(char), sizeof(I16), File) != sizeof(I16)) {
+        printf("File '%s' read error!\n", NNUE_FILE);
 
-		Sleep(3000);
+        Sleep(3000);
 
-		exit(0);
-	}
+        exit(0);
+    }
 
-	for (int Index = 0; Index < sizeof(I16); ++Index) { // 2
-		Byte = *Part;
+    for (int Index = 0; Index < sizeof(I16); ++Index) { // 2
+        Byte = *Part;
 
-		Result |= (Byte & 0xFF) << (Index << 3);
+        Result |= (Byte & 0xFF) << (Index << 3);
 
-		++Part;
-	}
+        ++Part;
+    }
 
-	return Result;
+    return Result;
 }
 
 I8 ReadInt8(FILE* File)
 {
-	char Buf[sizeof(I8) + 1]; // 1 byte + 1
-	char* Part = Buf;
+    char Buf[sizeof(I8) + 1]; // 1 byte + 1
+    char* Part = Buf;
 
-	I8 Byte;
+    I8 Byte;
 
-	I8 Result = 0;
+    I8 Result = 0;
 
-	if (fread_s(Buf, sizeof(Buf), sizeof(char), sizeof(I8), File) != sizeof(I8)) {
-		printf("File '%s' read error!\n", NNUE_FILE);
+    if (fread_s(Buf, sizeof(Buf), sizeof(char), sizeof(I8), File) != sizeof(I8)) {
+        printf("File '%s' read error!\n", NNUE_FILE);
 
-		Sleep(3000);
+        Sleep(3000);
 
-		exit(0);
-	}
+        exit(0);
+    }
 
-	for (int Index = 0; Index < sizeof(I8); ++Index) { // 1
-		Byte = *Part;
+    for (int Index = 0; Index < sizeof(I8); ++Index) { // 1
+        Byte = *Part;
 
-		Result |= (Byte & 0xFF) << (Index << 3);
+        Result |= (Byte & 0xFF) << (Index << 3);
 
-		++Part;
-	}
+        ++Part;
+    }
 
-	return Result;
+    return Result;
 }
 
 int WeightIndex(int Row, int Col, const int Dims)
 {
-	#ifdef USE_NNUE_AVX2
-	if (Dims > 32) {
-		int Temp = Col & 0x18;
+#ifdef USE_NNUE_AVX2
+    if (Dims > 32) {
+        int Temp = Col & 0x18;
 
-		Temp = (Temp << 1) | (Temp >> 1);
+        Temp = (Temp << 1) | (Temp >> 1);
 
-		Col = (Col & ~0x18) | (Temp & 0x18);
-	}
-	#endif // USE_NNUE_AVX2
+        Col = (Col & ~0x18) | (Temp & 0x18);
+    }
+#endif // USE_NNUE_AVX2
 
-	return Col * 32 + Row;
+    return Col * 32 + Row;
 }
 
 #ifdef USE_NNUE_AVX2
 void PermuteBiases(I32* Biases)
 {
-	__m128i* BiasesTile = (__m128i*)Biases;
+    __m128i* BiasesTile = (__m128i*)Biases;
 
-	__m128i Temp[8];
+    __m128i Temp[8];
 
-	Temp[0] = BiasesTile[0];
-	Temp[1] = BiasesTile[4];
-	Temp[2] = BiasesTile[1];
-	Temp[3] = BiasesTile[5];
-	Temp[4] = BiasesTile[2];
-	Temp[5] = BiasesTile[6];
-	Temp[6] = BiasesTile[3];
-	Temp[7] = BiasesTile[7];
+    Temp[0] = BiasesTile[0];
+    Temp[1] = BiasesTile[4];
+    Temp[2] = BiasesTile[1];
+    Temp[3] = BiasesTile[5];
+    Temp[4] = BiasesTile[2];
+    Temp[5] = BiasesTile[6];
+    Temp[6] = BiasesTile[3];
+    Temp[7] = BiasesTile[7];
 
-	memcpy(BiasesTile, Temp, 8 * sizeof(__m128i));
+    memcpy(BiasesTile, Temp, 8 * sizeof(__m128i));
 }
 #endif // USE_NNUE_AVX2
 
 void ReadNetwork(void)
 {
-	FILE* File;
+    FILE* File;
 
-	I32 Version;
-	I32 Hash;
-	I32 ArcLength;
+    I32 Version;
+    I32 Hash;
+    I32 ArcLength;
 
-	char Architecture[NNUE_ARC_LENGTH + 1];
+    char Architecture[NNUE_ARC_LENGTH + 1];
 
-	I32 Header1;
-	I32 Header2;
+    I32 Header1;
+    I32 Header2;
 
-	fpos_t FilePos;
+    fpos_t FilePos;
 
-	printf("\n");
+    printf("\n");
 
-	printf("Load network...\n");
+    printf("Load network...\n");
 
-	fopen_s(&File, NNUE_FILE, "rb");
+    fopen_s(&File, NNUE_FILE, "rb");
 
-	if (File == NULL) { // File open error
-		printf("File '%s' open error!\n", NNUE_FILE);
+    if (File == NULL) { // File open error
+        printf("File '%s' open error!\n", NNUE_FILE);
 
-		Sleep(3000);
+        Sleep(3000);
 
-		exit(0);
-	}
+        exit(0);
+    }
 
-	// Version
+    // Version
 
-	Version = ReadInt32(File);
+    Version = ReadInt32(File);
 
-//	printf("Version = 0x%8X\n", Version);
+//  printf("Version = 0x%8X\n", Version);
 
-	if (Version != NNUE_VERSION) { // File format error
-		printf("File '%s' format error!\n", NNUE_FILE);
+    if (Version != NNUE_VERSION) { // File format error
+        printf("File '%s' format error!\n", NNUE_FILE);
 
-		Sleep(3000);
+        Sleep(3000);
 
-		exit(0);
-	}
+        exit(0);
+    }
 
-	// Hash
+    // Hash
 
-	Hash = ReadInt32(File);
+    Hash = ReadInt32(File);
 
-//	printf("Hash = 0x%8X\n", Hash);
+//  printf("Hash = 0x%8X\n", Hash);
 
-	if (Hash != NNUE_HASH) { // File format error
-		printf("File '%s' format error!\n", NNUE_FILE);
+    if (Hash != NNUE_HASH) { // File format error
+        printf("File '%s' format error!\n", NNUE_FILE);
 
-		Sleep(3000);
+        Sleep(3000);
 
-		exit(0);
-	}
+        exit(0);
+    }
 
-	// Architecture length
+    // Architecture length
 
-	ArcLength = ReadInt32(File);
+    ArcLength = ReadInt32(File);
 
-//	printf("Architecture length = %d\n", ArcLength);
+//  printf("Architecture length = %d\n", ArcLength);
 
-	if (ArcLength != NNUE_ARC_LENGTH) { // File format error
-		printf("File '%s' format error!\n", NNUE_FILE);
+    if (ArcLength != NNUE_ARC_LENGTH) { // File format error
+        printf("File '%s' format error!\n", NNUE_FILE);
 
-		Sleep(3000);
+        Sleep(3000);
 
-		exit(0);
-	}
+        exit(0);
+    }
 
-	// Architecture
+    // Architecture
 
-	if (fgets(Architecture, NNUE_ARC_LENGTH + 1, File) == NULL) { // File read error
-		printf("File '%s' read error!\n", NNUE_FILE);
+    if (fgets(Architecture, NNUE_ARC_LENGTH + 1, File) == NULL) { // File read error
+        printf("File '%s' read error!\n", NNUE_FILE);
 
-		Sleep(3000);
+        Sleep(3000);
 
-		exit(0);
-	}
+        exit(0);
+    }
 
-//	printf("Architecture = %s\n", Architecture);
+//  printf("Architecture = %s\n", Architecture);
 
-	// Header 1
+    // Header 1
 
-	Header1 = ReadInt32(File);
+    Header1 = ReadInt32(File);
 
-//	printf("Header 1 = 0x%8X\n", Header1);
+//  printf("Header 1 = 0x%8X\n", Header1);
 
-	if (Header1 != NNUE_HEADER_1) { // File format error
-		printf("File '%s' format error!\n", NNUE_FILE);
+    if (Header1 != NNUE_HEADER_1) { // File format error
+        printf("File '%s' format error!\n", NNUE_FILE);
 
-		Sleep(3000);
+        Sleep(3000);
 
-		exit(0);
-	}
+        exit(0);
+    }
 
-	// Input biases
+    // Input biases
 
-	for (int Index = 0; Index < HALF_FEATURE_OUTPUT_DIMENSION; ++Index) { // 256
-		InputBiases[Index] = ReadInt16(File);
+    for (int Index = 0; Index < HALF_FEATURE_OUTPUT_DIMENSION; ++Index) { // 256
+        InputBiases[Index] = ReadInt16(File);
 
-//		printf("InputBiases[%d] = %d\n", Index, InputBiases[Index]);
-	}
+//      printf("InputBiases[%d] = %d\n", Index, InputBiases[Index]);
+    }
 
-	// Input weights
+    // Input weights
 
-	for (int Index = 0; Index < HALF_FEATURE_INPUT_DIMENSION * HALF_FEATURE_OUTPUT_DIMENSION; ++Index) { // 41024 x 256 = 10502144
-		InputWeights[Index] = ReadInt16(File);
+    for (int Index = 0; Index < HALF_FEATURE_INPUT_DIMENSION * HALF_FEATURE_OUTPUT_DIMENSION; ++Index) { // 41024 x 256 = 10502144
+        InputWeights[Index] = ReadInt16(File);
 
-//		printf("InputWeights[%d] = %d\n", Index, InputWeights[Index]);
-	}
+//      printf("InputWeights[%d] = %d\n", Index, InputWeights[Index]);
+    }
 
-	// Header 2
+    // Header 2
 
-	Header2 = ReadInt32(File);
+    Header2 = ReadInt32(File);
 
-//	printf("Header 2 = 0x%8X\n", Header2);
+//  printf("Header 2 = 0x%8X\n", Header2);
 
-	if (Header2 != NNUE_HEADER_2) { // File format error
-		printf("File '%s' format error!\n", NNUE_FILE);
+    if (Header2 != NNUE_HEADER_2) { // File format error
+        printf("File '%s' format error!\n", NNUE_FILE);
 
-		Sleep(3000);
+        Sleep(3000);
 
-		exit(0);
-	}
+        exit(0);
+    }
 
-	// Hidden 1 biases
+    // Hidden 1 biases
 
-	for (int Index = 0; Index < HIDDEN_1_DIMENSION; ++Index) { // 32
-		Hidden_1_Biases[Index] = ReadInt32(File);
+    for (int Index = 0; Index < HIDDEN_1_DIMENSION; ++Index) { // 32
+        Hidden_1_Biases[Index] = ReadInt32(File);
 
-//		printf("Hidden_1_Biases[%d] = %d\n", Index, Hidden_1_Biases[Index]);
-	}
+//      printf("Hidden_1_Biases[%d] = %d\n", Index, Hidden_1_Biases[Index]);
+    }
 
-	#ifdef USE_NNUE_AVX2
-	PermuteBiases(Hidden_1_Biases);
-	#endif // USE_NNUE_AVX2
+#ifdef USE_NNUE_AVX2
+    PermuteBiases(Hidden_1_Biases);
+#endif // USE_NNUE_AVX2
 
-	// Hidden 1 weights - 512 x 32 = 16384
+    // Hidden 1 weights - 512 x 32 = 16384
 
-	for (int Row = 0; Row < HIDDEN_1_DIMENSION; ++Row) { // 32
-		for (int Col = 0; Col < INPUT_DIMENSION; ++Col) { // 512
-			int Index = WeightIndex(Row, Col, INPUT_DIMENSION);
+    for (int Row = 0; Row < HIDDEN_1_DIMENSION; ++Row) { // 32
+        for (int Col = 0; Col < INPUT_DIMENSION; ++Col) { // 512
+            int Index = WeightIndex(Row, Col, INPUT_DIMENSION);
 
-			Hidden_1_Weights[Index] = ReadInt8(File);
+            Hidden_1_Weights[Index] = ReadInt8(File);
 
-//			printf("Hidden_1_Weights[%d] = %d\n", Index, Hidden_1_Weights[Index]);
-		}
-	}
+//          printf("Hidden_1_Weights[%d] = %d\n", Index, Hidden_1_Weights[Index]);
+        }
+    }
 
-	// Hidden 2 biases
+    // Hidden 2 biases
 
-	for (int Index = 0; Index < HIDDEN_2_DIMENSION; ++Index) { // 32
-		Hidden_2_Biases[Index] = ReadInt32(File);
+    for (int Index = 0; Index < HIDDEN_2_DIMENSION; ++Index) { // 32
+        Hidden_2_Biases[Index] = ReadInt32(File);
 
-//		printf("Hidden_2_Biases[%d] = %d\n", Index, Hidden_2_Biases[Index]);
-	}
+//      printf("Hidden_2_Biases[%d] = %d\n", Index, Hidden_2_Biases[Index]);
+    }
 
-	#ifdef USE_NNUE_AVX2
-	PermuteBiases(Hidden_2_Biases);
-	#endif // USE_NNUE_AVX2
+#ifdef USE_NNUE_AVX2
+    PermuteBiases(Hidden_2_Biases);
+#endif // USE_NNUE_AVX2
 
-	// Hidden 2 weights - 32 x 32 = 1024
+    // Hidden 2 weights - 32 x 32 = 1024
 
-	for (int Row = 0; Row < HIDDEN_2_DIMENSION; ++Row) { // 32
-		for (int Col = 0; Col < HIDDEN_1_DIMENSION; ++Col) { // 32
-			int Index = WeightIndex(Row, Col, HIDDEN_1_DIMENSION);
+    for (int Row = 0; Row < HIDDEN_2_DIMENSION; ++Row) { // 32
+        for (int Col = 0; Col < HIDDEN_1_DIMENSION; ++Col) { // 32
+            int Index = WeightIndex(Row, Col, HIDDEN_1_DIMENSION);
 
-			Hidden_2_Weights[Index] = ReadInt8(File);
+            Hidden_2_Weights[Index] = ReadInt8(File);
 
-//			printf("Hidden_2_Weights[%d] = %d\n", Index, Hidden_2_Weights[Index]);
-		}
-	}
+//          printf("Hidden_2_Weights[%d] = %d\n", Index, Hidden_2_Weights[Index]);
+        }
+    }
 
-	// Output biases
+    // Output biases
 
-	for (int Index = 0; Index < OUTPUT_DIMENSION; ++Index) { // 1
-		OutputBiases[Index] = ReadInt32(File);
+    for (int Index = 0; Index < OUTPUT_DIMENSION; ++Index) { // 1
+        OutputBiases[Index] = ReadInt32(File);
 
-//		printf("OutputBiases[%d] = %d\n", Index, OutputBiases[Index]);
-	}
+//      printf("OutputBiases[%d] = %d\n", Index, OutputBiases[Index]);
+    }
 
-	// Output weights
+    // Output weights
 
-	for (int Index = 0; Index < HIDDEN_2_DIMENSION * OUTPUT_DIMENSION; ++Index) { // 32 x 1 = 32
-		OutputWeights[Index] = ReadInt8(File);
+    for (int Index = 0; Index < HIDDEN_2_DIMENSION * OUTPUT_DIMENSION; ++Index) { // 32 x 1 = 32
+        OutputWeights[Index] = ReadInt8(File);
 
-//		printf("OutputWeights[%d] = %d\n", Index, OutputWeights[Index]);
-	}
+//      printf("OutputWeights[%d] = %d\n", Index, OutputWeights[Index]);
+    }
 
-	fgetpos(File, &FilePos);
+    fgetpos(File, &FilePos);
 
-//	printf("File position = %llu\n", FilePos);
+//  printf("File position = %llu\n", FilePos);
 
-	if (FilePos != NNUE_FILE_SIZE) { // File format error
-		printf("File '%s' format error!\n", NNUE_FILE);
+    if (FilePos != NNUE_FILE_SIZE) { // File format error
+        printf("File '%s' format error!\n", NNUE_FILE);
 
-		Sleep(3000);
+        Sleep(3000);
 
-		exit(0);
-	}
+        exit(0);
+    }
 
-	fclose(File);
+    fclose(File);
 
-	printf("Load network...DONE (%s)\n", NNUE_FILE);
+    printf("Load network...DONE (%s)\n", NNUE_FILE);
 }
 
 int Orient(const int Perspective, const int Square)
 {
-	return Square ^ (Perspective == WHITE ? 63 : 0);
+    return Square ^ (Perspective == WHITE ? 63 : 0);
 }
 
 int CalculateWeightIndex(const int Perspective, const int OrientKingSquare, const int Square, const int PieceWithColor)
 {
-	return OrientKingSquare * PIECES_END + PieceToIndex[Perspective][PieceWithColor] + Orient(Perspective, Square);
+    return OrientKingSquare * PIECES_END + PieceToIndex[Perspective][PieceWithColor] + Orient(Perspective, Square);
 }
 
 void RefreshAccumulator(BoardItem* Board)
 {
-	I16 (*Accumulation)[2][HALF_FEATURE_OUTPUT_DIMENSION] = &Board->Accumulator.Accumulation;
+    I16(*Accumulation)[2][HALF_FEATURE_OUTPUT_DIMENSION] = &Board->Accumulator.Accumulation;
 
-	#ifdef USE_NNUE_AVX2
-	for (int Perspective = 0; Perspective < 2; ++Perspective) { // White/Black
-		__m256i* BiasesTile = (__m256i*)&InputBiases[0];
-		__m256i* AccumulatorTile = (__m256i*)(*Accumulation)[Perspective];
+#ifdef USE_NNUE_AVX2
+    for (int Perspective = 0; Perspective < 2; ++Perspective) { // White/Black
+        __m256i* BiasesTile = (__m256i*) & InputBiases[0];
+        __m256i* AccumulatorTile = (__m256i*)(*Accumulation)[Perspective];
 
-		__m256i Acc[NUM_REGS]; // 16
+        __m256i Acc[NUM_REGS]; // 16
 
-		for (int Reg = 0; Reg < NUM_REGS; ++Reg) { // 16
-			Acc[Reg] = BiasesTile[Reg];
-		}
+        for (int Reg = 0; Reg < NUM_REGS; ++Reg) { // 16
+            Acc[Reg] = BiasesTile[Reg];
+        }
 
-		int OrientKingSquare = Orient(Perspective, LSB(Board->BB_Pieces[Perspective][KING]));
+        int OrientKingSquare = Orient(Perspective, LSB(Board->BB_Pieces[Perspective][KING]));
 
-		U64 Pieces = (Board->BB_WhitePieces | Board->BB_BlackPieces) & ~Board->BB_Pieces[WHITE][KING] & ~Board->BB_Pieces[BLACK][KING];
+        U64 Pieces = (Board->BB_WhitePieces | Board->BB_BlackPieces) & ~Board->BB_Pieces[WHITE][KING] & ~Board->BB_Pieces[BLACK][KING];
 
-		while (Pieces) {
-			int Square = LSB(Pieces);
+        while (Pieces) {
+            int Square = LSB(Pieces);
 
-			int PieceWithColor = Board->Pieces[Square];
+            int PieceWithColor = Board->Pieces[Square];
 
-			int WeightIndex = CalculateWeightIndex(Perspective, OrientKingSquare, Square, PieceWithColor);
+            int WeightIndex = CalculateWeightIndex(Perspective, OrientKingSquare, Square, PieceWithColor);
 
-			__m256i* Column = (__m256i*)&InputWeights[WeightIndex * HALF_FEATURE_OUTPUT_DIMENSION];
+            __m256i* Column = (__m256i*) & InputWeights[WeightIndex * HALF_FEATURE_OUTPUT_DIMENSION];
 
-			for (int Reg = 0; Reg < NUM_REGS; ++Reg) { // 16
-				Acc[Reg] = _mm256_add_epi16(Acc[Reg], Column[Reg]);
-			}
+            for (int Reg = 0; Reg < NUM_REGS; ++Reg) { // 16
+                Acc[Reg] = _mm256_add_epi16(Acc[Reg], Column[Reg]);
+            }
 
-			Pieces &= Pieces - 1;
-		}
+            Pieces &= Pieces - 1;
+        }
 
-		for (int Reg = 0; Reg < NUM_REGS; ++Reg) { // 16
-			AccumulatorTile[Reg] = Acc[Reg];
-		}
-	}
-	#else
-	for (int Perspective = 0; Perspective < 2; ++Perspective) { // White/Black
-		for (int IndexOutput = 0; IndexOutput < HALF_FEATURE_OUTPUT_DIMENSION; ++IndexOutput) { // 256
-			(*Accumulation)[Perspective][IndexOutput] = InputBiases[IndexOutput];
-		}
+        for (int Reg = 0; Reg < NUM_REGS; ++Reg) { // 16
+            AccumulatorTile[Reg] = Acc[Reg];
+        }
+    }
+#else
+    for (int Perspective = 0; Perspective < 2; ++Perspective) { // White/Black
+        for (int IndexOutput = 0; IndexOutput < HALF_FEATURE_OUTPUT_DIMENSION; ++IndexOutput) { // 256
+            (*Accumulation)[Perspective][IndexOutput] = InputBiases[IndexOutput];
+        }
 
-		int OrientKingSquare = Orient(Perspective, LSB(Board->BB_Pieces[Perspective][KING]));
+        int OrientKingSquare = Orient(Perspective, LSB(Board->BB_Pieces[Perspective][KING]));
 
-		U64 Pieces = (Board->BB_WhitePieces | Board->BB_BlackPieces) & ~Board->BB_Pieces[WHITE][KING] & ~Board->BB_Pieces[BLACK][KING];
+        U64 Pieces = (Board->BB_WhitePieces | Board->BB_BlackPieces) & ~Board->BB_Pieces[WHITE][KING] & ~Board->BB_Pieces[BLACK][KING];
 
-		while (Pieces) {
-			int Square = LSB(Pieces);
+        while (Pieces) {
+            int Square = LSB(Pieces);
 
-			int PieceWithColor = Board->Pieces[Square];
+            int PieceWithColor = Board->Pieces[Square];
 
-			int WeightIndex = CalculateWeightIndex(Perspective, OrientKingSquare, Square, PieceWithColor);
+            int WeightIndex = CalculateWeightIndex(Perspective, OrientKingSquare, Square, PieceWithColor);
 
-			for (int IndexOutput = 0; IndexOutput < HALF_FEATURE_OUTPUT_DIMENSION; ++IndexOutput) { // 256
-				(*Accumulation)[Perspective][IndexOutput] += InputWeights[WeightIndex * HALF_FEATURE_OUTPUT_DIMENSION + IndexOutput];
-			}
+            for (int IndexOutput = 0; IndexOutput < HALF_FEATURE_OUTPUT_DIMENSION; ++IndexOutput) { // 256
+                (*Accumulation)[Perspective][IndexOutput] += InputWeights[WeightIndex * HALF_FEATURE_OUTPUT_DIMENSION + IndexOutput];
+            }
 
-			Pieces &= Pieces - 1;
-		}
-	}
-	#endif // USE_NNUE_AVX2
+            Pieces &= Pieces - 1;
+        }
+    }
+#endif // USE_NNUE_AVX2
 
-	#ifdef USE_NNUE_REFRESH
-	Board->Accumulator.AccumulationComputed = TRUE;
-	#endif // USE_NNUE_REFRESH
+#ifdef USE_NNUE_REFRESH
+    Board->Accumulator.AccumulationComputed = TRUE;
+#endif // USE_NNUE_REFRESH
 }
 
 #ifdef USE_NNUE_REFRESH
 
 void AccumulatorAdd(BoardItem* Board, const int Perspective, const int WeightIndex)
 {
-	I16 (*Accumulation)[2][HALF_FEATURE_OUTPUT_DIMENSION] = &Board->Accumulator.Accumulation;
+    I16(*Accumulation)[2][HALF_FEATURE_OUTPUT_DIMENSION] = &Board->Accumulator.Accumulation;
 
-	#ifdef USE_NNUE_AVX2
-	__m256i* AccumulatorTile = (__m256i*)(*Accumulation)[Perspective];
+#ifdef USE_NNUE_AVX2
+    __m256i* AccumulatorTile = (__m256i*)(*Accumulation)[Perspective];
 
-	__m256i* Column = (__m256i*)&InputWeights[WeightIndex * HALF_FEATURE_OUTPUT_DIMENSION];
+    __m256i* Column = (__m256i*) & InputWeights[WeightIndex * HALF_FEATURE_OUTPUT_DIMENSION];
 
-	for (int Reg = 0; Reg < NUM_REGS; ++Reg) { // 16
-		AccumulatorTile[Reg] = _mm256_add_epi16(AccumulatorTile[Reg], Column[Reg]);
-	}
-	#else
-	for (int IndexOutput = 0; IndexOutput < HALF_FEATURE_OUTPUT_DIMENSION; ++IndexOutput) { // 256
-		(*Accumulation)[Perspective][IndexOutput] += InputWeights[WeightIndex * HALF_FEATURE_OUTPUT_DIMENSION + IndexOutput];
-	}
-	#endif // USE_NNUE_AVX2
+    for (int Reg = 0; Reg < NUM_REGS; ++Reg) { // 16
+        AccumulatorTile[Reg] = _mm256_add_epi16(AccumulatorTile[Reg], Column[Reg]);
+    }
+#else
+    for (int IndexOutput = 0; IndexOutput < HALF_FEATURE_OUTPUT_DIMENSION; ++IndexOutput) { // 256
+        (*Accumulation)[Perspective][IndexOutput] += InputWeights[WeightIndex * HALF_FEATURE_OUTPUT_DIMENSION + IndexOutput];
+    }
+#endif // USE_NNUE_AVX2
 }
 
 void AccumulatorSub(BoardItem* Board, const int Perspective, const int WeightIndex)
 {
-	I16 (*Accumulation)[2][HALF_FEATURE_OUTPUT_DIMENSION] = &Board->Accumulator.Accumulation;
+    I16(*Accumulation)[2][HALF_FEATURE_OUTPUT_DIMENSION] = &Board->Accumulator.Accumulation;
 
-	#ifdef USE_NNUE_AVX2
-	__m256i* AccumulatorTile = (__m256i*)(*Accumulation)[Perspective];
+#ifdef USE_NNUE_AVX2
+    __m256i* AccumulatorTile = (__m256i*)(*Accumulation)[Perspective];
 
-	__m256i* Column = (__m256i*)&InputWeights[WeightIndex * HALF_FEATURE_OUTPUT_DIMENSION];
+    __m256i* Column = (__m256i*) & InputWeights[WeightIndex * HALF_FEATURE_OUTPUT_DIMENSION];
 
-	for (int Reg = 0; Reg < NUM_REGS; ++Reg) { // 16
-		AccumulatorTile[Reg] = _mm256_sub_epi16(AccumulatorTile[Reg], Column[Reg]);
-	}
-	#else
-	for (int IndexOutput = 0; IndexOutput < HALF_FEATURE_OUTPUT_DIMENSION; ++IndexOutput) { // 256
-		(*Accumulation)[Perspective][IndexOutput] -= InputWeights[WeightIndex * HALF_FEATURE_OUTPUT_DIMENSION + IndexOutput];
-	}
-	#endif // USE_NNUE_AVX2
+    for (int Reg = 0; Reg < NUM_REGS; ++Reg) { // 16
+        AccumulatorTile[Reg] = _mm256_sub_epi16(AccumulatorTile[Reg], Column[Reg]);
+    }
+#else
+    for (int IndexOutput = 0; IndexOutput < HALF_FEATURE_OUTPUT_DIMENSION; ++IndexOutput) { // 256
+        (*Accumulation)[Perspective][IndexOutput] -= InputWeights[WeightIndex * HALF_FEATURE_OUTPUT_DIMENSION + IndexOutput];
+    }
+#endif // USE_NNUE_AVX2
 }
 
 BOOL UpdateAccumulator(BoardItem* Board)
 {
-	HistoryItem* Info;
+    HistoryItem* Info;
 
-	int OrientKingSquare;
+    int OrientKingSquare;
 
-	int PieceWithColor;
+    int PieceWithColor;
 
-	int WeightIndex;
+    int WeightIndex;
 
-	if (Board->HalfMoveNumber == 0) {
-		return FALSE;
-	}
+    if (Board->HalfMoveNumber == 0) {
+        return FALSE;
+    }
 
-	Info = &Board->MoveTable[Board->HalfMoveNumber - 1]; // Prev. move info
+    Info = &Board->MoveTable[Board->HalfMoveNumber - 1]; // Prev. move info
 
-	if (!Info->Accumulator.AccumulationComputed) {
-		return FALSE;
-	}
+    if (!Info->Accumulator.AccumulationComputed) {
+        return FALSE;
+    }
 
-	if (Info->PieceFrom == KING) {
-		return FALSE;
-	}
+    if (Info->PieceFrom == KING) {
+        return FALSE;
+    }
 
-	if (Info->Type & MOVE_NULL) {
-		Board->Accumulator.AccumulationComputed = TRUE;
+    if (Info->Type & MOVE_NULL) {
+        Board->Accumulator.AccumulationComputed = TRUE;
 
-		return TRUE;
-	}
+        return TRUE;
+    }
 
-	for (int Perspective = 0; Perspective < 2; ++Perspective) { // White/Black
-		OrientKingSquare = Orient(Perspective, LSB(Board->BB_Pieces[Perspective][KING]));
+    for (int Perspective = 0; Perspective < 2; ++Perspective) { // White/Black
+        OrientKingSquare = Orient(Perspective, LSB(Board->BB_Pieces[Perspective][KING]));
 
-		// Delete piece (from)
+        // Delete piece (from)
 
-		PieceWithColor = PIECE_AND_COLOR(Info->PieceFrom, CHANGE_COLOR(Board->CurrentColor));
+        PieceWithColor = PIECE_AND_COLOR(Info->PieceFrom, CHANGE_COLOR(Board->CurrentColor));
 
-		WeightIndex = CalculateWeightIndex(Perspective, OrientKingSquare, Info->From, PieceWithColor);
+        WeightIndex = CalculateWeightIndex(Perspective, OrientKingSquare, Info->From, PieceWithColor);
 
-		AccumulatorSub(Board, Perspective, WeightIndex);
+        AccumulatorSub(Board, Perspective, WeightIndex);
 
-		// Delete piece (captured)
+        // Delete piece (captured)
 
-		if (Info->Type & MOVE_PAWN_PASSANT) {
-			PieceWithColor = PIECE_AND_COLOR(PAWN, Board->CurrentColor);
+        if (Info->Type & MOVE_PAWN_PASSANT) {
+            PieceWithColor = PIECE_AND_COLOR(PAWN, Board->CurrentColor);
 
-			WeightIndex = CalculateWeightIndex(Perspective, OrientKingSquare, Info->EatPawnSquare, PieceWithColor);
+            WeightIndex = CalculateWeightIndex(Perspective, OrientKingSquare, Info->EatPawnSquare, PieceWithColor);
 
-			AccumulatorSub(Board, Perspective, WeightIndex);
-		}
-		else if (Info->Type & MOVE_CAPTURE) {
-			PieceWithColor = PIECE_AND_COLOR(Info->PieceTo, Board->CurrentColor);
+            AccumulatorSub(Board, Perspective, WeightIndex);
+        }
+        else if (Info->Type & MOVE_CAPTURE) {
+            PieceWithColor = PIECE_AND_COLOR(Info->PieceTo, Board->CurrentColor);
 
-			WeightIndex = CalculateWeightIndex(Perspective, OrientKingSquare, Info->To, PieceWithColor);
+            WeightIndex = CalculateWeightIndex(Perspective, OrientKingSquare, Info->To, PieceWithColor);
 
-			AccumulatorSub(Board, Perspective, WeightIndex);
-		}
+            AccumulatorSub(Board, Perspective, WeightIndex);
+        }
 
-		// Add piece (to)
+        // Add piece (to)
 
-		if (Info->Type & MOVE_PAWN_PROMOTE) {
-			PieceWithColor = PIECE_AND_COLOR(Info->PromotePiece, CHANGE_COLOR(Board->CurrentColor));
+        if (Info->Type & MOVE_PAWN_PROMOTE) {
+            PieceWithColor = PIECE_AND_COLOR(Info->PromotePiece, CHANGE_COLOR(Board->CurrentColor));
 
-			WeightIndex = CalculateWeightIndex(Perspective, OrientKingSquare, Info->To, PieceWithColor);
+            WeightIndex = CalculateWeightIndex(Perspective, OrientKingSquare, Info->To, PieceWithColor);
 
-			AccumulatorAdd(Board, Perspective, WeightIndex);
-		}
-		else {
-			PieceWithColor = PIECE_AND_COLOR(Info->PieceFrom, CHANGE_COLOR(Board->CurrentColor));
+            AccumulatorAdd(Board, Perspective, WeightIndex);
+        }
+        else {
+            PieceWithColor = PIECE_AND_COLOR(Info->PieceFrom, CHANGE_COLOR(Board->CurrentColor));
 
-			WeightIndex = CalculateWeightIndex(Perspective, OrientKingSquare, Info->To, PieceWithColor);
+            WeightIndex = CalculateWeightIndex(Perspective, OrientKingSquare, Info->To, PieceWithColor);
 
-			AccumulatorAdd(Board, Perspective, WeightIndex);
-		}
-	} // for
+            AccumulatorAdd(Board, Perspective, WeightIndex);
+        }
+    } // for
 
-	#ifdef DEBUG_NNUE
-	AccumulatorItem Accumulator = Board->Accumulator;
+#ifdef DEBUG_NNUE
+    AccumulatorItem Accumulator = Board->Accumulator;
 
-	RefreshAccumulator(Board);
+    RefreshAccumulator(Board);
 
-	for (int Perspective = 0; Perspective < 2; ++Perspective) { // White/Black
-		for (int IndexOutput = 0; IndexOutput < HALF_FEATURE_OUTPUT_DIMENSION; ++IndexOutput) { // 256
-			if (Board->Accumulator.Accumulation[Perspective][IndexOutput] != Accumulator.Accumulation[Perspective][IndexOutput]) {
-				printf("-- Accumulator error! Color = %d Piece = %d From = %d To = %d Move type = %d\n", CHANGE_COLOR(Board->CurrentColor), Info->PieceFrom, Info->From, Info->To, Info->Type);
+    for (int Perspective = 0; Perspective < 2; ++Perspective) { // White/Black
+        for (int IndexOutput = 0; IndexOutput < HALF_FEATURE_OUTPUT_DIMENSION; ++IndexOutput) { // 256
+            if (Board->Accumulator.Accumulation[Perspective][IndexOutput] != Accumulator.Accumulation[Perspective][IndexOutput]) {
+                printf("-- Accumulator error! Color = %d Piece = %d From = %d To = %d Move type = %d\n", CHANGE_COLOR(Board->CurrentColor), Info->PieceFrom, Info->From, Info->To, Info->Type);
 
-				break; // for (256)
-			}
-		}
-	}
-	#endif // DEBUG_NNUE
+                break; // for (256)
+            }
+        }
+    }
+#endif // DEBUG_NNUE
 
-	Board->Accumulator.AccumulationComputed = TRUE;
+    Board->Accumulator.AccumulationComputed = TRUE;
 
-	return TRUE;
+    return TRUE;
 }
 
 #endif // USE_NNUE_REFRESH
 
 void Transform(BoardItem* Board, I8* Output, U32* OutputMask)
 {
-	I16 (*Accumulation)[2][HALF_FEATURE_OUTPUT_DIMENSION] = &Board->Accumulator.Accumulation;
+    I16(*Accumulation)[2][HALF_FEATURE_OUTPUT_DIMENSION] = &Board->Accumulator.Accumulation;
 
-	if (!Board->Accumulator.AccumulationComputed) {
-		#ifdef USE_NNUE_REFRESH
-		if (!UpdateAccumulator(Board)) {
-		#endif // USE_NNUE_REFRESH
-			RefreshAccumulator(Board);
-		#ifdef USE_NNUE_REFRESH
-		}
-		#endif // USE_NNUE_REFRESH
-	}
+    if (!Board->Accumulator.AccumulationComputed) {
+#ifdef USE_NNUE_REFRESH
+        if (!UpdateAccumulator(Board)) {
+#endif // USE_NNUE_REFRESH
+            RefreshAccumulator(Board);
+#ifdef USE_NNUE_REFRESH
+        }
+#endif // USE_NNUE_REFRESH
+    }
 
-	#ifdef USE_NNUE_AVX2
-	const __m256i ConstZero = _mm256_setzero_si256();
+#ifdef USE_NNUE_AVX2
+    const __m256i ConstZero = _mm256_setzero_si256();
 
-	// Active
+    // Active
 
-	__m256i* Out_1 = (__m256i*)&Output[0]; // Offset 0
+    __m256i* Out_1 = (__m256i*) & Output[0]; // Offset 0
 
-	for (int Chunk = 0; Chunk < NUM_REGS / 2; ++Chunk) { // 16 / 2 = 8
-		__m256i Sum_0 = ((__m256i*)(*Accumulation)[Board->CurrentColor])[Chunk * 2];
-		__m256i Sum_1 = ((__m256i*)(*Accumulation)[Board->CurrentColor])[Chunk * 2 + 1];
+    for (int Chunk = 0; Chunk < NUM_REGS / 2; ++Chunk) { // 16 / 2 = 8
+        __m256i Sum_0 = ((__m256i*)(*Accumulation)[Board->CurrentColor])[Chunk * 2];
+        __m256i Sum_1 = ((__m256i*)(*Accumulation)[Board->CurrentColor])[Chunk * 2 + 1];
 
-		Out_1[Chunk] = _mm256_packs_epi16(Sum_0, Sum_1);
+        Out_1[Chunk] = _mm256_packs_epi16(Sum_0, Sum_1);
 
-		*OutputMask++ = _mm256_movemask_epi8(_mm256_cmpgt_epi8(Out_1[Chunk], ConstZero));
-	}
+        *OutputMask++ = _mm256_movemask_epi8(_mm256_cmpgt_epi8(Out_1[Chunk], ConstZero));
+    }
 
-	// Non active
+    // Non active
 
-	__m256i* Out_2 = (__m256i*)&Output[HALF_FEATURE_OUTPUT_DIMENSION]; // Offset 256
+    __m256i* Out_2 = (__m256i*) & Output[HALF_FEATURE_OUTPUT_DIMENSION]; // Offset 256
 
-	for (int Chunk = 0; Chunk < NUM_REGS / 2; ++Chunk) { // 16 / 2 = 8
-		__m256i Sum_0 = ((__m256i*)(*Accumulation)[CHANGE_COLOR(Board->CurrentColor)])[Chunk * 2];
-		__m256i Sum_1 = ((__m256i*)(*Accumulation)[CHANGE_COLOR(Board->CurrentColor)])[Chunk * 2 + 1];
+    for (int Chunk = 0; Chunk < NUM_REGS / 2; ++Chunk) { // 16 / 2 = 8
+        __m256i Sum_0 = ((__m256i*)(*Accumulation)[CHANGE_COLOR(Board->CurrentColor)])[Chunk * 2];
+        __m256i Sum_1 = ((__m256i*)(*Accumulation)[CHANGE_COLOR(Board->CurrentColor)])[Chunk * 2 + 1];
 
-		Out_2[Chunk] = _mm256_packs_epi16(Sum_0, Sum_1);
+        Out_2[Chunk] = _mm256_packs_epi16(Sum_0, Sum_1);
 
-		*OutputMask++ = _mm256_movemask_epi8(_mm256_cmpgt_epi8(Out_2[Chunk], ConstZero));
-	}
-	#else
-	// Active
+        *OutputMask++ = _mm256_movemask_epi8(_mm256_cmpgt_epi8(Out_2[Chunk], ConstZero));
+    }
+#else
+    // Active
 
-	for (int IndexOutput = 0; IndexOutput < HALF_FEATURE_OUTPUT_DIMENSION; ++IndexOutput) { // 256
-		I16 Sum = (*Accumulation)[Board->CurrentColor][IndexOutput];
+    for (int IndexOutput = 0; IndexOutput < HALF_FEATURE_OUTPUT_DIMENSION; ++IndexOutput) { // 256
+        I16 Sum = (*Accumulation)[Board->CurrentColor][IndexOutput];
 
-		Output[IndexOutput] = (I8)MAX(0, MIN(127, Sum)); // Offset 0
-	}
+        Output[IndexOutput] = (I8)MAX(0, MIN(127, Sum)); // Offset 0
+    }
 
-	// Non active
+    // Non active
 
-	for (int IndexOutput = 0; IndexOutput < HALF_FEATURE_OUTPUT_DIMENSION; ++IndexOutput) { // 256
-		I16 Sum = (*Accumulation)[CHANGE_COLOR(Board->CurrentColor)][IndexOutput];
+    for (int IndexOutput = 0; IndexOutput < HALF_FEATURE_OUTPUT_DIMENSION; ++IndexOutput) { // 256
+        I16 Sum = (*Accumulation)[CHANGE_COLOR(Board->CurrentColor)][IndexOutput];
 
-		Output[HALF_FEATURE_OUTPUT_DIMENSION + IndexOutput] = (I8)MAX(0, MIN(127, Sum)); // Offset 256
-	}
-	#endif // USE_NNUE_AVX2
+        Output[HALF_FEATURE_OUTPUT_DIMENSION + IndexOutput] = (I8)MAX(0, MIN(127, Sum)); // Offset 256
+    }
+#endif // USE_NNUE_AVX2
 }
 
 #ifdef USE_NNUE_AVX2
 BOOL NextIndex(int* Index, int* Offset, U64* Value, const U32* Mask, const int Dims)
 {
-	while (*Value == 0) {
-		*Offset += 8 * sizeof(U64);
+    while (*Value == 0) {
+        *Offset += 8 * sizeof(U64);
 
-		if (*Offset >= Dims) {
-			return FALSE;
-		}
+        if (*Offset >= Dims) {
+            return FALSE;
+        }
 
-		memcpy(Value, (char*)Mask + *Offset / 8, sizeof(U64));
-	}
+        memcpy(Value, (char*)Mask + *Offset / 8, sizeof(U64));
+    }
 
-	*Index = *Offset + LSB(*Value);
+    *Index = *Offset + LSB(*Value);
 
-	*Value &= *Value - 1;
+    *Value &= *Value - 1;
 
-	return TRUE;
+    return TRUE;
 }
 #endif // USE_NNUE_AVX2
 
 void HiddenLayer(const I8* Input, void* Output, const int InputDims, const int OutputDims, const I32* Biases, const I8* Weights, const U32* InputMask, U32* OutputMask, const BOOL CalcMask)
 {
-	#ifdef USE_NNUE_AVX2
-	const __m256i ConstZero = _mm256_setzero_si256();
+#ifdef USE_NNUE_AVX2
+    const __m256i ConstZero = _mm256_setzero_si256();
 
-	__m256i Out_0 = ((__m256i*)Biases)[0];
-	__m256i Out_1 = ((__m256i*)Biases)[1];
-	__m256i Out_2 = ((__m256i*)Biases)[2];
-	__m256i Out_3 = ((__m256i*)Biases)[3];
+    __m256i Out_0 = ((__m256i*)Biases)[0];
+    __m256i Out_1 = ((__m256i*)Biases)[1];
+    __m256i Out_2 = ((__m256i*)Biases)[2];
+    __m256i Out_3 = ((__m256i*)Biases)[3];
 
-	__m256i First;
-	__m256i Second;
+    __m256i First;
+    __m256i Second;
 
-	U64 Value;
+    U64 Value;
 
-	int Index;
+    int Index;
 
-	memcpy(&Value, InputMask, sizeof(U64));
+    memcpy(&Value, InputMask, sizeof(U64));
 
-	for (int Offset = 0; Offset < InputDims;) { // 512/32
-		if (!NextIndex(&Index, &Offset, &Value, InputMask, InputDims)) {
-			break;
-		}
+    for (int Offset = 0; Offset < InputDims;) { // 512/32
+        if (!NextIndex(&Index, &Offset, &Value, InputMask, InputDims)) {
+            break;
+        }
 
-		First = ((__m256i*)Weights)[Index];
+        First = ((__m256i*)Weights)[Index];
 
-		U16 Factor = Input[Index];
+        U16 Factor = Input[Index];
 
-		if (NextIndex(&Index, &Offset, &Value, InputMask, InputDims)) {
-			Second = ((__m256i*)Weights)[Index];
+        if (NextIndex(&Index, &Offset, &Value, InputMask, InputDims)) {
+            Second = ((__m256i*)Weights)[Index];
 
-			Factor |= Input[Index] << 8;
-		}
-		else {
-			Second = ConstZero;
-		}
+            Factor |= Input[Index] << 8;
+        }
+        else {
+            Second = ConstZero;
+        }
 
-		__m256i Mul = _mm256_set1_epi16(Factor);
+        __m256i Mul = _mm256_set1_epi16(Factor);
 
-		__m256i Product;
-		__m256i Signs;
+        __m256i Product;
+        __m256i Signs;
 
-		Product = _mm256_maddubs_epi16(Mul, _mm256_unpacklo_epi8(First, Second));
+        Product = _mm256_maddubs_epi16(Mul, _mm256_unpacklo_epi8(First, Second));
 
-		Signs = _mm256_cmpgt_epi16(ConstZero, Product);
+        Signs = _mm256_cmpgt_epi16(ConstZero, Product);
 
-		Out_0 = _mm256_add_epi32(Out_0, _mm256_unpacklo_epi16(Product, Signs));
-		Out_1 = _mm256_add_epi32(Out_1, _mm256_unpackhi_epi16(Product, Signs));
+        Out_0 = _mm256_add_epi32(Out_0, _mm256_unpacklo_epi16(Product, Signs));
+        Out_1 = _mm256_add_epi32(Out_1, _mm256_unpackhi_epi16(Product, Signs));
 
-		Product = _mm256_maddubs_epi16(Mul, _mm256_unpackhi_epi8(First, Second));
+        Product = _mm256_maddubs_epi16(Mul, _mm256_unpackhi_epi8(First, Second));
 
-		Signs = _mm256_cmpgt_epi16(ConstZero, Product);
+        Signs = _mm256_cmpgt_epi16(ConstZero, Product);
 
-		Out_2 = _mm256_add_epi32(Out_2, _mm256_unpacklo_epi16(Product, Signs));
-		Out_3 = _mm256_add_epi32(Out_3, _mm256_unpackhi_epi16(Product, Signs));
-	}
+        Out_2 = _mm256_add_epi32(Out_2, _mm256_unpacklo_epi16(Product, Signs));
+        Out_3 = _mm256_add_epi32(Out_3, _mm256_unpackhi_epi16(Product, Signs));
+    }
 
-	__m256i Out_16_0 = _mm256_srai_epi16(_mm256_packs_epi32(Out_0, Out_1), SHIFT);
-	__m256i Out_16_1 = _mm256_srai_epi16(_mm256_packs_epi32(Out_2, Out_3), SHIFT);
+    __m256i Out_16_0 = _mm256_srai_epi16(_mm256_packs_epi32(Out_0, Out_1), SHIFT);
+    __m256i Out_16_1 = _mm256_srai_epi16(_mm256_packs_epi32(Out_2, Out_3), SHIFT);
 
-	__m256i* OutputVector = (__m256i*)Output;
+    __m256i* OutputVector = (__m256i*)Output;
 
-	OutputVector[0] = _mm256_packs_epi16(Out_16_0, Out_16_1);
+    OutputVector[0] = _mm256_packs_epi16(Out_16_0, Out_16_1);
 
-	if (CalcMask) {
-		OutputMask[0] = _mm256_movemask_epi8(_mm256_cmpgt_epi8(OutputVector[0], ConstZero));
-	}
-	else {
-		OutputVector[0] = _mm256_max_epi8(OutputVector[0], ConstZero);
-	}
-	#else
-	I32 Temp[32]; // OutputDims
+    if (CalcMask) {
+        OutputMask[0] = _mm256_movemask_epi8(_mm256_cmpgt_epi8(OutputVector[0], ConstZero));
+    }
+    else {
+        OutputVector[0] = _mm256_max_epi8(OutputVector[0], ConstZero);
+    }
+#else
+    I32 Temp[32]; // OutputDims
 
-	for (int IndexOutput = 0; IndexOutput < OutputDims; ++IndexOutput) { // 32/32
-		Temp[IndexOutput] = Biases[IndexOutput];
-	}
+    for (int IndexOutput = 0; IndexOutput < OutputDims; ++IndexOutput) { // 32/32
+        Temp[IndexOutput] = Biases[IndexOutput];
+    }
 
-	for (int IndexInput = 0; IndexInput < InputDims; ++IndexInput) { // 512/32
-		if (Input[IndexInput]) {
-			for (int IndexOutput = 0; IndexOutput < OutputDims; ++IndexOutput) { // 32/32
-				Temp[IndexOutput] += Input[IndexInput] * Weights[IndexInput * OutputDims + IndexOutput];
-			}
-		}
-	}
+    for (int IndexInput = 0; IndexInput < InputDims; ++IndexInput) { // 512/32
+        if (Input[IndexInput]) {
+            for (int IndexOutput = 0; IndexOutput < OutputDims; ++IndexOutput) { // 32/32
+                Temp[IndexOutput] += Input[IndexInput] * Weights[IndexInput * OutputDims + IndexOutput];
+            }
+        }
+    }
 
-	I8* OutputVector = (I8*)Output;
+    I8* OutputVector = (I8*)Output;
 
-	for (int IndexOutput = 0; IndexOutput < OutputDims; ++IndexOutput) { // 32/32
-		OutputVector[IndexOutput] = (I8)MAX(0, MIN(127, Temp[IndexOutput] >> SHIFT));
-	}
-	#endif // USE_NNUE_AVX2
+    for (int IndexOutput = 0; IndexOutput < OutputDims; ++IndexOutput) { // 32/32
+        OutputVector[IndexOutput] = (I8)MAX(0, MIN(127, Temp[IndexOutput] >> SHIFT));
+    }
+#endif // USE_NNUE_AVX2
 }
 
 I32 OutputLayer(const I8* Input, const I32* Biases, const I8* Weights)
 {
-	#ifdef USE_NNUE_AVX2
-	__m256i* InputVector = (__m256i*)Input;
-	__m256i* WeightsVector = (__m256i*)Weights;
+#ifdef USE_NNUE_AVX2
+    __m256i* InputVector = (__m256i*)Input;
+    __m256i* WeightsVector = (__m256i*)Weights;
 
-	__m256i Product = _mm256_maddubs_epi16(InputVector[0], WeightsVector[0]);
-	Product = _mm256_madd_epi16(Product, _mm256_set1_epi16(1));
+    __m256i Product = _mm256_maddubs_epi16(InputVector[0], WeightsVector[0]);
+    Product = _mm256_madd_epi16(Product, _mm256_set1_epi16(1));
 
-	__m128i Sum = _mm_add_epi32(_mm256_castsi256_si128(Product), _mm256_extracti128_si256(Product, 1));
-	Sum = _mm_add_epi32(Sum, _mm_shuffle_epi32(Sum, 0x1B));
+    __m128i Sum = _mm_add_epi32(_mm256_castsi256_si128(Product), _mm256_extracti128_si256(Product, 1));
+    Sum = _mm_add_epi32(Sum, _mm_shuffle_epi32(Sum, 0x1B));
 
-	return _mm_cvtsi128_si32(Sum) + _mm_extract_epi32(Sum, 1) + Biases[0];
-	#else
-	I32 Sum = Biases[0];
+    return _mm_cvtsi128_si32(Sum) + _mm_extract_epi32(Sum, 1) + Biases[0];
+#else
+    I32 Sum = Biases[0];
 
-	for (int IndexInput = 0; IndexInput < HIDDEN_2_DIMENSION; ++IndexInput) { // 32
-		Sum += Input[IndexInput] * Weights[IndexInput];
-	}
+    for (int IndexInput = 0; IndexInput < HIDDEN_2_DIMENSION; ++IndexInput) { // 32
+        Sum += Input[IndexInput] * Weights[IndexInput];
+    }
 
-	return Sum;
-	#endif // USE_NNUE_AVX2
+    return Sum;
+#endif // USE_NNUE_AVX2
 }
 
 int NetworkEvaluate(BoardItem* Board)
 {
-	_declspec(align(64)) I8 Input[INPUT_DIMENSION]; // 512 (256 x 2)
+    _declspec(align(64)) I8 Input[INPUT_DIMENSION]; // 512 (256 x 2)
 
-	/*
-		The mask is 32 bits (see _mm256_movemask_epi8)
-		The array of masks must be a multiple of 64 bits (see NextIndex)
-	*/
-	_declspec(align(8)) U32 Hidden_1_Mask[INPUT_DIMENSION / (8 * sizeof(U32))]; // 512 / 32 = 16
-	_declspec(align(8)) U32 Hidden_2_Mask[64 / (8 * sizeof(U32))] = { 0, 0 }; // 64 / 32 = 2
+    /*
+        The mask is 32 bits (see _mm256_movemask_epi8)
+        The array of masks must be a multiple of 64 bits (see NextIndex)
+    */
+    _declspec(align(8)) U32 Hidden_1_Mask[INPUT_DIMENSION / (8 * sizeof(U32))]; // 512 / 32 = 16
+    _declspec(align(8)) U32 Hidden_2_Mask[64 / (8 * sizeof(U32))] = { 0, 0 }; // 64 / 32 = 2
 
-	I8 Hidden_1_Output[HIDDEN_1_DIMENSION]; // 32
-	I8 Hidden_2_Output[HIDDEN_2_DIMENSION]; // 32
+    I8 Hidden_1_Output[HIDDEN_1_DIMENSION]; // 32
+    I8 Hidden_2_Output[HIDDEN_2_DIMENSION]; // 32
 
-	I32 OutputValue;
+    I32 OutputValue;
 
-	// Transform: Board -> (256 x 2)
+    // Transform: Board -> (256 x 2)
 
-	Transform(Board, Input, Hidden_1_Mask);
+    Transform(Board, Input, Hidden_1_Mask);
 
-	// Hidden 1: (256 x 2) -> 32
+    // Hidden 1: (256 x 2) -> 32
 
-	HiddenLayer(Input, Hidden_1_Output, 512, 32, Hidden_1_Biases, Hidden_1_Weights, Hidden_1_Mask, Hidden_2_Mask, TRUE);
+    HiddenLayer(Input, Hidden_1_Output, 512, 32, Hidden_1_Biases, Hidden_1_Weights, Hidden_1_Mask, Hidden_2_Mask, TRUE);
 
-	// Hidden 2: 32 -> 32
+    // Hidden 2: 32 -> 32
 
-	HiddenLayer(Hidden_1_Output, Hidden_2_Output, 32, 32, Hidden_2_Biases, Hidden_2_Weights, Hidden_2_Mask, NULL, FALSE);
+    HiddenLayer(Hidden_1_Output, Hidden_2_Output, 32, 32, Hidden_2_Biases, Hidden_2_Weights, Hidden_2_Mask, NULL, FALSE);
 
-	// Output: 32 -> 1
+    // Output: 32 -> 1
 
-	OutputValue = OutputLayer(Hidden_2_Output, OutputBiases, OutputWeights);
+    OutputValue = OutputLayer(Hidden_2_Output, OutputBiases, OutputWeights);
 
-	return OutputValue / SCALE;
+    return OutputValue / SCALE;
 }
 
 #endif // NNUE_EVALUATION_FUNCTION
