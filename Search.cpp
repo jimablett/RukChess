@@ -207,8 +207,8 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
                                     MOVE_TO(HashMove) != Board->PassantSquare
                                     && RANK(MOVE_TO(HashMove)) != 0
                                     && RANK(MOVE_TO(HashMove)) != 7
-                                    )
                                 )
+                            )
                         ) { // Not capture/promote move
                             if (HashFlag == HASH_BETA) {
 #ifdef MOVES_SORT_HEURISTIC
