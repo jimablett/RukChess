@@ -240,7 +240,7 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
             if (CaptureSEE(Board, MOVE_FROM(MoveList[MoveNumber].Move), MOVE_TO(MoveList[MoveNumber].Move), MOVE_PROMOTE_PIECE(MoveList[MoveNumber].Move), MoveList[MoveNumber].Type) < 0) { // Bad capture/quiet move
                 continue; // Next move
             }
-#endif // MOVES_SORT_SEE/MOVES_SORT_MVV_LVA
+#endif // MOVES_SORT_SEE || MOVES_SORT_MVV_LVA
         }
 #endif // QUIESCENCE_SEE_MOVE_PRUNING
 

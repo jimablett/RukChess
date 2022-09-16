@@ -332,9 +332,9 @@ BOOL ComputerMove(void)
                 Score = RootSplitting_Search(&CurrentBoard, Alpha, Beta, Depth, 0, CurrentBoard.BestMovesRoot, InCheck);
 #elif defined(PV_SPLITTING)
                 Score = PVSplitting_Search(&CurrentBoard, Alpha, Beta, Depth, 0, CurrentBoard.BestMovesRoot, InCheck, 0);
-#else // NONE
+#else
                 Score = Search(&CurrentBoard, Alpha, Beta, Depth, 0, CurrentBoard.BestMovesRoot, TRUE, InCheck, FALSE, 0);
-#endif // ROOT_SPLITTING/PV_SPLITTING/NONE
+#endif // ROOT_SPLITTING || PV_SPLITTING
 
                 if (StopSearch) {
                     break; // while
@@ -359,9 +359,9 @@ BOOL ComputerMove(void)
             Score = RootSplitting_Search(&CurrentBoard, -INF, INF, Depth, 0, CurrentBoard.BestMovesRoot, InCheck);
 #elif defined(PV_SPLITTING)
             Score = PVSplitting_Search(&CurrentBoard, -INF, INF, Depth, 0, CurrentBoard.BestMovesRoot, InCheck, 0);
-#else // NONE
+#else
             Score = Search(&CurrentBoard, -INF, INF, Depth, 0, CurrentBoard.BestMovesRoot, TRUE, InCheck, FALSE, 0);
-#endif // ROOT_SPLITTING/PV_SPLITTING/NONE
+#endif // ROOT_SPLITTING || PV_SPLITTING
 #ifdef ASPIRATION_WINDOW
         }
 #endif // ASPIRATION_WINDOW
@@ -831,7 +831,7 @@ Done:
 
     return PrintResult(InCheck, BestMove, PonderMove, BestScore);
 }
-#endif // NONE/ROOT_SPLITTING/PV_SPLITTING/ABDADA/LAZY_SMP
+#endif // ROOT_SPLITTING || PV_SPLITTING || ABDADA || LAZY_SMP
 
 void ComputerMoveThread(void*)
 {

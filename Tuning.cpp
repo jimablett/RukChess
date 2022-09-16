@@ -172,7 +172,7 @@ SCORE TuningSearch(BoardItem* Board, SCORE Alpha, SCORE Beta, const int Ply, con
             if (CaptureSEE(Board, MOVE_FROM(MoveList[MoveNumber].Move), MOVE_TO(MoveList[MoveNumber].Move), MOVE_PROMOTE_PIECE(MoveList[MoveNumber].Move), MoveList[MoveNumber].Type) < 0) { // Bad capture/quiet move
                 continue; // Next move
             }
-#endif // MOVES_SORT_SEE/MOVES_SORT_MVV_LVA
+#endif // MOVES_SORT_SEE || MOVES_SORT_MVV_LVA
         }
 #endif // QUIESCENCE_SEE_MOVE_PRUNING
 
@@ -1264,9 +1264,9 @@ void TuningAdamSGD(void)
     BatchSize = TUNING_BATCH_SIZE_FENS;
 #elif defined(TUNING_BATCH_SIZE_PERCENT)
     BatchSize = PositionStore.Count * TUNING_BATCH_SIZE_PERCENT / 100;
-#else // NONE
+#else
     BatchSize = PositionStore.Count;
-#endif // TUNING_BATCH_SIZE_FENS/TUNING_BATCH_SIZE_PERCENT/NONE
+#endif // TUNING_BATCH_SIZE_FENS || TUNING_BATCH_SIZE_PERCENT
 
     printf("\n");
 

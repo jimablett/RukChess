@@ -48,7 +48,7 @@ void MakeMove(BoardItem* Board, const MoveItem Move)
 
 #if defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
     Info->Accumulator = Board->Accumulator;
-#endif // NNUE_EVALUATION_FUNCTION/NNUE_EVALUATION_FUNCTION_2
+#endif // NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
 
     if (Info->PassantSquare != -1) {
         Board->PassantSquare = -1;
@@ -244,7 +244,7 @@ void MakeMove(BoardItem* Board, const MoveItem Move)
 
 #if defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
     Board->Accumulator.AccumulationComputed = FALSE;
-#endif // NNUE_EVALUATION_FUNCTION/NNUE_EVALUATION_FUNCTION_2
+#endif // NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
 }
 
 void UnmakeMove(BoardItem* Board)
@@ -417,7 +417,7 @@ void UnmakeMove(BoardItem* Board)
 
 #if defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
     Board->Accumulator = Info->Accumulator;
-#endif // NNUE_EVALUATION_FUNCTION/NNUE_EVALUATION_FUNCTION_2
+#endif // NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
 }
 
 #ifdef NULL_MOVE_PRUNING
@@ -436,7 +436,7 @@ void MakeNullMove(BoardItem* Board)
 
 #if defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
     Info->Accumulator = Board->Accumulator;
-#endif // NNUE_EVALUATION_FUNCTION/NNUE_EVALUATION_FUNCTION_2
+#endif // NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
 
     if (Info->PassantSquare != -1) {
         Board->PassantSquare = -1;
@@ -462,7 +462,7 @@ void MakeNullMove(BoardItem* Board)
 
 #if defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
     Board->Accumulator.AccumulationComputed = FALSE;
-#endif // NNUE_EVALUATION_FUNCTION/NNUE_EVALUATION_FUNCTION_2
+#endif // NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
 }
 
 void UnmakeNullMove(BoardItem* Board)
@@ -479,7 +479,7 @@ void UnmakeNullMove(BoardItem* Board)
 
 #if defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
     Board->Accumulator = Info->Accumulator;
-#endif // NNUE_EVALUATION_FUNCTION/NNUE_EVALUATION_FUNCTION_2
+#endif // NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
 }
 
 #endif // NULL_MOVE_PRUNING

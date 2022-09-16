@@ -45,7 +45,7 @@
 #define HIDDEN_DIMENSION            512
 #define OUTPUT_DIMENSION            1
 
-#endif // NET/NET_KS/NET_KQ
+#endif // NET || NET_KS || NET_KQ
 
 #define QUANTIZATION_PRECISION_IN   32
 #define QUANTIZATION_PRECISION_OUT  512
@@ -72,7 +72,7 @@ const int HalfBoardIndex[64] = {
      4,  5,  6,  7,  7,  6,  5,  4,
      0,  1,  2,  3,  3,  2,  1,  0
 };
-#endif // NET_KS/NET_KQ
+#endif // NET_KS || NET_KQ
 
 I16 LoadWeight(const float Value, const int Precision)
 {
@@ -267,7 +267,7 @@ int KingIndex(const int KingSquare, const int Square)
 {
     return (((KingSquare & 4) == (Square & 4)) << 1) + ((KingSquare & 32) == (Square & 32));
 }
-#endif // NET_KS/NET_KQ
+#endif // NET_KS || NET_KQ
 
 int CalculateWeightIndex(const int Perspective, const int KingSquare, const int Square, const int PieceWithColor)
 {
@@ -283,7 +283,7 @@ int CalculateWeightIndex(const int Perspective, const int KingSquare, const int 
         WeightIndex = (PieceIndex << 6) + (KingIndex(KingSquare, Square) << 5) + HalfBoardIndex[Square];
 #else // NET_KQ
         WeightIndex = (PieceIndex << 7) + (KingIndex(KingSquare, Square) << 5) + HalfBoardIndex[Square];
-#endif // NET/NET_KS/NET_KQ
+#endif // NET || NET_KS || NET_KQ
     }
     else { // BLACK
         PieceIndex = PIECE(PieceWithColor) + 6 * CHANGE_COLOR(COLOR(PieceWithColor));
@@ -294,7 +294,7 @@ int CalculateWeightIndex(const int Perspective, const int KingSquare, const int 
         WeightIndex = (PieceIndex << 6) + (KingIndex(KingSquare, Square) << 5) + HalfBoardIndex[Square ^ 56];
 #else // NET_KQ
         WeightIndex = (PieceIndex << 7) + (KingIndex(KingSquare, Square) << 5) + HalfBoardIndex[Square ^ 56];
-#endif // NET/NET_KS/NET_KQ
+#endif // NET || NET_KS || NET_KQ
     }
 
 //  printf("Perspective = %d KingSquare = %d Square = %d PieceWithColor = %d PieceIndex = %d KingIndex = %d WeightIndex = %d\n", Perspective, KingSquare, Square, PieceWithColor, PieceIndex, KingIndex(KingSquare, Square) << 5, WeightIndex);

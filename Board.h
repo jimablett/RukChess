@@ -154,7 +154,7 @@ typedef struct {
 
 #if defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
     AccumulatorItem Accumulator;
-#endif // NNUE_EVALUATION_FUNCTION/NNUE_EVALUATION_FUNCTION_2
+#endif // NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
 } HistoryItem; // 48 bytes/1152 bytes (NNUE)/2144 (NNUE2)
 
 typedef struct {
@@ -204,7 +204,7 @@ typedef struct {
 
 #if defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
     AccumulatorItem Accumulator; // 1028 bytes (aligned 1088 bytes)/2052 bytes (aligned 2080 bytes)
-#endif // NNUE_EVALUATION_FUNCTION/NNUE_EVALUATION_FUNCTION_2
+#endif // NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
 } BoardItem; // 58280 bytes/1189920 bytes (NNUE)/2206688 (NNUE2)
 
 extern const char BoardName[][64];
