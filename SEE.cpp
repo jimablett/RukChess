@@ -56,7 +56,9 @@ int CaptureSEE(const BoardItem* Board, const int From, const int To, const int P
     int Color = Board->CurrentColor;
 
     int Depth = 1;
-
+#ifdef DEBUG_SEE
+    printf("-- SEE: Move = %s%s\n", BoardName[From], BoardName[To]);
+#endif // DEBUG_SEE
     if (MoveType & MOVE_PAWN_PASSANT) {
         Gain[0] = PiecesScoreSEE[PAWN];
 
@@ -102,12 +104,11 @@ int CaptureSEE(const BoardItem* Board, const int From, const int To, const int P
 
         ++Depth;
 
-        if (Piece == KING) {
-            break; // while
-        }
-
-        for (Piece = 0; Piece < 5; ++Piece) { // PNBRQ
+        for (Piece = 0; Piece < 6; ++Piece) { // PNBRQK
             if (CurrentAttackers & Board->BB_Pieces[Color][Piece]) {
+#ifdef DEBUG_SEE
+                printf("-- SEE: From = %s\n", BoardName[LSB(CurrentAttackers & Board->BB_Pieces[Color][Piece])]);
+#endif // DEBUG_SEE
                 BB_From = BB_SQUARE(LSB(CurrentAttackers & Board->BB_Pieces[Color][Piece]));
 
                 break; // for
@@ -138,6 +139,9 @@ int CaptureSEE(const BoardItem* Board, const int From, const int To, const int P
 
     while (--Depth) {
         Gain[Depth - 1] = MIN(-Gain[Depth], Gain[Depth - 1]);
+#ifdef DEBUG_SEE
+        printf("-- SEE: Gain[%d] = %d\n", Depth - 1, Gain[Depth - 1]);
+#endif // DEBUG_SEE
     }
 
     return Gain[0];

@@ -60,6 +60,7 @@
 //#define DEBUG_IID
 //#define DEBUG_PVS
 //#define DEBUG_SINGULAR_EXTENSION
+//#define DEBUG_SEE
 
 //#define DEBUG_NNUE
 //#define DEBUG_NNUE_2
