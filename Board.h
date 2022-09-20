@@ -222,7 +222,7 @@ extern char StartFen[];
 extern BoardItem CurrentBoard;
 
 #ifdef LATE_MOVE_PRUNING
-extern int LateMovePruningTable[6 + 1]; // [LMP depth + 1]
+extern int LateMovePruningTable[7]; // [LMP depth]
 #endif // LATE_MOVE_PRUNING
 
 #if defined(NEGA_SCOUT) && defined(LATE_MOVE_REDUCTION)

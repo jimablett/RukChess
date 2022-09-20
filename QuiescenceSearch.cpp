@@ -259,7 +259,11 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
         GiveCheck = IsInCheck(Board, Board->CurrentColor);
 
 #ifdef QUIESCENCE_CHECK_EXTENSION_EXTENDED
-        if (!InCheck && Depth == 0 && !(MoveList[MoveNumber].Type & (MOVE_CAPTURE | MOVE_PAWN_PROMOTE)) && !GiveCheck) {
+        if (
+            !InCheck
+            && !GiveCheck
+            && !(MoveList[MoveNumber].Type & (MOVE_CAPTURE | MOVE_PAWN_PROMOTE)) // Not capture/promote move
+        ) {
             UnmakeMove(Board);
 
             continue; // Next move

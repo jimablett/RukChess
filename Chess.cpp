@@ -69,10 +69,10 @@ int main(int, char**)
 #endif // SIMPLIFIED_EVALUATION_FUNCTION || TOGA_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
 
 #ifdef LATE_MOVE_PRUNING
-    for (int Depth = 0; Depth < (6 + 1); ++Depth) {
+    for (int Depth = 0; Depth < 7; ++Depth) {
         LateMovePruningTable[Depth] = (int)round(2.98484 + pow(Depth, 1.74716)); // Hakkapeliitta
 
-//      printf("LateMovePruningTable[%d] = %d\n", Depth, LateMovePruningTable[Depth]);
+//      printf("LateMovePruningTable[%d] = %d\n", Depth, LateMovePruningTable[Depth]); // 3, 4, 6, 10, 14, 20, 26
     }
 #endif // LATE_MOVE_PRUNING
 
