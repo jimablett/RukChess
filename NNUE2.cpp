@@ -78,15 +78,21 @@ I16 LoadWeight(const float Value, const int Precision)
 {
     I16 Result;
 
-//  if (Value < (float)SHRT_MIN / (float)Precision) {
-//      Result = SHRT_MIN;
-//  }
-//  else if (Value > (float)SHRT_MAX / (float)Precision) {
-//      Result = SHRT_MAX;
-//  }
-//  else {
-    Result = (I16)roundf(Value * (float)Precision);
-//  }
+//    if (Value < (float)SHRT_MIN / (float)Precision) {
+//        Result = 0;
+//        Result = SHRT_MIN;
+
+//        printf("Value = %f\n", Value);
+//    }
+//    else if (Value > (float)SHRT_MAX / (float)Precision) {
+//        Result = 0;
+//        Result = SHRT_MAX;
+
+//        printf("Value = %f\n", Value);
+//    }
+//    else {
+        Result = (I16)roundf(Value * (float)Precision);
+//    }
 
     return Result;
 }
