@@ -190,7 +190,7 @@ NextMove0:
         if (
             (MoveList[MoveNumber0].Type & MOVE_CAPTURE)
             && !(MoveList[MoveNumber0].Type & MOVE_PAWN_PROMOTE)
-            && MoveList[MoveNumber0].SortValue >= SORT_CAPTURE_MOVE_BONUS
+            && MoveList[MoveNumber0].SortValue >= 0
 #ifdef PVS
             && MoveList[MoveNumber0].SortValue != SORT_PVS_MOVE_VALUE
 #endif // PVS
@@ -332,10 +332,10 @@ NextMove:
         if (
             (MoveList[MoveNumber].Type & MOVE_CAPTURE)
             && !(MoveList[MoveNumber].Type & MOVE_PAWN_PROMOTE)
-            && MoveList[MoveNumber].SortValue >= SORT_CAPTURE_MOVE_BONUS
-#ifdef PVS
-            && MoveList[MoveNumber].SortValue != SORT_PVS_MOVE_VALUE
-#endif // PVS
+            && MoveList[MoveNumber].SortValue >= 0
+//#ifdef PVS
+//          && MoveList[MoveNumber].SortValue != SORT_PVS_MOVE_VALUE
+//#endif // PVS
 //#ifdef HASH_MOVE
 //          && MoveList[MoveNumber].Move != HashMove
 //#endif // HASH_MOVE

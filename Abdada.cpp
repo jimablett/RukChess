@@ -528,7 +528,7 @@ int ABDADA_Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Pl
         if (
             (MoveList[MoveNumber].Type & MOVE_CAPTURE)
             && !(MoveList[MoveNumber].Type & MOVE_PAWN_PROMOTE)
-            && MoveList[MoveNumber].SortValue >= SORT_CAPTURE_MOVE_BONUS
+            && MoveList[MoveNumber].SortValue >= 0
 #ifdef PVS
             && MoveList[MoveNumber].SortValue != SORT_PVS_MOVE_VALUE
 #endif // PVS
