@@ -411,9 +411,15 @@ BOOL UpdateAccumulator(BoardItem* Board)
         return FALSE;
     }
 
+#if defined(NET_KS) || defined(NET_KQ)
     if (Info->PieceFrom == KING) {
         return FALSE;
     }
+#else
+    if (Info->Type & (MOVE_CASTLE_KING | MOVE_CASTLE_QUEEN)) {
+        return FALSE;
+    }
+#endif // NET_KS || NET_KQ
 
     if (Info->Type & MOVE_NULL) {
         Board->Accumulator.AccumulationComputed = TRUE;
