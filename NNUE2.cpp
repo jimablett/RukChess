@@ -303,14 +303,22 @@ int CalculateWeightIndex(const int Perspective, const int KingSquare, const int 
 #endif // NET || NET_KS || NET_KQ
     }
 
-//  printf("Perspective = %d KingSquare = %d Square = %d PieceWithColor = %d PieceIndex = %d KingIndex = %d WeightIndex = %d\n", Perspective, KingSquare, Square, PieceWithColor, PieceIndex, KingIndex(KingSquare, Square) << 5, WeightIndex);
+#ifdef PRINT_WEIGHT_INDEX
+
+#ifdef NET
+    printf("Perspective = %d Square = %d Piece = %d Color = %d PieceIndex = %d WeightIndex = %d\n", Perspective, Square, PIECE(PieceWithColor), COLOR(PieceWithColor), PieceIndex, WeightIndex);
+#else // NET_KS || NET_KQ
+    printf("Perspective = %d KingSquare = %d Square = %d Piece = %d Color = %d PieceIndex = %d KingIndex = %d WeightIndex = %d\n", Perspective, KingSquare, Square, PIECE(PieceWithColor), COLOR(PieceWithColor), PieceIndex, KingIndex(KingSquare, Square) << 5, WeightIndex);
+#endif // NET || NET_KS || NET_KQ
+
+#endif // PRINT_WEIGHT_INDEX
 
     return WeightIndex;
 }
 
 void RefreshAccumulator(BoardItem* Board)
 {
-    I16(*Accumulation)[2][HIDDEN_DIMENSION] = &Board->Accumulator.Accumulation;
+    I16 (*Accumulation)[2][HIDDEN_DIMENSION] = &Board->Accumulator.Accumulation;
 
     for (int Perspective = 0; Perspective < 2; ++Perspective) { // White/Black
         memcpy((*Accumulation)[Perspective], HiddenBiases, sizeof(HiddenBiases));
@@ -326,12 +334,10 @@ void RefreshAccumulator(BoardItem* Board)
 
             int WeightIndex = CalculateWeightIndex(Perspective, KingSquare, Square, PieceWithColor);
 
-//          printf("Square = %d Piece = %d Color = %d WeightIndex = %d\n", Square, PIECE(PieceWithColor), COLOR(PieceWithColor), WeightIndex);
-
 #ifdef USE_NNUE_AVX2
             __m256i* AccumulatorTile = (__m256i*)(*Accumulation)[Perspective];
 
-            __m256i* Column = (__m256i*) & FeatureWeights[WeightIndex * HIDDEN_DIMENSION];
+            __m256i* Column = (__m256i*)&FeatureWeights[WeightIndex * HIDDEN_DIMENSION];
 
             for (int Reg = 0; Reg < NUM_REGS; ++Reg) { // 32
                 AccumulatorTile[Reg] = _mm256_add_epi16(AccumulatorTile[Reg], Column[Reg]);
@@ -346,21 +352,21 @@ void RefreshAccumulator(BoardItem* Board)
         }
     }
 
-#ifdef USE_NNUE_REFRESH
+#ifdef USE_NNUE_UPDATE
     Board->Accumulator.AccumulationComputed = TRUE;
-#endif // USE_NNUE_REFRESH
+#endif // USE_NNUE_UPDATE
 }
 
-#ifdef USE_NNUE_REFRESH
+#ifdef USE_NNUE_UPDATE
 
 void AccumulatorAdd(BoardItem* Board, const int Perspective, const int WeightIndex)
 {
-    I16(*Accumulation)[2][HIDDEN_DIMENSION] = &Board->Accumulator.Accumulation;
+    I16 (*Accumulation)[2][HIDDEN_DIMENSION] = &Board->Accumulator.Accumulation;
 
 #ifdef USE_NNUE_AVX2
     __m256i* AccumulatorTile = (__m256i*)(*Accumulation)[Perspective];
 
-    __m256i* Column = (__m256i*) & FeatureWeights[WeightIndex * HIDDEN_DIMENSION];
+    __m256i* Column = (__m256i*)&FeatureWeights[WeightIndex * HIDDEN_DIMENSION];
 
     for (int Reg = 0; Reg < NUM_REGS; ++Reg) { // 32
         AccumulatorTile[Reg] = _mm256_add_epi16(AccumulatorTile[Reg], Column[Reg]);
@@ -374,12 +380,12 @@ void AccumulatorAdd(BoardItem* Board, const int Perspective, const int WeightInd
 
 void AccumulatorSub(BoardItem* Board, const int Perspective, const int WeightIndex)
 {
-    I16(*Accumulation)[2][HIDDEN_DIMENSION] = &Board->Accumulator.Accumulation;
+    I16 (*Accumulation)[2][HIDDEN_DIMENSION] = &Board->Accumulator.Accumulation;
 
 #ifdef USE_NNUE_AVX2
     __m256i* AccumulatorTile = (__m256i*)(*Accumulation)[Perspective];
 
-    __m256i* Column = (__m256i*) & FeatureWeights[WeightIndex * HIDDEN_DIMENSION];
+    __m256i* Column = (__m256i*)&FeatureWeights[WeightIndex * HIDDEN_DIMENSION];
 
     for (int Reg = 0; Reg < NUM_REGS; ++Reg) { // 32
         AccumulatorTile[Reg] = _mm256_sub_epi16(AccumulatorTile[Reg], Column[Reg]);
@@ -415,11 +421,11 @@ BOOL UpdateAccumulator(BoardItem* Board)
     if (Info->PieceFrom == KING) {
         return FALSE;
     }
-#else
+#else // NET
     if (Info->Type & (MOVE_CASTLE_KING | MOVE_CASTLE_QUEEN)) {
         return FALSE;
     }
-#endif // NET_KS || NET_KQ
+#endif // NET_KS || NET_KQ || NET
 
     if (Info->Type & MOVE_NULL) {
         Board->Accumulator.AccumulationComputed = TRUE;
@@ -494,11 +500,20 @@ BOOL UpdateAccumulator(BoardItem* Board)
     return TRUE;
 }
 
-#endif // USE_NNUE_REFRESH
+#endif // USE_NNUE_UPDATE
 
 I32 OutputLayer(BoardItem* Board)
 {
     I32 Result = (I32)OutputBias * QUANTIZATION_PRECISION_IN;
+
+#ifdef PRINT_ACCUMULATOR
+    for (int Index = 0; Index < HIDDEN_DIMENSION; ++Index) { // 512
+        const I16 Acc0 = Board->Accumulator.Accumulation[Board->CurrentColor][Index];
+        const I16 Acc1 = Board->Accumulator.Accumulation[CHANGE_COLOR(Board->CurrentColor)][Index];
+
+        printf("Index = %d Acc0 = %d Acc1 = %d\n", Index, Acc0, Acc1);
+    }
+#endif // PRINT_ACCUMULATOR
 
 #ifdef USE_NNUE_AVX2
     const __m256i ConstZero = _mm256_setzero_si256();
@@ -506,11 +521,11 @@ I32 OutputLayer(BoardItem* Board)
     __m256i Sum0 = _mm256_setzero_si256();
     __m256i Sum1 = _mm256_setzero_si256();
 
-    __m256i* AccumulatorTile0 = (__m256i*) & Board->Accumulator.Accumulation[Board->CurrentColor];
-    __m256i* AccumulatorTile1 = (__m256i*) & Board->Accumulator.Accumulation[CHANGE_COLOR(Board->CurrentColor)];
+    __m256i* AccumulatorTile0 = (__m256i*)&Board->Accumulator.Accumulation[Board->CurrentColor];
+    __m256i* AccumulatorTile1 = (__m256i*)&Board->Accumulator.Accumulation[CHANGE_COLOR(Board->CurrentColor)];
 
-    __m256i* Weights0 = (__m256i*) & HiddenWeights;
-    __m256i* Weights1 = (__m256i*) & HiddenWeights[HIDDEN_DIMENSION];
+    __m256i* Weights0 = (__m256i*)&HiddenWeights;
+    __m256i* Weights1 = (__m256i*)&HiddenWeights[HIDDEN_DIMENSION];
 
     for (int Reg = 0; Reg < NUM_REGS; ++Reg) { // 32
         const __m256i Acc0 = _mm256_max_epi16(ConstZero, AccumulatorTile0[Reg]); // ReLU
@@ -527,7 +542,7 @@ I32 OutputLayer(BoardItem* Board)
 
     Result += _mm_cvtsi128_si32(R1);
 #else
-    I16(*Accumulation)[2][HIDDEN_DIMENSION] = &Board->Accumulator.Accumulation;
+    I16 (*Accumulation)[2][HIDDEN_DIMENSION] = &Board->Accumulator.Accumulation;
 
     for (int Index = 0; Index < HIDDEN_DIMENSION; ++Index) { // 512
         const I16 Acc0 = MAX(0, (*Accumulation)[Board->CurrentColor][Index]); // ReLU
@@ -548,13 +563,13 @@ int NetworkEvaluate(BoardItem* Board)
     // Transform: Board -> (512 x 2)
 
     if (!Board->Accumulator.AccumulationComputed) {
-#ifdef USE_NNUE_REFRESH
+#ifdef USE_NNUE_UPDATE
         if (!UpdateAccumulator(Board)) {
-#endif // USE_NNUE_REFRESH
+#endif // USE_NNUE_UPDATE
             RefreshAccumulator(Board);
-#ifdef USE_NNUE_REFRESH
+#ifdef USE_NNUE_UPDATE
         }
-#endif // USE_NNUE_REFRESH
+#endif // USE_NNUE_UPDATE
     }
 
     // Output: (512 x 2) -> 1

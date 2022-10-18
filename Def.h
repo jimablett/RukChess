@@ -36,17 +36,19 @@
 #if defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
 
 #define USE_NNUE_AVX2                           // Required NNUE_EVALUATION_FUNCTION or NNUE_EVALUATION_FUNCTION_2
-#define USE_NNUE_REFRESH                        // Required NNUE_EVALUATION_FUNCTION or NNUE_EVALUATION_FUNCTION_2
+#define USE_NNUE_UPDATE                         // Required NNUE_EVALUATION_FUNCTION or NNUE_EVALUATION_FUNCTION_2
 
 #endif // NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
 
 #ifdef NNUE_EVALUATION_FUNCTION_2
 
-//#define PRINT_MIN_MAX_VALUES                  // Required NNUE_EVALUATION_FUNCTION_2
-
 #define NET                                     // Required NNUE_EVALUATION_FUNCTION_2
 //#define NET_KS                                // Required NNUE_EVALUATION_FUNCTION_2
 //#define NET_KQ                                // Required NNUE_EVALUATION_FUNCTION_2
+
+//#define PRINT_MIN_MAX_VALUES                  // Required NNUE_EVALUATION_FUNCTION_2
+//#define PRINT_WEIGHT_INDEX                    // Required NNUE_EVALUATION_FUNCTION_2
+//#define PRINT_ACCUMULATOR                     // Required NNUE_EVALUATION_FUNCTION_2
 
 #endif // NNUE_EVALUATION_FUNCTION_2
 

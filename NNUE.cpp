@@ -421,7 +421,7 @@ void RefreshAccumulator(BoardItem* Board)
 
 #ifdef USE_NNUE_AVX2
     for (int Perspective = 0; Perspective < 2; ++Perspective) { // White/Black
-        __m256i* BiasesTile = (__m256i*) & InputBiases[0];
+        __m256i* BiasesTile = (__m256i*)&InputBiases[0];
         __m256i* AccumulatorTile = (__m256i*)(*Accumulation)[Perspective];
 
         __m256i Acc[NUM_REGS]; // 16
@@ -441,7 +441,7 @@ void RefreshAccumulator(BoardItem* Board)
 
             int WeightIndex = CalculateWeightIndex(Perspective, OrientKingSquare, Square, PieceWithColor);
 
-            __m256i* Column = (__m256i*) & InputWeights[WeightIndex * HALF_FEATURE_OUTPUT_DIMENSION];
+            __m256i* Column = (__m256i*)&InputWeights[WeightIndex * HALF_FEATURE_OUTPUT_DIMENSION];
 
             for (int Reg = 0; Reg < NUM_REGS; ++Reg) { // 16
                 Acc[Reg] = _mm256_add_epi16(Acc[Reg], Column[Reg]);
@@ -480,12 +480,12 @@ void RefreshAccumulator(BoardItem* Board)
     }
 #endif // USE_NNUE_AVX2
 
-#ifdef USE_NNUE_REFRESH
+#ifdef USE_NNUE_UPDATE
     Board->Accumulator.AccumulationComputed = TRUE;
-#endif // USE_NNUE_REFRESH
+#endif // USE_NNUE_UPDATE
 }
 
-#ifdef USE_NNUE_REFRESH
+#ifdef USE_NNUE_UPDATE
 
 void AccumulatorAdd(BoardItem* Board, const int Perspective, const int WeightIndex)
 {
@@ -494,7 +494,7 @@ void AccumulatorAdd(BoardItem* Board, const int Perspective, const int WeightInd
 #ifdef USE_NNUE_AVX2
     __m256i* AccumulatorTile = (__m256i*)(*Accumulation)[Perspective];
 
-    __m256i* Column = (__m256i*) & InputWeights[WeightIndex * HALF_FEATURE_OUTPUT_DIMENSION];
+    __m256i* Column = (__m256i*)&InputWeights[WeightIndex * HALF_FEATURE_OUTPUT_DIMENSION];
 
     for (int Reg = 0; Reg < NUM_REGS; ++Reg) { // 16
         AccumulatorTile[Reg] = _mm256_add_epi16(AccumulatorTile[Reg], Column[Reg]);
@@ -513,7 +513,7 @@ void AccumulatorSub(BoardItem* Board, const int Perspective, const int WeightInd
 #ifdef USE_NNUE_AVX2
     __m256i* AccumulatorTile = (__m256i*)(*Accumulation)[Perspective];
 
-    __m256i* Column = (__m256i*) & InputWeights[WeightIndex * HALF_FEATURE_OUTPUT_DIMENSION];
+    __m256i* Column = (__m256i*)&InputWeights[WeightIndex * HALF_FEATURE_OUTPUT_DIMENSION];
 
     for (int Reg = 0; Reg < NUM_REGS; ++Reg) { // 16
         AccumulatorTile[Reg] = _mm256_sub_epi16(AccumulatorTile[Reg], Column[Reg]);
@@ -622,20 +622,20 @@ BOOL UpdateAccumulator(BoardItem* Board)
     return TRUE;
 }
 
-#endif // USE_NNUE_REFRESH
+#endif // USE_NNUE_UPDATE
 
 void Transform(BoardItem* Board, I8* Output, U32* OutputMask)
 {
     I16(*Accumulation)[2][HALF_FEATURE_OUTPUT_DIMENSION] = &Board->Accumulator.Accumulation;
 
     if (!Board->Accumulator.AccumulationComputed) {
-#ifdef USE_NNUE_REFRESH
+#ifdef USE_NNUE_UPDATE
         if (!UpdateAccumulator(Board)) {
-#endif // USE_NNUE_REFRESH
+#endif // USE_NNUE_UPDATE
             RefreshAccumulator(Board);
-#ifdef USE_NNUE_REFRESH
+#ifdef USE_NNUE_UPDATE
         }
-#endif // USE_NNUE_REFRESH
+#endif // USE_NNUE_UPDATE
     }
 
 #ifdef USE_NNUE_AVX2
@@ -643,7 +643,7 @@ void Transform(BoardItem* Board, I8* Output, U32* OutputMask)
 
     // Active
 
-    __m256i* Out_1 = (__m256i*) & Output[0]; // Offset 0
+    __m256i* Out_1 = (__m256i*)&Output[0]; // Offset 0
 
     for (int Chunk = 0; Chunk < NUM_REGS / 2; ++Chunk) { // 16 / 2 = 8
         __m256i Sum_0 = ((__m256i*)(*Accumulation)[Board->CurrentColor])[Chunk * 2];
@@ -656,7 +656,7 @@ void Transform(BoardItem* Board, I8* Output, U32* OutputMask)
 
     // Non active
 
-    __m256i* Out_2 = (__m256i*) & Output[HALF_FEATURE_OUTPUT_DIMENSION]; // Offset 256
+    __m256i* Out_2 = (__m256i*)&Output[HALF_FEATURE_OUTPUT_DIMENSION]; // Offset 256
 
     for (int Chunk = 0; Chunk < NUM_REGS / 2; ++Chunk) { // 16 / 2 = 8
         __m256i Sum_0 = ((__m256i*)(*Accumulation)[CHANGE_COLOR(Board->CurrentColor)])[Chunk * 2];
