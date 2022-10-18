@@ -56,9 +56,9 @@
 
 #endif // USE_NNUE_AVX2
 
-_declspec(align(32)) I16 FeatureWeights[FEATURE_DIMENSION * HIDDEN_DIMENSION];  // 768 x 512 = 393216
-_declspec(align(32)) I16 HiddenBiases[HIDDEN_DIMENSION];                        // 512
-_declspec(align(32)) I16 HiddenWeights[HIDDEN_DIMENSION * 2];                   // 512 x 2 = 1024
+_declspec(align(64)) I16 FeatureWeights[FEATURE_DIMENSION * HIDDEN_DIMENSION];  // 768 x 512 = 393216
+_declspec(align(64)) I16 HiddenBiases[HIDDEN_DIMENSION];                        // 512
+_declspec(align(64)) I16 HiddenWeights[HIDDEN_DIMENSION * 2];                   // 512 x 2 = 1024
 I16 OutputBias;                                                                 // 1
 
 #if defined(NET_KS) || defined(NET_KQ)
