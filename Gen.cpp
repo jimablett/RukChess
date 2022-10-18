@@ -96,11 +96,13 @@ void AddMove(const BoardItem* Board, MoveItem* MoveList, int* GenMoveCount, cons
         }
         else {
 #ifdef MOVES_SORT_HEURISTIC
+
 #ifdef COMMON_HEURISTIC_TABLE
             MoveList[*GenMoveCount].SortValue = HeuristicTable[Board->CurrentColor][PIECE(Board->Pieces[From])][To];
 #else
             MoveList[*GenMoveCount].SortValue = Board->HeuristicTable[Board->CurrentColor][PIECE(Board->Pieces[From])][To];
 #endif // COMMON_HEURISTIC_TABLE
+
 #elif defined(MOVES_SORT_SQUARE_SCORE) && defined(SIMPLIFIED_EVALUATION_FUNCTION)
             if (PIECE(Board->Pieces[From]) == PAWN) {
                 if (Board->CurrentColor == WHITE) {

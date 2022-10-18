@@ -152,9 +152,11 @@ int RootSplitting_Search(BoardItem* Board, int Alpha, int Beta, int Depth, const
 
 #ifdef KILLER_MOVE
     SetKillerMove1SortValue(Board, Ply, MoveList, GenMoveCount, HashMove);
+
 #ifdef KILLER_MOVE_2
     SetKillerMove2SortValue(Board, Ply, MoveList, GenMoveCount, HashMove);
 #endif // KILLER_MOVE_2
+
 #endif // KILLER_MOVE
 
 #ifdef COUNTER_MOVE
@@ -162,17 +164,23 @@ int RootSplitting_Search(BoardItem* Board, int Alpha, int Beta, int Depth, const
 #endif // COUNTER_MOVE
 
 #ifdef KILLER_MOVE
+
 #ifdef COMMON_KILLER_MOVE_TABLE
     KillerMoveTable[Ply + 1][0] = 0;
+
 #ifdef KILLER_MOVE_2
     KillerMoveTable[Ply + 1][1] = 0;
 #endif // KILLER_MOVE_2
+
 #else
     Board->KillerMoveTable[Ply + 1][0] = 0;
+
 #ifdef KILLER_MOVE_2
     Board->KillerMoveTable[Ply + 1][1] = 0;
 #endif // KILLER_MOVE_2
+
 #endif // COMMON_KILLER_MOVE_TABLE
+
 #endif // KILLER_MOVE
 
     // First move
