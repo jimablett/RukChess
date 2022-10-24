@@ -29,6 +29,9 @@ current implementation (Game.cpp, line 871)
 # Strength
 For RukChess 3.0 NNUE2 with the rukchess.nnue (in release) the strength is approximately 3169 ELO.
 
+# Rating
+https://www.computerchess.org.uk/ccrl/4040/cgi/engine_details.cgi?print=Details&each_game=1&eng=RukChess%203.0%2064-bit#RukChess_3_0_64-bit
+
 # Chess programs (source codes)
 1. https://www.ioccc.org/years.html#1992_vern
 2. http://www.tckerrigan.com/Chess/TSCP/
