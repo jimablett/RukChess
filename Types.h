@@ -5,6 +5,8 @@
 #ifndef TYPES_H
 #define TYPES_H
 
+#include "Def.h"
+
 #define BOOL                int
 
 #define FALSE               0
@@ -12,7 +14,15 @@
 
 #define INF                 10000
 
+#if TUNING
+
 #define SCORE               double
+
+#else
+
+#define SCORE               int
+
+#endif // TUNING
 
 typedef __int8              I8;
 typedef __int16             I16;

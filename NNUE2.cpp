@@ -52,7 +52,7 @@
 
 #ifdef USE_NNUE_AVX2
 
-#define NUM_REGS                    (HIDDEN_DIMENSION * 16 / 256) // Hidden dimension x 16 bits (I16) / 256 bits (AVX2 register size)
+#define NUM_REGS                    (HIDDEN_DIMENSION * sizeof(I16) / sizeof(__m256i)) // 32
 
 #endif // USE_NNUE_AVX2
 
