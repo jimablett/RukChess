@@ -14,7 +14,7 @@
 
 #define INF                 10000
 
-#if TUNING
+#ifdef TUNING
 
 #define SCORE               double
 

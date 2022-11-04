@@ -670,6 +670,8 @@ double CalculateError(const int BatchSize)
         PositionItemPointer->Error = pow((PositionItemPointer->Result - Sigmoid(Score)), 2.0);
     }
 
+//  printf("\n");
+
     // Kahan summation algorithm (https://en.wikipedia.org/wiki/Kahan_summation_algorithm)
 
     for (int PositionNumber = 0; PositionNumber < PositionStore.Count; ++PositionNumber) {
@@ -748,6 +750,8 @@ void FindBestK(void)
 //              printf("\n");
 
 //              printf("Best K = %.8f\n", BestK);
+
+//              printf("\n");
             }
 
             Min += Delta;
@@ -759,15 +763,15 @@ void FindBestK(void)
         Delta /= 10.0;
     }
 
+//  printf("\n");
+
     K = BestK;
+
+    printf("Find best K...DONE\n");
 
     printf("\n");
 
     printf("Best K = %.8f\n", K);
-
-    printf("\n");
-
-    printf("Find best K...DONE\n");
 
     PositionStoreFree();
 }
@@ -1193,7 +1197,7 @@ void CalculateGradients(const int BatchSize, const double BaseError)
         *TuningParamStore.Params[ParamIndex] -= 2; // Param = Old param
     }
 
-    printf("\n");
+//  printf("\n");
 
     printf("Calculation gradients...DONE\n");
 }
@@ -1300,8 +1304,8 @@ void TuningAdamSGD(void)
         for (int ParamIndex = 0; ParamIndex < TuningParamStore.Count; ++ParamIndex) {
             Gradient = TuningParamStore.Gradients[ParamIndex];
 
-            M[ParamIndex] = Beta1 * M[ParamIndex] + (1 - Beta1) * Gradient;
-            V[ParamIndex] = Beta2 * V[ParamIndex] + (1 - Beta2) * Gradient * Gradient;
+            M[ParamIndex] = Beta1 * M[ParamIndex] + (1.0 - Beta1) * Gradient;
+            V[ParamIndex] = Beta2 * V[ParamIndex] + (1.0 - Beta2) * Gradient * Gradient;
 
             M_Corrected = M[ParamIndex] / (1.0 - pow(Beta1, Epoch));
             V_Corrected = V[ParamIndex] / (1.0 - pow(Beta2, Epoch));
@@ -1312,6 +1316,8 @@ void TuningAdamSGD(void)
 
             *TuningParamStore.Params[ParamIndex] -= Delta;
         }
+
+//      printf("\n");
 
         CurrentError = CalculateError(BatchSize);
 
