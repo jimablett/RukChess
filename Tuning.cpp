@@ -410,7 +410,7 @@ void Pgn2Fen(void)
                     if (Error) {
                         ++Part;
 
-                        continue; // Next string
+                        continue; // Next character in string
                     }
 
 //                  printf("Move = %s\n", MoveString);

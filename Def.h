@@ -149,8 +149,8 @@
 
 // Program name, version and copyright information
 
-#define NAME                                    "RukChess 3.0.4"
-#define VERSION                                 "2022-11-01"
+#define NAME                                    "RukChess 3.0.5"
+#define VERSION                                 "2022-11-16"
 
 #define AUTHOR                                  "Ilya Rukavishnikov"
 #define YEARS                                   "1999-2022"

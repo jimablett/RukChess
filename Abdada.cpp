@@ -650,6 +650,9 @@ int ABDADA_Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Pl
             && !IsPrincipal
             && !InCheck
             && !GiveCheck
+#ifdef PVS
+            && MoveList[MoveNumber].SortValue != SORT_PVS_MOVE_VALUE
+#endif // PVS
 #ifdef HASH_MOVE
             && MoveList[MoveNumber].Move != HashMove
 #endif // HASH_MOVE
@@ -719,6 +722,9 @@ int ABDADA_Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Pl
                 && !InCheck
                 && !GiveCheck
                 && !(MoveList[MoveNumber].Type & (MOVE_CAPTURE | MOVE_PAWN_PROMOTE)) // Not capture/promote move
+#ifdef PVS
+                && MoveList[MoveNumber].SortValue != SORT_PVS_MOVE_VALUE
+#endif // PVS
 #ifdef HASH_MOVE
                 && MoveList[MoveNumber].Move != HashMove
 #endif // HASH_MOVE
@@ -930,6 +936,9 @@ int ABDADA_Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Pl
             && !IsPrincipal
             && !InCheck
             && !GiveCheck
+//#ifdef PVS
+//          && DeferMoveList[MoveNumber].SortValue != SORT_PVS_MOVE_VALUE
+//#endif // PVS
 //#ifdef HASH_MOVE
 //          && DeferMoveList[MoveNumber].Move != HashMove
 //#endif // HASH_MOVE
@@ -989,6 +998,9 @@ int ABDADA_Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Pl
             && !InCheck
             && !GiveCheck
             && !(DeferMoveList[MoveNumber].Type & (MOVE_CAPTURE | MOVE_PAWN_PROMOTE)) // Not capture/promote move
+//#ifdef PVS
+//          && DeferMoveList[MoveNumber].SortValue != SORT_PVS_MOVE_VALUE
+//#endif // PVS
 //#ifdef HASH_MOVE
 //          && DeferMoveList[MoveNumber].Move != HashMove
 //#endif // HASH_MOVE

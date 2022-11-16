@@ -596,6 +596,9 @@ NextMove:
             && !InCheck
             && !GiveCheck
             && !(MoveList[MoveNumber].Type & (MOVE_CAPTURE | MOVE_PAWN_PROMOTE)) // Not capture/promote move
+//#ifdef PVS
+//          && MoveList[MoveNumber].SortValue != SORT_PVS_MOVE_VALUE
+//#endif // PVS
 //#ifdef HASH_MOVE
 //          && MoveList[MoveNumber].Move != HashMove
 //#endif // HASH_MOVE

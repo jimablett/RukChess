@@ -352,7 +352,7 @@ void GenerateBook(void)
                     if (Error || Ply >= MAX_BOOK_PLY || MinElo < MIN_BOOK_ELO) {
                         ++Part;
 
-                        continue; // Next string
+                        continue; // Next character in string
                     }
 
 //                  printf("Ply = %d Result = %d Move = %s\n", Ply, Result, MoveString);

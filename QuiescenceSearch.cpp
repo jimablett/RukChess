@@ -218,6 +218,9 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
 #ifdef QUIESCENCE_SEE_MOVE_PRUNING
         if (
             !InCheck
+#ifdef QUIESCENCE_PVS
+            && MoveList[MoveNumber].SortValue != SORT_PVS_MOVE_VALUE
+#endif // QUIESCENCE_PVS
 #ifdef QUIESCENCE_HASH_MOVE
             && MoveList[MoveNumber].Move != HashMove
 #endif // QUIESCENCE_HASH_MOVE
@@ -256,6 +259,10 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
             continue; // Next move
         }
 
+        ++LegalMoveCount;
+
+        ++Board->Nodes;
+
         GiveCheck = IsInCheck(Board, Board->CurrentColor);
 
 #ifdef QUIESCENCE_CHECK_EXTENSION_EXTENDED
@@ -269,10 +276,6 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
             continue; // Next move
         }
 #endif // QUIESCENCE_CHECK_EXTENSION_EXTENDED
-
-        ++LegalMoveCount;
-
-        ++Board->Nodes;
 
         TempBestMoves[0] = { 0, 0, 0 };
 
