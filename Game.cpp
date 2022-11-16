@@ -60,7 +60,7 @@ void PrintBestMoves(const BoardItem* Board, const int Depth, const MoveItem* Bes
             printf(" nps %llu", 1000ULL * Board->Nodes / TotalTime);
         }
 
-        if ((TimeStop - CurrentTime) >= 3000) {
+        if ((TimeStop - CurrentTime) >= 3000ULL) {
             printf(" hashfull %d", FullHash());
         }
 
@@ -111,7 +111,7 @@ BOOL PrintResult(const BOOL InCheck, const MoveItem BestMove, const MoveItem Pon
             printf(" nps %llu", 1000ULL * CurrentBoard.Nodes / TotalTime);
         }
 
-        if ((TimeStop - Clock()) >= 3000) {
+        if ((TimeStop - Clock()) >= 3000ULL) {
             printf(" hashfull %d", FullHash());
         }
 

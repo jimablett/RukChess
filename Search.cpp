@@ -446,7 +446,7 @@ NextMove:
 /*
 #if !defined(ROOT_SPLITTING) && !defined(PV_SPLITTING)
         if (omp_get_thread_num() == 0) { // Master thread
-            if (Ply == 0 && PrintMode == PRINT_MODE_UCI && (Clock() - TimeStart) >= 3000) {
+            if (Ply == 0 && PrintMode == PRINT_MODE_UCI && (Clock() - TimeStart) >= 3000ULL) {
 #pragma omp critical
                 {
                     printf("info depth %d currmovenumber %d currmove %s%s", Depth, MoveNumber + 1, BoardName[MOVE_FROM(MoveList[MoveNumber].Move)], BoardName[MOVE_TO(MoveList[MoveNumber].Move)]);

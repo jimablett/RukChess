@@ -316,7 +316,7 @@ NextMove0:
 
         ++Board->Nodes;
 /*
-        if (Ply == 0 && PrintMode == PRINT_MODE_UCI && (Clock() - TimeStart) >= 3000) {
+        if (Ply == 0 && PrintMode == PRINT_MODE_UCI && (Clock() - TimeStart) >= 3000ULL) {
             printf("info depth %d currmovenumber %d currmove %s%s", Depth, MoveNumber0 + 1, BoardName[MOVE_FROM(MoveList[MoveNumber0].Move)], BoardName[MOVE_TO(MoveList[MoveNumber0].Move)]);
 
             if (MoveList[MoveNumber0].Type & MOVE_PAWN_PROMOTE) {
@@ -528,7 +528,7 @@ NextMove:
 
         ++ThreadBoard->Nodes;
 /*
-        if (Ply == 0 && PrintMode == PRINT_MODE_UCI && (Clock() - TimeStart) >= 3000) {
+        if (Ply == 0 && PrintMode == PRINT_MODE_UCI && (Clock() - TimeStart) >= 3000ULL) {
 #pragma omp critical
             {
                 printf("info depth %d currmovenumber %d currmove %s%s", Depth, MoveNumber + 1, BoardName[MOVE_FROM(MoveList[MoveNumber].Move)], BoardName[MOVE_TO(MoveList[MoveNumber].Move)]);
