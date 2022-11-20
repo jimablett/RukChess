@@ -214,25 +214,25 @@ void NotateMove(BoardItem* Board, const MoveItem Move, char* Result)
     }
     else {
         switch (PieceFrom) {
-        case KNIGHT:
-            *Result++ = 'N';
-            break;
+            case KNIGHT:
+                *Result++ = 'N';
+                break;
 
-        case BISHOP:
-            *Result++ = 'B';
-            break;
+            case BISHOP:
+                *Result++ = 'B';
+                break;
 
-        case ROOK:
-            *Result++ = 'R';
-            break;
+            case ROOK:
+                *Result++ = 'R';
+                break;
 
-        case QUEEN:
-            *Result++ = 'Q';
-            break;
+            case QUEEN:
+                *Result++ = 'Q';
+                break;
 
-        case KING:
-            *Result++ = 'K';
-            break;
+            case KING:
+                *Result++ = 'K';
+                break;
         }
 
         if (ShowFileFrom) {
@@ -254,21 +254,21 @@ void NotateMove(BoardItem* Board, const MoveItem Move, char* Result)
             *Result++ = '=';
 
             switch (MOVE_PROMOTE_PIECE(Move.Move)) {
-            case QUEEN:
-                *Result++ = 'Q';
-                break;
+                case QUEEN:
+                    *Result++ = 'Q';
+                    break;
 
-            case ROOK:
-                *Result++ = 'R';
-                break;
+                case ROOK:
+                    *Result++ = 'R';
+                    break;
 
-            case BISHOP:
-                *Result++ = 'B';
-                break;
+                case BISHOP:
+                    *Result++ = 'B';
+                    break;
 
-            case KNIGHT:
-                *Result++ = 'N';
-                break;
+                case KNIGHT:
+                    *Result++ = 'N';
+                    break;
             }
         }
     }

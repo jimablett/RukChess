@@ -161,94 +161,94 @@ int main(int, char**)
         scanf_s("%d", &Choice);
 
         switch (Choice) {
-        case 1:
-            SetFen(&CurrentBoard, StartFen);
-            Game(WHITE, BLACK);
-            break;
+            case 1:
+                SetFen(&CurrentBoard, StartFen);
+                Game(WHITE, BLACK);
+                break;
 
-        case 2:
-            SetFen(&CurrentBoard, StartFen);
-            Game(BLACK, WHITE);
-            break;
+            case 2:
+                SetFen(&CurrentBoard, StartFen);
+                Game(BLACK, WHITE);
+                break;
 
-        case 3:
-            SetFen(&CurrentBoard, StartFen);
-            GameAuto();
-            break;
+            case 3:
+                SetFen(&CurrentBoard, StartFen);
+                GameAuto();
+                break;
 
-        case 4:
-            LoadGame(&CurrentBoard);
-            Game(WHITE, BLACK);
-            break;
+            case 4:
+                LoadGame(&CurrentBoard);
+                Game(WHITE, BLACK);
+                break;
 
-        case 5:
-            LoadGame(&CurrentBoard);
-            Game(BLACK, WHITE);
-            break;
+            case 5:
+                LoadGame(&CurrentBoard);
+                Game(BLACK, WHITE);
+                break;
 
-        case 6:
-            LoadGame(&CurrentBoard);
-            GameAuto();
-            break;
+            case 6:
+                LoadGame(&CurrentBoard);
+                GameAuto();
+                break;
 
-        case 7:
-            GeneratorTest1();
-            break;
+            case 7:
+                GeneratorTest1();
+                break;
 
-        case 8:
-            LoadGame(&CurrentBoard);
-            GeneratorTest2();
-            break;
+            case 8:
+                LoadGame(&CurrentBoard);
+                GeneratorTest2();
+                break;
 
-        case 9:
-            PerformanceTest();
-            break;
+            case 9:
+                PerformanceTest();
+                break;
 
-        case 10:
-            BratkoKopecTest();
-            break;
+            case 10:
+                BratkoKopecTest();
+                break;
 
-        case 11:
-            WinAtChessTest();
-            break;
+            case 11:
+                WinAtChessTest();
+                break;
 
-        case 12:
-            GenerateBook();
-            break;
+            case 12:
+                GenerateBook();
+                break;
 
-        case 13:
-            Pgn2Fen();
-            break;
+            case 13:
+                Pgn2Fen();
+                break;
 
 #if defined(TUNING) && defined(TOGA_EVALUATION_FUNCTION)
 
-        case 14:
-            FindBestK();
-            break;
+            case 14:
+                FindBestK();
+                break;
 
-        case 15:
-            TuningLocalSearch();
-            break;
+            case 15:
+                TuningLocalSearch();
+                break;
 
-        case 16:
-            TuningAdamSGD();
-            break;
+            case 16:
+                TuningAdamSGD();
+                break;
 
-        case 17:
-            LoadTuningParams();
-            break;
+            case 17:
+                LoadTuningParams();
+                break;
 
-        case 18:
-            SaveTuningParams();
-            break;
+            case 18:
+                SaveTuningParams();
+                break;
 
-        case 19: // Exit
-            return 0;
+            case 19: // Exit
+                return 0;
 
 #else
 
-        case 14: // Exit
-            return 0;
+            case 14: // Exit
+                return 0;
 
 #endif // TUNING && TOGA_EVALUATION_FUNCTION
         } // switch

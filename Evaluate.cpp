@@ -151,35 +151,35 @@ int Evaluate(BoardItem* Board)
         Square = LSB(Pieces);
 
         switch (PIECE(Board->Pieces[Square])) {
-        case PAWN:
-            Score += PawnSquareScore[Square];
-            break;
+            case PAWN:
+                Score += PawnSquareScore[Square];
+                break;
 
-        case KNIGHT:
-            Score += KnightSquareScore[Square];
-            break;
+            case KNIGHT:
+                Score += KnightSquareScore[Square];
+                break;
 
-        case BISHOP:
-            Score += BishopSquareScore[Square];
-            break;
+            case BISHOP:
+                Score += BishopSquareScore[Square];
+                break;
 
-        case ROOK:
-            Score += RookSquareScore[Square];
-            break;
+            case ROOK:
+                Score += RookSquareScore[Square];
+                break;
 
-        case QUEEN:
-            Score += QueenSquareScore[Square];
-            break;
+            case QUEEN:
+                Score += QueenSquareScore[Square];
+                break;
 
-        case KING:
-            if (IsEndGame(Board)) { // End game
-                Score += KingSquareScoreEnding[Square];
-            }
-            else { // Open/Middle game
-                Score += KingSquareScoreOpening[Square];
-            }
+            case KING:
+                if (IsEndGame(Board)) { // End game
+                    Score += KingSquareScoreEnding[Square];
+                }
+                else { // Open/Middle game
+                    Score += KingSquareScoreOpening[Square];
+                }
 
-            break;
+                break;
         }
 
         Pieces &= Pieces - 1;
@@ -193,35 +193,35 @@ int Evaluate(BoardItem* Board)
         Square = LSB(Pieces);
 
         switch (PIECE(Board->Pieces[Square])) {
-        case PAWN:
-            Score -= PawnSquareScore[Square ^ 56];
-            break;
+            case PAWN:
+                Score -= PawnSquareScore[Square ^ 56];
+                break;
 
-        case KNIGHT:
-            Score -= KnightSquareScore[Square ^ 56];
-            break;
+            case KNIGHT:
+                Score -= KnightSquareScore[Square ^ 56];
+                break;
 
-        case BISHOP:
-            Score -= BishopSquareScore[Square ^ 56];
-            break;
+            case BISHOP:
+                Score -= BishopSquareScore[Square ^ 56];
+                break;
 
-        case ROOK:
-            Score -= RookSquareScore[Square ^ 56];
-            break;
+            case ROOK:
+                Score -= RookSquareScore[Square ^ 56];
+                break;
 
-        case QUEEN:
-            Score -= QueenSquareScore[Square ^ 56];
-            break;
+            case QUEEN:
+                Score -= QueenSquareScore[Square ^ 56];
+                break;
 
-        case KING:
-            if (IsEndGame(Board)) { // End game
-                Score -= KingSquareScoreEnding[Square ^ 56];
-            }
-            else { // Open/Middle game
-                Score -= KingSquareScoreOpening[Square ^ 56];
-            }
+            case KING:
+                if (IsEndGame(Board)) { // End game
+                    Score -= KingSquareScoreEnding[Square ^ 56];
+                }
+                else { // Open/Middle game
+                    Score -= KingSquareScoreOpening[Square ^ 56];
+                }
 
-            break;
+                break;
         }
 
         Pieces &= Pieces - 1;
@@ -774,363 +774,363 @@ SCORE Evaluate(BoardItem* Board)
         Square = LSB(Pieces);
 
         switch (PIECE(Board->Pieces[Square])) {
-        case PAWN:
-            // Material (4.2)
+            case PAWN:
+                // Material (4.2)
 
-            ScoreOpening += PiecesScoreOpening[PAWN];
-            ScoreEnding += PiecesScoreEnding[PAWN];
+                ScoreOpening += PiecesScoreOpening[PAWN];
+                ScoreEnding += PiecesScoreEnding[PAWN];
 
-            // Piece-square tables (4.3)
+                // Piece-square tables (4.3)
 
-            ScoreOpening += PawnSquareScoreOpening[Square];
-            ScoreEnding += PawnSquareScoreEnding[Square];
+                ScoreOpening += PawnSquareScoreOpening[Square];
+                ScoreEnding += PawnSquareScoreEnding[Square];
 
-            // Pawns (4.4)
+                // Pawns (4.4)
 
-            SquareAhead = Square - 8;
+                SquareAhead = Square - 8;
 
-            File = FILE(Square);
-            Rank = RANK(Square);
+                File = FILE(Square);
+                Rank = RANK(Square);
 
-            if (PawnDoubledMask[WHITE][Square] & WhitePawns) { // Doubled
-                ScoreOpening += PawnDoubledOpening;
-                ScoreEnding += PawnDoubledEnding;
-            }
-
-            if (!(PawnIsolatedMask[File] & WhitePawns)) { // Isolated
-                if (!(PawnDoubledMask[WHITE][Square] & (WhitePawns | BlackPawns))) { // Isolated open
-                    ScoreOpening += PawnIsolatedOpenOpening;
-                    ScoreEnding += PawnIsolatedOpenEnding;
-                }
-                else {
-                    ScoreOpening += PawnIsolatedOpening;
-                    ScoreEnding += PawnIsolatedEnding;
-                }
-            }
-            else if (
-                !(PawnPassedMask[BLACK][SquareAhead] & PawnIsolatedMask[File] & WhitePawns)
-                && (
-                    (BB_SQUARE(SquareAhead) & (WhitePawns | BlackPawns))
-                    || (PawnAttacks(BB_SQUARE(SquareAhead), WHITE) & BlackPawns)
-                )
-            ) { // Backward
-                if (!(PawnDoubledMask[WHITE][Square] & (WhitePawns | BlackPawns))) { // Backward open
-                    ScoreOpening += PawnBackwardOpenOpening;
-                    ScoreEnding += PawnBackwardOpenEnding;
-                }
-                else {
-                    ScoreOpening += PawnBackwardOpening;
-                    ScoreEnding += PawnBackwardEnding;
-                }
-            }
-
-            // Passed pawns (4.9)
-            // Pawns (4.4): Candidate
-
-            if (!(PawnPassedMask[WHITE][Square] & BlackPawns)) { // Passed pawns
-                PawnPassedScoreEnding = PawnPassedEndingBase2;
-
-                // King distance
-
-                PawnPassedScoreEnding += PawnPassedEndingHostileKingDistance * Distance[SquareAhead][BlackKingSquare];
-                PawnPassedScoreEnding += PawnPassedEndingFriendlyKingDistance * Distance[SquareAhead][WhiteKingSquare];
-
-                // Free
-
-                if (!(BB_SQUARE(SquareAhead) & AllPieces) && !IsSquareAttacked(Board, SquareAhead, WHITE)) {
-                    PawnPassedScoreEnding += PawnPassedEndingConsideredFree;
+                if (PawnDoubledMask[WHITE][Square] & WhitePawns) { // Doubled
+                    ScoreOpening += PawnDoubledOpening;
+                    ScoreEnding += PawnDoubledEnding;
                 }
 
-                // Unstoppable
-
-                if (!Board->BB_Pieces[BLACK][KNIGHT] && !Board->BB_Pieces[BLACK][BISHOP] && !Board->BB_Pieces[BLACK][ROOK] && !Board->BB_Pieces[BLACK][QUEEN]) {
-                    if ((KingAttacks(Square) & Board->BB_Pieces[WHITE][KING]) && (KingAttacks(SQUARE(0, FILE(Square))) & Board->BB_Pieces[WHITE][KING])) {
-                        PawnPassedScoreEnding += PawnPassedEndingUnstoppable;
+                if (!(PawnIsolatedMask[File] & WhitePawns)) { // Isolated
+                    if (!(PawnDoubledMask[WHITE][Square] & (WhitePawns | BlackPawns))) { // Isolated open
+                        ScoreOpening += PawnIsolatedOpenOpening;
+                        ScoreEnding += PawnIsolatedOpenEnding;
                     }
-                    else if (Board->CurrentColor == WHITE && !(PawnDoubledMask[WHITE][Square] & AllPieces)) {
-                        for (int Square2 = SquareAhead; Square2 >= 0; Square2 -= 8) {
-                            if (Distance[Square][Square2] >= Distance[BlackKingSquare][Square2]) {
-                                break; // for
-                            }
+                    else {
+                        ScoreOpening += PawnIsolatedOpening;
+                        ScoreEnding += PawnIsolatedEnding;
+                    }
+                }
+                else if (
+                    !(PawnPassedMask[BLACK][SquareAhead] & PawnIsolatedMask[File] & WhitePawns)
+                    && (
+                        (BB_SQUARE(SquareAhead) & (WhitePawns | BlackPawns))
+                        || (PawnAttacks(BB_SQUARE(SquareAhead), WHITE) & BlackPawns)
+                    )
+                ) { // Backward
+                    if (!(PawnDoubledMask[WHITE][Square] & (WhitePawns | BlackPawns))) { // Backward open
+                        ScoreOpening += PawnBackwardOpenOpening;
+                        ScoreEnding += PawnBackwardOpenEnding;
+                    }
+                    else {
+                        ScoreOpening += PawnBackwardOpening;
+                        ScoreEnding += PawnBackwardEnding;
+                    }
+                }
 
-                            if (RANK(Square2) == 0) { // Last iteration
-                                PawnPassedScoreEnding += PawnPassedEndingUnstoppable;
+                // Passed pawns (4.9)
+                // Pawns (4.4): Candidate
+
+                if (!(PawnPassedMask[WHITE][Square] & BlackPawns)) { // Passed pawns
+                    PawnPassedScoreEnding = PawnPassedEndingBase2;
+
+                    // King distance
+
+                    PawnPassedScoreEnding += PawnPassedEndingHostileKingDistance * Distance[SquareAhead][BlackKingSquare];
+                    PawnPassedScoreEnding += PawnPassedEndingFriendlyKingDistance * Distance[SquareAhead][WhiteKingSquare];
+
+                    // Free
+
+                    if (!(BB_SQUARE(SquareAhead) & AllPieces) && !IsSquareAttacked(Board, SquareAhead, WHITE)) {
+                        PawnPassedScoreEnding += PawnPassedEndingConsideredFree;
+                    }
+
+                    // Unstoppable
+
+                    if (!Board->BB_Pieces[BLACK][KNIGHT] && !Board->BB_Pieces[BLACK][BISHOP] && !Board->BB_Pieces[BLACK][ROOK] && !Board->BB_Pieces[BLACK][QUEEN]) {
+                        if ((KingAttacks(Square) & Board->BB_Pieces[WHITE][KING]) && (KingAttacks(SQUARE(0, FILE(Square))) & Board->BB_Pieces[WHITE][KING])) {
+                            PawnPassedScoreEnding += PawnPassedEndingUnstoppable;
+                        }
+                        else if (Board->CurrentColor == WHITE && !(PawnDoubledMask[WHITE][Square] & AllPieces)) {
+                            for (int Square2 = SquareAhead; Square2 >= 0; Square2 -= 8) {
+                                if (Distance[Square][Square2] >= Distance[BlackKingSquare][Square2]) {
+                                    break; // for
+                                }
+
+                                if (RANK(Square2) == 0) { // Last iteration
+                                    PawnPassedScoreEnding += PawnPassedEndingUnstoppable;
+                                }
                             }
                         }
                     }
+
+                    ScoreOpening += PawnPassedOpening[7 - Rank];
+                    ScoreEnding += PawnPassedEndingBase1 + PawnPassedScoreEnding * PawnPassedEndingWeight[7 - Rank] / 100;
+                }
+                else if (
+                    !(PawnDoubledMask[WHITE][Square] & (WhitePawns | BlackPawns))
+                    && (POPCNT(PawnPassedMask[WHITE][Square] & PawnIsolatedMask[File] & BlackPawns) <= POPCNT(PawnPassedMask[BLACK][SquareAhead] & PawnIsolatedMask[File] & WhitePawns))
+                    && (POPCNT(PawnAttacks(BB_SQUARE(Square), WHITE) & BlackPawns) <= POPCNT(PawnAttacks(BB_SQUARE(Square), BLACK) & WhitePawns))
+                ) { // Candidate
+                    ScoreOpening += PawnCandidateOpening[7 - Rank];
+                    ScoreEnding += PawnCandidateEnding[7 - Rank];
                 }
 
-                ScoreOpening += PawnPassedOpening[7 - Rank];
-                ScoreEnding += PawnPassedEndingBase1 + PawnPassedScoreEnding * PawnPassedEndingWeight[7 - Rank] / 100;
-            }
-            else if (
-                !(PawnDoubledMask[WHITE][Square] & (WhitePawns | BlackPawns))
-                && (POPCNT(PawnPassedMask[WHITE][Square] & PawnIsolatedMask[File] & BlackPawns) <= POPCNT(PawnPassedMask[BLACK][SquareAhead] & PawnIsolatedMask[File] & WhitePawns))
-                && (POPCNT(PawnAttacks(BB_SQUARE(Square), WHITE) & BlackPawns) <= POPCNT(PawnAttacks(BB_SQUARE(Square), BLACK) & WhitePawns))
-            ) { // Candidate
-                ScoreOpening += PawnCandidateOpening[7 - Rank];
-                ScoreEnding += PawnCandidateEnding[7 - Rank];
-            }
+                break;
 
-            break;
+            case KNIGHT:
+                // Material (4.2)
 
-        case KNIGHT:
-            // Material (4.2)
+                ScoreOpening += PiecesScoreOpening[KNIGHT];
+                ScoreEnding += PiecesScoreEnding[KNIGHT];
 
-            ScoreOpening += PiecesScoreOpening[KNIGHT];
-            ScoreEnding += PiecesScoreEnding[KNIGHT];
+                // Piece-square tables (4.3)
 
-            // Piece-square tables (4.3)
+                ScoreOpening += KnightSquareScoreOpening[Square];
+                ScoreEnding += KnightSquareScoreEnding[Square];
 
-            ScoreOpening += KnightSquareScoreOpening[Square];
-            ScoreEnding += KnightSquareScoreEnding[Square];
+                // Mobility (4.7.1)
 
-            // Mobility (4.7.1)
+                Attacks = KnightAttacks(Square);
 
-            Attacks = KnightAttacks(Square);
+                ScoreOpening += (POPCNT(Attacks & ~AllPieces) - KnightMobilityMoveDecrease) * KnightMobility;
+                ScoreEnding += (POPCNT(Attacks & ~AllPieces) - KnightMobilityMoveDecrease) * KnightMobility;
 
-            ScoreOpening += (POPCNT(Attacks & ~AllPieces) - KnightMobilityMoveDecrease) * KnightMobility;
-            ScoreEnding += (POPCNT(Attacks & ~AllPieces) - KnightMobilityMoveDecrease) * KnightMobility;
+                // Piece attack (4.8.3)
 
-            // Piece attack (4.8.3)
-
-            if (Attacks & BlackKingZone) {
-                BlackKingZoneAttackedCount += 1;
-                BlackKingZoneAttackedValue += 1;
-            }
-
-            // Outpost (4.7.3)
-
-            if (KnightOutpost[Square]) {
-                Attacks2 = PawnAttacks(BB_SQUARE(Square), BLACK) & WhitePawns;
-
-                if (Attacks2) {
-                    ScoreOpening += KnightOutpost[Square] * POPCNT(Attacks2);
-                    ScoreEnding += KnightOutpost[Square] * POPCNT(Attacks2);
+                if (Attacks & BlackKingZone) {
+                    BlackKingZoneAttackedCount += 1;
+                    BlackKingZoneAttackedValue += 1;
                 }
-            }
 
-            break;
+                // Outpost (4.7.3)
 
-        case BISHOP:
-            // Material (4.2)
+                if (KnightOutpost[Square]) {
+                    Attacks2 = PawnAttacks(BB_SQUARE(Square), BLACK) & WhitePawns;
 
-            ScoreOpening += PiecesScoreOpening[BISHOP];
-            ScoreEnding += PiecesScoreEnding[BISHOP];
-
-            // Piece-square tables (4.3)
-
-            ScoreOpening += BishopSquareScoreOpening[Square];
-            ScoreEnding += BishopSquareScoreEnding[Square];
-
-            // Mobility (4.7.1)
-
-            Attacks = BishopAttacks(Square, AllPieces);
-
-            ScoreOpening += (POPCNT(Attacks & ~AllPieces) - BishopMobilityMoveDecrease) * BishopMobility;
-            ScoreEnding += (POPCNT(Attacks & ~AllPieces) - BishopMobilityMoveDecrease) * BishopMobility;
-
-            // Piece attack (4.8.3)
-
-            if (Attacks & BlackKingZone) {
-                BlackKingZoneAttackedCount += 1;
-                BlackKingZoneAttackedValue += 1;
-            }
-
-            // Pattern (4.6)
-
-            if (
-                (Square == 1 && (BlackPawns & BB_C7)) // Bb8
-                || (Square == 6 && (BlackPawns & BB_F7)) // Bg8
-                || (Square == 8 && (BlackPawns & BB_B6)) // Ba7
-                || (Square == 15 && (BlackPawns & BB_G6)) // Bh7
-                || (Square == 16 && (BlackPawns & BB_B5)) // Ba6
-                || (Square == 23 && (BlackPawns & BB_G5)) // Bh6
-            ) {
-                ScoreOpening += TrappedBishopOpening;
-                ScoreEnding += TrappedBishopEnding;
-            }
-
-            if (
-                (Square == 58 && (WhitePawns & BB_D2) && (AllPieces & BB_D3)) // Bc1
-                || (Square == 61 && (WhitePawns & BB_E2) && (AllPieces & BB_E3)) // Bf1
-            ) {
-                ScoreOpening += BlockedBishopOpening;
-                ScoreEnding += BlockedBishopEnding;
-            }
-
-            break;
-
-        case ROOK:
-            // Material (4.2)
-
-            ScoreOpening += PiecesScoreOpening[ROOK];
-            ScoreEnding += PiecesScoreEnding[ROOK];
-
-            // Piece-square tables (4.3)
-
-            ScoreOpening += RookSquareScoreOpening[Square];
-            ScoreEnding += RookSquareScoreEnding[Square];
-
-            // Mobility (4.7.1)
-
-            Attacks = RookAttacks(Square, AllPieces);
-
-            ScoreOpening += (POPCNT(Attacks & ~AllPieces) - RookMobilityMoveDecrease) * RookMobilityOpening;
-            ScoreEnding += (POPCNT(Attacks & ~AllPieces) - RookMobilityMoveDecrease) * RookMobilityEnding;
-
-            // Piece attack (4.8.3)
-
-            if (Attacks & BlackKingZone) {
-                BlackKingZoneAttackedCount += 1;
-                BlackKingZoneAttackedValue += 2;
-            }
-
-            // Open file (4.7.2)
-
-            File = FILE(Square);
-
-            if (PawnFileMask[File] & WhitePawns) {
-                if (PawnFileMask[File] & BlackPawns) { // Closed file
-                    ScoreOpening += RookOnClosedFileOpening;
-                    ScoreEnding += RookOnClosedFileEnding;
+                    if (Attacks2) {
+                        ScoreOpening += KnightOutpost[Square] * POPCNT(Attacks2);
+                        ScoreEnding += KnightOutpost[Square] * POPCNT(Attacks2);
+                    }
                 }
-            }
-            else if (PawnFileMask[File] & BlackPawns) { // Semi open file
-                if (File == FILE(BlackKingSquare)) { // Same to enemy king
-                    ScoreOpening += RookOnSemiOpenFileSameToEnemyKingOpening;
-                    ScoreEnding += RookOnSemiOpenFileSameToEnemyKingEnding;
+
+                break;
+
+            case BISHOP:
+                // Material (4.2)
+
+                ScoreOpening += PiecesScoreOpening[BISHOP];
+                ScoreEnding += PiecesScoreEnding[BISHOP];
+
+                // Piece-square tables (4.3)
+
+                ScoreOpening += BishopSquareScoreOpening[Square];
+                ScoreEnding += BishopSquareScoreEnding[Square];
+
+                // Mobility (4.7.1)
+
+                Attacks = BishopAttacks(Square, AllPieces);
+
+                ScoreOpening += (POPCNT(Attacks & ~AllPieces) - BishopMobilityMoveDecrease) * BishopMobility;
+                ScoreEnding += (POPCNT(Attacks & ~AllPieces) - BishopMobilityMoveDecrease) * BishopMobility;
+
+                // Piece attack (4.8.3)
+
+                if (Attacks & BlackKingZone) {
+                    BlackKingZoneAttackedCount += 1;
+                    BlackKingZoneAttackedValue += 1;
                 }
-                else if ((File == FILE(BlackKingSquare) - 1) || (File == FILE(BlackKingSquare) + 1)) { // Adjacent to enemy king
-                    ScoreOpening += RookOnSemiOpenFileAdjacentToEnemyKingOpening;
-                    ScoreEnding += RookOnSemiOpenFileAdjacentToEnemyKingEnding;
+
+                // Pattern (4.6)
+
+                if (
+                    (Square == 1 && (BlackPawns & BB_C7)) // Bb8
+                    || (Square == 6 && (BlackPawns & BB_F7)) // Bg8
+                    || (Square == 8 && (BlackPawns & BB_B6)) // Ba7
+                    || (Square == 15 && (BlackPawns & BB_G6)) // Bh7
+                    || (Square == 16 && (BlackPawns & BB_B5)) // Ba6
+                    || (Square == 23 && (BlackPawns & BB_G5)) // Bh6
+                ) {
+                    ScoreOpening += TrappedBishopOpening;
+                    ScoreEnding += TrappedBishopEnding;
                 }
-                else {
-                    ScoreOpening += RookOnSemiOpenFileOpening;
-                    ScoreEnding += RookOnSemiOpenFileEnding;
+
+                if (
+                    (Square == 58 && (WhitePawns & BB_D2) && (AllPieces & BB_D3)) // Bc1
+                    || (Square == 61 && (WhitePawns & BB_E2) && (AllPieces & BB_E3)) // Bf1
+                ) {
+                    ScoreOpening += BlockedBishopOpening;
+                    ScoreEnding += BlockedBishopEnding;
                 }
-            }
-            else { // Open file
-                if (File == FILE(BlackKingSquare)) { // Same to enemy king
-                    ScoreOpening += RookOnOpenFileSameToEnemyKingOpening;
-                    ScoreEnding += RookOnOpenFileSameToEnemyKingEnding;
+
+                break;
+
+            case ROOK:
+                // Material (4.2)
+
+                ScoreOpening += PiecesScoreOpening[ROOK];
+                ScoreEnding += PiecesScoreEnding[ROOK];
+
+                // Piece-square tables (4.3)
+
+                ScoreOpening += RookSquareScoreOpening[Square];
+                ScoreEnding += RookSquareScoreEnding[Square];
+
+                // Mobility (4.7.1)
+
+                Attacks = RookAttacks(Square, AllPieces);
+
+                ScoreOpening += (POPCNT(Attacks & ~AllPieces) - RookMobilityMoveDecrease) * RookMobilityOpening;
+                ScoreEnding += (POPCNT(Attacks & ~AllPieces) - RookMobilityMoveDecrease) * RookMobilityEnding;
+
+                // Piece attack (4.8.3)
+
+                if (Attacks & BlackKingZone) {
+                    BlackKingZoneAttackedCount += 1;
+                    BlackKingZoneAttackedValue += 2;
                 }
-                else if ((File == FILE(BlackKingSquare) - 1) || (File == FILE(BlackKingSquare) + 1)) { // Adjacent to enemy king
-                    ScoreOpening += RookOnOpenFileAdjacentToEnemyKingOpening;
-                    ScoreEnding += RookOnOpenFileAdjacentToEnemyKingEnding;
+
+                // Open file (4.7.2)
+
+                File = FILE(Square);
+
+                if (PawnFileMask[File] & WhitePawns) {
+                    if (PawnFileMask[File] & BlackPawns) { // Closed file
+                        ScoreOpening += RookOnClosedFileOpening;
+                        ScoreEnding += RookOnClosedFileEnding;
+                    }
                 }
-                else {
-                    ScoreOpening += RookOnOpenFileOpening;
-                    ScoreEnding += RookOnOpenFileEnding;
+                else if (PawnFileMask[File] & BlackPawns) { // Semi open file
+                    if (File == FILE(BlackKingSquare)) { // Same to enemy king
+                        ScoreOpening += RookOnSemiOpenFileSameToEnemyKingOpening;
+                        ScoreEnding += RookOnSemiOpenFileSameToEnemyKingEnding;
+                    }
+                    else if ((File == FILE(BlackKingSquare) - 1) || (File == FILE(BlackKingSquare) + 1)) { // Adjacent to enemy king
+                        ScoreOpening += RookOnSemiOpenFileAdjacentToEnemyKingOpening;
+                        ScoreEnding += RookOnSemiOpenFileAdjacentToEnemyKingEnding;
+                    }
+                    else {
+                        ScoreOpening += RookOnSemiOpenFileOpening;
+                        ScoreEnding += RookOnSemiOpenFileEnding;
+                    }
                 }
-            }
-
-            // Seventh rank (4.7.4)
-
-            if (
-                (BB_SQUARE(Square) & BB_RANK_7)
-                && (
-                    (BlackPawns & BB_RANK_7)
-                    || (Board->BB_Pieces[BLACK][KING] & BB_RANK_8)
-                )
-            ) {
-                ScoreOpening += RookOnSeventhOpening;
-                ScoreEnding += RookOnSeventhEnding;
-            }
-
-            // Pattern (4.6)
-
-            if (
-                ((BB_SQUARE(Square) & (BB_A1 | BB_A2 | BB_B1)) && (Board->BB_Pieces[WHITE][KING] & (BB_B1 | BB_C1)))
-                || ((BB_SQUARE(Square) & (BB_H1 | BB_H2 | BB_G1)) && (Board->BB_Pieces[WHITE][KING] & (BB_F1 | BB_G1)))
-            ) {
-                ScoreOpening += BlockedRookOpening;
-                ScoreEnding += BlockedRookEnding;
-            }
-
-            break;
-
-        case QUEEN:
-            // Material (4.2)
-
-            ScoreOpening += PiecesScoreOpening[QUEEN];
-            ScoreEnding += PiecesScoreEnding[QUEEN];
-
-            // Piece-square tables (4.3)
-
-            ScoreOpening += QueenSquareScoreOpening[Square];
-            ScoreEnding += QueenSquareScoreEnding[Square];
-
-            // Piece attack (4.8.3)
-
-            Attacks = QueenAttacks(Square, AllPieces);
-
-            if (Attacks & BlackKingZone) {
-                BlackKingZoneAttackedCount += 1;
-                BlackKingZoneAttackedValue += 4;
-            }
-
-            // Seventh rank (4.7.4)
-
-            if (
-                (BB_SQUARE(Square) & BB_RANK_7)
-                && (
-                    (BlackPawns & BB_RANK_7)
-                    || (Board->BB_Pieces[BLACK][KING] & BB_RANK_8)
-                )
-            ) {
-                ScoreOpening += QueenOnSeventhOpening;
-                ScoreEnding += QueenOnSeventhEnding;
-            }
-
-            // King distance (4.7.5)
-
-            ScoreOpening += 10 - ABS(RANK(Square) - RANK(BlackKingSquare)) - ABS(FILE(Square) - FILE(BlackKingSquare));
-            ScoreEnding += 10 - ABS(RANK(Square) - RANK(BlackKingSquare)) - ABS(FILE(Square) - FILE(BlackKingSquare));
-
-            break;
-
-        case KING:
-            // Material (4.2)
-
-            ScoreOpening += PiecesScoreOpening[KING];
-            ScoreEnding += PiecesScoreEnding[KING];
-
-            // Piece-square tables (4.3)
-
-            ScoreOpening += KingSquareScoreOpening[Square];
-            ScoreEnding += KingSquareScoreEnding[Square];
-
-            // King (4.8)
-
-            // Pawn shelter (4.8.1)
-            // Pawn storm (4.8.2)
-
-            if (Board->BB_Pieces[BLACK][QUEEN] && (Board->BB_Pieces[BLACK][KNIGHT] || Board->BB_Pieces[BLACK][BISHOP] || Board->BB_Pieces[BLACK][ROOK])) {
-                KingOpening = EvaluateWhiteKingOpening(Square, WhitePawns, BlackPawns);
-
-                if (Board->CastleFlags & (CASTLE_WHITE_KING | CASTLE_WHITE_QUEEN)) { // White O-O/O-O-O
-                    KingOpeningKingSide = EvaluateWhiteKingOpening(62, WhitePawns, BlackPawns); // g1
-                    KingOpeningQueenSide = EvaluateWhiteKingOpening(58, WhitePawns, BlackPawns); // c1
-
-                    ScoreOpening += (KingOpening + MAX(KingOpeningKingSide, KingOpeningQueenSide)) / 2;
+                else { // Open file
+                    if (File == FILE(BlackKingSquare)) { // Same to enemy king
+                        ScoreOpening += RookOnOpenFileSameToEnemyKingOpening;
+                        ScoreEnding += RookOnOpenFileSameToEnemyKingEnding;
+                    }
+                    else if ((File == FILE(BlackKingSquare) - 1) || (File == FILE(BlackKingSquare) + 1)) { // Adjacent to enemy king
+                        ScoreOpening += RookOnOpenFileAdjacentToEnemyKingOpening;
+                        ScoreEnding += RookOnOpenFileAdjacentToEnemyKingEnding;
+                    }
+                    else {
+                        ScoreOpening += RookOnOpenFileOpening;
+                        ScoreEnding += RookOnOpenFileEnding;
+                    }
                 }
-                else if (Board->CastleFlags & CASTLE_WHITE_KING) { // White O-O
-                    KingOpeningKingSide = EvaluateWhiteKingOpening(62, WhitePawns, BlackPawns); // g1
 
-                    ScoreOpening += (KingOpening + KingOpeningKingSide) / 2;
-                }
-                else if (Board->CastleFlags & CASTLE_WHITE_QUEEN) { // White O-O-O
-                    KingOpeningQueenSide = EvaluateWhiteKingOpening(58, WhitePawns, BlackPawns); // c1
+                // Seventh rank (4.7.4)
 
-                    ScoreOpening += (KingOpening + KingOpeningQueenSide) / 2;
+                if (
+                    (BB_SQUARE(Square) & BB_RANK_7)
+                    && (
+                        (BlackPawns & BB_RANK_7)
+                        || (Board->BB_Pieces[BLACK][KING] & BB_RANK_8)
+                    )
+                ) {
+                    ScoreOpening += RookOnSeventhOpening;
+                    ScoreEnding += RookOnSeventhEnding;
                 }
-                else {
-                    ScoreOpening += KingOpening;
-                }
-            }
 
-            break;
+                // Pattern (4.6)
+
+                if (
+                    ((BB_SQUARE(Square) & (BB_A1 | BB_A2 | BB_B1)) && (Board->BB_Pieces[WHITE][KING] & (BB_B1 | BB_C1)))
+                    || ((BB_SQUARE(Square) & (BB_H1 | BB_H2 | BB_G1)) && (Board->BB_Pieces[WHITE][KING] & (BB_F1 | BB_G1)))
+                ) {
+                    ScoreOpening += BlockedRookOpening;
+                    ScoreEnding += BlockedRookEnding;
+                }
+
+                break;
+
+            case QUEEN:
+                // Material (4.2)
+
+                ScoreOpening += PiecesScoreOpening[QUEEN];
+                ScoreEnding += PiecesScoreEnding[QUEEN];
+
+                // Piece-square tables (4.3)
+
+                ScoreOpening += QueenSquareScoreOpening[Square];
+                ScoreEnding += QueenSquareScoreEnding[Square];
+
+                // Piece attack (4.8.3)
+
+                Attacks = QueenAttacks(Square, AllPieces);
+
+                if (Attacks & BlackKingZone) {
+                    BlackKingZoneAttackedCount += 1;
+                    BlackKingZoneAttackedValue += 4;
+                }
+
+                // Seventh rank (4.7.4)
+
+                if (
+                    (BB_SQUARE(Square) & BB_RANK_7)
+                    && (
+                        (BlackPawns & BB_RANK_7)
+                        || (Board->BB_Pieces[BLACK][KING] & BB_RANK_8)
+                    )
+                ) {
+                    ScoreOpening += QueenOnSeventhOpening;
+                    ScoreEnding += QueenOnSeventhEnding;
+                }
+
+                // King distance (4.7.5)
+
+                ScoreOpening += 10 - ABS(RANK(Square) - RANK(BlackKingSquare)) - ABS(FILE(Square) - FILE(BlackKingSquare));
+                ScoreEnding += 10 - ABS(RANK(Square) - RANK(BlackKingSquare)) - ABS(FILE(Square) - FILE(BlackKingSquare));
+
+                break;
+
+            case KING:
+                // Material (4.2)
+
+                ScoreOpening += PiecesScoreOpening[KING];
+                ScoreEnding += PiecesScoreEnding[KING];
+
+                // Piece-square tables (4.3)
+
+                ScoreOpening += KingSquareScoreOpening[Square];
+                ScoreEnding += KingSquareScoreEnding[Square];
+
+                // King (4.8)
+
+                // Pawn shelter (4.8.1)
+                // Pawn storm (4.8.2)
+
+                if (Board->BB_Pieces[BLACK][QUEEN] && (Board->BB_Pieces[BLACK][KNIGHT] || Board->BB_Pieces[BLACK][BISHOP] || Board->BB_Pieces[BLACK][ROOK])) {
+                    KingOpening = EvaluateWhiteKingOpening(Square, WhitePawns, BlackPawns);
+
+                    if (Board->CastleFlags & (CASTLE_WHITE_KING | CASTLE_WHITE_QUEEN)) { // White O-O/O-O-O
+                        KingOpeningKingSide = EvaluateWhiteKingOpening(62, WhitePawns, BlackPawns); // g1
+                        KingOpeningQueenSide = EvaluateWhiteKingOpening(58, WhitePawns, BlackPawns); // c1
+
+                        ScoreOpening += (KingOpening + MAX(KingOpeningKingSide, KingOpeningQueenSide)) / 2;
+                    }
+                    else if (Board->CastleFlags & CASTLE_WHITE_KING) { // White O-O
+                        KingOpeningKingSide = EvaluateWhiteKingOpening(62, WhitePawns, BlackPawns); // g1
+
+                        ScoreOpening += (KingOpening + KingOpeningKingSide) / 2;
+                    }
+                    else if (Board->CastleFlags & CASTLE_WHITE_QUEEN) { // White O-O-O
+                        KingOpeningQueenSide = EvaluateWhiteKingOpening(58, WhitePawns, BlackPawns); // c1
+
+                        ScoreOpening += (KingOpening + KingOpeningQueenSide) / 2;
+                    }
+                    else {
+                        ScoreOpening += KingOpening;
+                    }
+                }
+
+                break;
         } // switch
 
         Pieces &= Pieces - 1;
@@ -1144,363 +1144,363 @@ SCORE Evaluate(BoardItem* Board)
         Square = LSB(Pieces);
 
         switch (PIECE(Board->Pieces[Square])) {
-        case PAWN:
-            // Material (4.2)
+            case PAWN:
+                // Material (4.2)
 
-            ScoreOpening -= PiecesScoreOpening[PAWN];
-            ScoreEnding -= PiecesScoreEnding[PAWN];
+                ScoreOpening -= PiecesScoreOpening[PAWN];
+                ScoreEnding -= PiecesScoreEnding[PAWN];
 
-            // Piece-square tables (4.3)
+                // Piece-square tables (4.3)
 
-            ScoreOpening -= PawnSquareScoreOpening[Square ^ 56];
-            ScoreEnding -= PawnSquareScoreEnding[Square ^ 56];
+                ScoreOpening -= PawnSquareScoreOpening[Square ^ 56];
+                ScoreEnding -= PawnSquareScoreEnding[Square ^ 56];
 
-            // Pawns (4.4)
+                // Pawns (4.4)
 
-            SquareAhead = Square + 8;
+                SquareAhead = Square + 8;
 
-            File = FILE(Square);
-            Rank = RANK(Square);
+                File = FILE(Square);
+                Rank = RANK(Square);
 
-            if (PawnDoubledMask[BLACK][Square] & BlackPawns) { // Doubled
-                ScoreOpening -= PawnDoubledOpening;
-                ScoreEnding -= PawnDoubledEnding;
-            }
-
-            if (!(PawnIsolatedMask[File] & BlackPawns)) { // Isolated
-                if (!(PawnDoubledMask[BLACK][Square] & (WhitePawns | BlackPawns))) { // Isolated open
-                    ScoreOpening -= PawnIsolatedOpenOpening;
-                    ScoreEnding -= PawnIsolatedOpenEnding;
-                }
-                else {
-                    ScoreOpening -= PawnIsolatedOpening;
-                    ScoreEnding -= PawnIsolatedEnding;
-                }
-            }
-            else if (
-                !(PawnPassedMask[WHITE][SquareAhead] & PawnIsolatedMask[File] & BlackPawns)
-                && (
-                    (BB_SQUARE(SquareAhead) & (WhitePawns | BlackPawns))
-                    || (PawnAttacks(BB_SQUARE(SquareAhead), BLACK) & WhitePawns)
-                )
-            ) { // Backward
-                if (!(PawnDoubledMask[BLACK][Square] & (WhitePawns | BlackPawns))) { // Backward open
-                    ScoreOpening -= PawnBackwardOpenOpening;
-                    ScoreEnding -= PawnBackwardOpenEnding;
-                }
-                else {
-                    ScoreOpening -= PawnBackwardOpening;
-                    ScoreEnding -= PawnBackwardEnding;
-                }
-            }
-
-            // Passed pawns (4.9)
-            // Pawns (4.4): Candidate
-
-            if (!(PawnPassedMask[BLACK][Square] & WhitePawns)) { // Passed pawns
-                PawnPassedScoreEnding = PawnPassedEndingBase2;
-
-                // King distance
-
-                PawnPassedScoreEnding += PawnPassedEndingHostileKingDistance * Distance[SquareAhead][WhiteKingSquare];
-                PawnPassedScoreEnding += PawnPassedEndingFriendlyKingDistance * Distance[SquareAhead][BlackKingSquare];
-
-                // Free
-
-                if (!(BB_SQUARE(SquareAhead) & AllPieces) && !IsSquareAttacked(Board, SquareAhead, BLACK)) {
-                    PawnPassedScoreEnding += PawnPassedEndingConsideredFree;
+                if (PawnDoubledMask[BLACK][Square] & BlackPawns) { // Doubled
+                    ScoreOpening -= PawnDoubledOpening;
+                    ScoreEnding -= PawnDoubledEnding;
                 }
 
-                // Unstoppable
-
-                if (!Board->BB_Pieces[WHITE][KNIGHT] && !Board->BB_Pieces[WHITE][BISHOP] && !Board->BB_Pieces[WHITE][ROOK] && !Board->BB_Pieces[WHITE][QUEEN]) {
-                    if ((KingAttacks(Square) & Board->BB_Pieces[BLACK][KING]) && (KingAttacks(SQUARE(7, FILE(Square))) & Board->BB_Pieces[BLACK][KING])) {
-                        PawnPassedScoreEnding += PawnPassedEndingUnstoppable;
+                if (!(PawnIsolatedMask[File] & BlackPawns)) { // Isolated
+                    if (!(PawnDoubledMask[BLACK][Square] & (WhitePawns | BlackPawns))) { // Isolated open
+                        ScoreOpening -= PawnIsolatedOpenOpening;
+                        ScoreEnding -= PawnIsolatedOpenEnding;
                     }
-                    else if (Board->CurrentColor == BLACK && !(PawnDoubledMask[BLACK][Square] & AllPieces)) {
-                        for (int Square2 = SquareAhead; Square2 <= 63; Square2 += 8) {
-                            if (Distance[Square][Square2] >= Distance[WhiteKingSquare][Square2]) {
-                                break; // for
-                            }
+                    else {
+                        ScoreOpening -= PawnIsolatedOpening;
+                        ScoreEnding -= PawnIsolatedEnding;
+                    }
+                }
+                else if (
+                    !(PawnPassedMask[WHITE][SquareAhead] & PawnIsolatedMask[File] & BlackPawns)
+                    && (
+                        (BB_SQUARE(SquareAhead) & (WhitePawns | BlackPawns))
+                        || (PawnAttacks(BB_SQUARE(SquareAhead), BLACK) & WhitePawns)
+                    )
+                ) { // Backward
+                    if (!(PawnDoubledMask[BLACK][Square] & (WhitePawns | BlackPawns))) { // Backward open
+                        ScoreOpening -= PawnBackwardOpenOpening;
+                        ScoreEnding -= PawnBackwardOpenEnding;
+                    }
+                    else {
+                        ScoreOpening -= PawnBackwardOpening;
+                        ScoreEnding -= PawnBackwardEnding;
+                    }
+                }
 
-                            if (RANK(Square2) == 7) { // Last iteration
-                                PawnPassedScoreEnding += PawnPassedEndingUnstoppable;
+                // Passed pawns (4.9)
+                // Pawns (4.4): Candidate
+
+                if (!(PawnPassedMask[BLACK][Square] & WhitePawns)) { // Passed pawns
+                    PawnPassedScoreEnding = PawnPassedEndingBase2;
+
+                    // King distance
+
+                    PawnPassedScoreEnding += PawnPassedEndingHostileKingDistance * Distance[SquareAhead][WhiteKingSquare];
+                    PawnPassedScoreEnding += PawnPassedEndingFriendlyKingDistance * Distance[SquareAhead][BlackKingSquare];
+
+                    // Free
+
+                    if (!(BB_SQUARE(SquareAhead) & AllPieces) && !IsSquareAttacked(Board, SquareAhead, BLACK)) {
+                        PawnPassedScoreEnding += PawnPassedEndingConsideredFree;
+                    }
+
+                    // Unstoppable
+
+                    if (!Board->BB_Pieces[WHITE][KNIGHT] && !Board->BB_Pieces[WHITE][BISHOP] && !Board->BB_Pieces[WHITE][ROOK] && !Board->BB_Pieces[WHITE][QUEEN]) {
+                        if ((KingAttacks(Square) & Board->BB_Pieces[BLACK][KING]) && (KingAttacks(SQUARE(7, FILE(Square))) & Board->BB_Pieces[BLACK][KING])) {
+                            PawnPassedScoreEnding += PawnPassedEndingUnstoppable;
+                        }
+                        else if (Board->CurrentColor == BLACK && !(PawnDoubledMask[BLACK][Square] & AllPieces)) {
+                            for (int Square2 = SquareAhead; Square2 <= 63; Square2 += 8) {
+                                if (Distance[Square][Square2] >= Distance[WhiteKingSquare][Square2]) {
+                                    break; // for
+                                }
+
+                                if (RANK(Square2) == 7) { // Last iteration
+                                    PawnPassedScoreEnding += PawnPassedEndingUnstoppable;
+                                }
                             }
                         }
                     }
+
+                    ScoreOpening -= PawnPassedOpening[Rank];
+                    ScoreEnding -= PawnPassedEndingBase1 + PawnPassedScoreEnding * PawnPassedEndingWeight[Rank] / 100;
+                }
+                else if (
+                    !(PawnDoubledMask[BLACK][Square] & (WhitePawns | BlackPawns))
+                    && (POPCNT(PawnPassedMask[BLACK][Square] & PawnIsolatedMask[File] & WhitePawns) <= POPCNT(PawnPassedMask[WHITE][SquareAhead] & PawnIsolatedMask[File] & BlackPawns))
+                    && (POPCNT(PawnAttacks(BB_SQUARE(Square), BLACK) & WhitePawns) <= POPCNT(PawnAttacks(BB_SQUARE(Square), WHITE) & BlackPawns))
+                ) { // Candidate
+                    ScoreOpening -= PawnCandidateOpening[Rank];
+                    ScoreEnding -= PawnCandidateEnding[Rank];
                 }
 
-                ScoreOpening -= PawnPassedOpening[Rank];
-                ScoreEnding -= PawnPassedEndingBase1 + PawnPassedScoreEnding * PawnPassedEndingWeight[Rank] / 100;
-            }
-            else if (
-                !(PawnDoubledMask[BLACK][Square] & (WhitePawns | BlackPawns))
-                && (POPCNT(PawnPassedMask[BLACK][Square] & PawnIsolatedMask[File] & WhitePawns) <= POPCNT(PawnPassedMask[WHITE][SquareAhead] & PawnIsolatedMask[File] & BlackPawns))
-                && (POPCNT(PawnAttacks(BB_SQUARE(Square), BLACK) & WhitePawns) <= POPCNT(PawnAttacks(BB_SQUARE(Square), WHITE) & BlackPawns))
-            ) { // Candidate
-                ScoreOpening -= PawnCandidateOpening[Rank];
-                ScoreEnding -= PawnCandidateEnding[Rank];
-            }
+                break;
 
-            break;
+            case KNIGHT:
+                // Material (4.2)
 
-        case KNIGHT:
-            // Material (4.2)
+                ScoreOpening -= PiecesScoreOpening[KNIGHT];
+                ScoreEnding -= PiecesScoreEnding[KNIGHT];
 
-            ScoreOpening -= PiecesScoreOpening[KNIGHT];
-            ScoreEnding -= PiecesScoreEnding[KNIGHT];
+                // Piece-square tables (4.3)
 
-            // Piece-square tables (4.3)
+                ScoreOpening -= KnightSquareScoreOpening[Square ^ 56];
+                ScoreEnding -= KnightSquareScoreEnding[Square ^ 56];
 
-            ScoreOpening -= KnightSquareScoreOpening[Square ^ 56];
-            ScoreEnding -= KnightSquareScoreEnding[Square ^ 56];
+                // Mobility (4.7.1)
 
-            // Mobility (4.7.1)
+                Attacks = KnightAttacks(Square);
 
-            Attacks = KnightAttacks(Square);
+                ScoreOpening -= (POPCNT(Attacks & ~AllPieces) - KnightMobilityMoveDecrease) * KnightMobility;
+                ScoreEnding -= (POPCNT(Attacks & ~AllPieces) - KnightMobilityMoveDecrease) * KnightMobility;
 
-            ScoreOpening -= (POPCNT(Attacks & ~AllPieces) - KnightMobilityMoveDecrease) * KnightMobility;
-            ScoreEnding -= (POPCNT(Attacks & ~AllPieces) - KnightMobilityMoveDecrease) * KnightMobility;
+                // Piece attack (4.8.3)
 
-            // Piece attack (4.8.3)
-
-            if (Attacks & WhiteKingZone) {
-                WhiteKingZoneAttackedCount += 1;
-                WhiteKingZoneAttackedValue += 1;
-            }
-
-            // Outpost (4.7.3)
-
-            if (KnightOutpost[Square ^ 56]) {
-                Attacks2 = PawnAttacks(BB_SQUARE(Square), WHITE) & BlackPawns;
-
-                if (Attacks2) {
-                    ScoreOpening -= KnightOutpost[Square ^ 56] * POPCNT(Attacks2);
-                    ScoreEnding -= KnightOutpost[Square ^ 56] * POPCNT(Attacks2);
+                if (Attacks & WhiteKingZone) {
+                    WhiteKingZoneAttackedCount += 1;
+                    WhiteKingZoneAttackedValue += 1;
                 }
-            }
 
-            break;
+                // Outpost (4.7.3)
 
-        case BISHOP:
-            // Material (4.2)
+                if (KnightOutpost[Square ^ 56]) {
+                    Attacks2 = PawnAttacks(BB_SQUARE(Square), WHITE) & BlackPawns;
 
-            ScoreOpening -= PiecesScoreOpening[BISHOP];
-            ScoreEnding -= PiecesScoreEnding[BISHOP];
-
-            // Piece-square tables (4.3)
-
-            ScoreOpening -= BishopSquareScoreOpening[Square ^ 56];
-            ScoreEnding -= BishopSquareScoreEnding[Square ^ 56];
-
-            // Mobility (4.7.1)
-
-            Attacks = BishopAttacks(Square, AllPieces);
-
-            ScoreOpening -= (POPCNT(Attacks & ~AllPieces) - BishopMobilityMoveDecrease) * BishopMobility;
-            ScoreEnding -= (POPCNT(Attacks & ~AllPieces) - BishopMobilityMoveDecrease) * BishopMobility;
-
-            // Piece attack (4.8.3)
-
-            if (Attacks & WhiteKingZone) {
-                WhiteKingZoneAttackedCount += 1;
-                WhiteKingZoneAttackedValue += 1;
-            }
-
-            // Pattern (4.6)
-
-            if (
-                (Square == 57 && (WhitePawns & BB_C2)) // Bb1
-                || (Square == 62 && (WhitePawns & BB_F2)) // Bg1
-                || (Square == 48 && (WhitePawns & BB_B3)) // Ba2
-                || (Square == 55 && (WhitePawns & BB_G3)) // Bh2
-                || (Square == 40 && (WhitePawns & BB_B4)) // Ba3
-                || (Square == 47 && (WhitePawns & BB_G4)) // Bh3
-            ) {
-                ScoreOpening -= TrappedBishopOpening;
-                ScoreEnding -= TrappedBishopEnding;
-            }
-
-            if (
-                (Square == 2 && (BlackPawns & BB_D7) && (AllPieces & BB_D6)) // Bc8
-                || (Square == 5 && (BlackPawns & BB_E7) && (AllPieces & BB_E6)) // Bf8
-            ) {
-                ScoreOpening -= BlockedBishopOpening;
-                ScoreEnding -= BlockedBishopEnding;
-            }
-
-            break;
-
-        case ROOK:
-            // Material (4.2)
-
-            ScoreOpening -= PiecesScoreOpening[ROOK];
-            ScoreEnding -= PiecesScoreEnding[ROOK];
-
-            // Piece-square tables (4.3)
-
-            ScoreOpening -= RookSquareScoreOpening[Square ^ 56];
-            ScoreEnding -= RookSquareScoreEnding[Square ^ 56];
-
-            // Mobility (4.7.1)
-
-            Attacks = RookAttacks(Square, AllPieces);
-
-            ScoreOpening -= (POPCNT(Attacks & ~AllPieces) - RookMobilityMoveDecrease) * RookMobilityOpening;
-            ScoreEnding -= (POPCNT(Attacks & ~AllPieces) - RookMobilityMoveDecrease) * RookMobilityEnding;
-
-            // Piece attack (4.8.3)
-
-            if (Attacks & WhiteKingZone) {
-                WhiteKingZoneAttackedCount += 1;
-                WhiteKingZoneAttackedValue += 2;
-            }
-
-            // Open file (4.7.2)
-
-            File = FILE(Square);
-
-            if (PawnFileMask[File] & BlackPawns) {
-                if (PawnFileMask[File] & WhitePawns) { // Closed file
-                    ScoreOpening -= RookOnClosedFileOpening;
-                    ScoreEnding -= RookOnClosedFileEnding;
+                    if (Attacks2) {
+                        ScoreOpening -= KnightOutpost[Square ^ 56] * POPCNT(Attacks2);
+                        ScoreEnding -= KnightOutpost[Square ^ 56] * POPCNT(Attacks2);
+                    }
                 }
-            }
-            else if (PawnFileMask[File] & WhitePawns) { // Semi open file
-                if (File == FILE(WhiteKingSquare)) { // Same to enemy king
-                    ScoreOpening -= RookOnSemiOpenFileSameToEnemyKingOpening;
-                    ScoreEnding -= RookOnSemiOpenFileSameToEnemyKingEnding;
+
+                break;
+
+            case BISHOP:
+                // Material (4.2)
+
+                ScoreOpening -= PiecesScoreOpening[BISHOP];
+                ScoreEnding -= PiecesScoreEnding[BISHOP];
+
+                // Piece-square tables (4.3)
+
+                ScoreOpening -= BishopSquareScoreOpening[Square ^ 56];
+                ScoreEnding -= BishopSquareScoreEnding[Square ^ 56];
+
+                // Mobility (4.7.1)
+
+                Attacks = BishopAttacks(Square, AllPieces);
+
+                ScoreOpening -= (POPCNT(Attacks & ~AllPieces) - BishopMobilityMoveDecrease) * BishopMobility;
+                ScoreEnding -= (POPCNT(Attacks & ~AllPieces) - BishopMobilityMoveDecrease) * BishopMobility;
+
+                // Piece attack (4.8.3)
+
+                if (Attacks & WhiteKingZone) {
+                    WhiteKingZoneAttackedCount += 1;
+                    WhiteKingZoneAttackedValue += 1;
                 }
-                else if ((File == FILE(WhiteKingSquare) - 1) || (File == FILE(WhiteKingSquare) + 1)) { // Adjacent to enemy king
-                    ScoreOpening -= RookOnSemiOpenFileAdjacentToEnemyKingOpening;
-                    ScoreEnding -= RookOnSemiOpenFileAdjacentToEnemyKingEnding;
+
+                // Pattern (4.6)
+
+                if (
+                    (Square == 57 && (WhitePawns & BB_C2)) // Bb1
+                    || (Square == 62 && (WhitePawns & BB_F2)) // Bg1
+                    || (Square == 48 && (WhitePawns & BB_B3)) // Ba2
+                    || (Square == 55 && (WhitePawns & BB_G3)) // Bh2
+                    || (Square == 40 && (WhitePawns & BB_B4)) // Ba3
+                    || (Square == 47 && (WhitePawns & BB_G4)) // Bh3
+                ) {
+                    ScoreOpening -= TrappedBishopOpening;
+                    ScoreEnding -= TrappedBishopEnding;
                 }
-                else {
-                    ScoreOpening -= RookOnSemiOpenFileOpening;
-                    ScoreEnding -= RookOnSemiOpenFileEnding;
+
+                if (
+                    (Square == 2 && (BlackPawns & BB_D7) && (AllPieces & BB_D6)) // Bc8
+                    || (Square == 5 && (BlackPawns & BB_E7) && (AllPieces & BB_E6)) // Bf8
+                ) {
+                    ScoreOpening -= BlockedBishopOpening;
+                    ScoreEnding -= BlockedBishopEnding;
                 }
-            }
-            else { // Open file
-                if (File == FILE(WhiteKingSquare)) { // Same to enemy king
-                    ScoreOpening -= RookOnOpenFileSameToEnemyKingOpening;
-                    ScoreEnding -= RookOnOpenFileSameToEnemyKingEnding;
+
+                break;
+
+            case ROOK:
+                // Material (4.2)
+
+                ScoreOpening -= PiecesScoreOpening[ROOK];
+                ScoreEnding -= PiecesScoreEnding[ROOK];
+
+                // Piece-square tables (4.3)
+
+                ScoreOpening -= RookSquareScoreOpening[Square ^ 56];
+                ScoreEnding -= RookSquareScoreEnding[Square ^ 56];
+
+                // Mobility (4.7.1)
+
+                Attacks = RookAttacks(Square, AllPieces);
+
+                ScoreOpening -= (POPCNT(Attacks & ~AllPieces) - RookMobilityMoveDecrease) * RookMobilityOpening;
+                ScoreEnding -= (POPCNT(Attacks & ~AllPieces) - RookMobilityMoveDecrease) * RookMobilityEnding;
+
+                // Piece attack (4.8.3)
+
+                if (Attacks & WhiteKingZone) {
+                    WhiteKingZoneAttackedCount += 1;
+                    WhiteKingZoneAttackedValue += 2;
                 }
-                else if ((File == FILE(WhiteKingSquare) - 1) || (File == FILE(WhiteKingSquare) + 1)) { // Adjacent to enemy king
-                    ScoreOpening -= RookOnOpenFileAdjacentToEnemyKingOpening;
-                    ScoreEnding -= RookOnOpenFileAdjacentToEnemyKingEnding;
+
+                // Open file (4.7.2)
+
+                File = FILE(Square);
+
+                if (PawnFileMask[File] & BlackPawns) {
+                    if (PawnFileMask[File] & WhitePawns) { // Closed file
+                        ScoreOpening -= RookOnClosedFileOpening;
+                        ScoreEnding -= RookOnClosedFileEnding;
+                    }
                 }
-                else {
-                    ScoreOpening -= RookOnOpenFileOpening;
-                    ScoreEnding -= RookOnOpenFileEnding;
+                else if (PawnFileMask[File] & WhitePawns) { // Semi open file
+                    if (File == FILE(WhiteKingSquare)) { // Same to enemy king
+                        ScoreOpening -= RookOnSemiOpenFileSameToEnemyKingOpening;
+                        ScoreEnding -= RookOnSemiOpenFileSameToEnemyKingEnding;
+                    }
+                    else if ((File == FILE(WhiteKingSquare) - 1) || (File == FILE(WhiteKingSquare) + 1)) { // Adjacent to enemy king
+                        ScoreOpening -= RookOnSemiOpenFileAdjacentToEnemyKingOpening;
+                        ScoreEnding -= RookOnSemiOpenFileAdjacentToEnemyKingEnding;
+                    }
+                    else {
+                        ScoreOpening -= RookOnSemiOpenFileOpening;
+                        ScoreEnding -= RookOnSemiOpenFileEnding;
+                    }
                 }
-            }
-
-            // Seventh rank (4.7.4)
-
-            if (
-                (BB_SQUARE(Square) & BB_RANK_2)
-                && (
-                    (WhitePawns & BB_RANK_2)
-                    || (Board->BB_Pieces[WHITE][KING] & BB_RANK_1)
-                )
-            ) {
-                ScoreOpening -= RookOnSeventhOpening;
-                ScoreEnding -= RookOnSeventhEnding;
-            }
-
-            // Pattern (4.6)
-
-            if (
-                ((BB_SQUARE(Square) & (BB_A8 | BB_A7 | BB_B8)) && (Board->BB_Pieces[BLACK][KING] & (BB_B8 | BB_C8)))
-                || ((BB_SQUARE(Square) & (BB_H8 | BB_H7 | BB_G8)) && (Board->BB_Pieces[BLACK][KING] & (BB_F8 | BB_G8)))
-            ) {
-                ScoreOpening -= BlockedRookOpening;
-                ScoreEnding -= BlockedRookEnding;
-            }
-
-            break;
-
-        case QUEEN:
-            // Material (4.2)
-
-            ScoreOpening -= PiecesScoreOpening[QUEEN];
-            ScoreEnding -= PiecesScoreEnding[QUEEN];
-
-            // Piece-square tables (4.3)
-
-            ScoreOpening -= QueenSquareScoreOpening[Square ^ 56];
-            ScoreEnding -= QueenSquareScoreEnding[Square ^ 56];
-
-            // Piece attack (4.8.3)
-
-            Attacks = QueenAttacks(Square, AllPieces);
-
-            if (Attacks & WhiteKingZone) {
-                WhiteKingZoneAttackedCount += 1;
-                WhiteKingZoneAttackedValue += 4;
-            }
-
-            // Seventh rank (4.7.4)
-
-            if (
-                (BB_SQUARE(Square) & BB_RANK_2)
-                && (
-                    (WhitePawns & BB_RANK_2)
-                    || (Board->BB_Pieces[WHITE][KING] & BB_RANK_1)
-                )
-            ) {
-                ScoreOpening -= QueenOnSeventhOpening;
-                ScoreEnding -= QueenOnSeventhEnding;
-            }
-
-            // King distance (4.7.5)
-
-            ScoreOpening -= 10 - ABS(RANK(Square) - RANK(WhiteKingSquare)) - ABS(FILE(Square) - FILE(WhiteKingSquare));
-            ScoreEnding -= 10 - ABS(RANK(Square) - RANK(WhiteKingSquare)) - ABS(FILE(Square) - FILE(WhiteKingSquare));
-
-            break;
-
-        case KING:
-            // Material (4.2)
-
-            ScoreOpening -= PiecesScoreOpening[KING];
-            ScoreEnding -= PiecesScoreEnding[KING];
-
-            // Piece-square tables (4.3)
-
-            ScoreOpening -= KingSquareScoreOpening[Square ^ 56];
-            ScoreEnding -= KingSquareScoreEnding[Square ^ 56];
-
-            // King (4.8)
-
-            // Pawn shelter (4.8.1)
-            // Pawn storm (4.8.2)
-
-            if (Board->BB_Pieces[WHITE][QUEEN] && (Board->BB_Pieces[WHITE][KNIGHT] || Board->BB_Pieces[WHITE][BISHOP] || Board->BB_Pieces[WHITE][ROOK])) {
-                KingOpening = EvaluateBlackKingOpening(Square, WhitePawns, BlackPawns);
-
-                if (Board->CastleFlags & (CASTLE_BLACK_KING | CASTLE_BLACK_QUEEN)) { // Black O-O/O-O-O
-                    KingOpeningKingSide = EvaluateBlackKingOpening(6, WhitePawns, BlackPawns); // g8
-                    KingOpeningQueenSide = EvaluateBlackKingOpening(2, WhitePawns, BlackPawns); // c8
-
-                    ScoreOpening -= (KingOpening + MAX(KingOpeningKingSide, KingOpeningQueenSide)) / 2;
+                else { // Open file
+                    if (File == FILE(WhiteKingSquare)) { // Same to enemy king
+                        ScoreOpening -= RookOnOpenFileSameToEnemyKingOpening;
+                        ScoreEnding -= RookOnOpenFileSameToEnemyKingEnding;
+                    }
+                    else if ((File == FILE(WhiteKingSquare) - 1) || (File == FILE(WhiteKingSquare) + 1)) { // Adjacent to enemy king
+                        ScoreOpening -= RookOnOpenFileAdjacentToEnemyKingOpening;
+                        ScoreEnding -= RookOnOpenFileAdjacentToEnemyKingEnding;
+                    }
+                    else {
+                        ScoreOpening -= RookOnOpenFileOpening;
+                        ScoreEnding -= RookOnOpenFileEnding;
+                    }
                 }
-                else if (Board->CastleFlags & CASTLE_BLACK_KING) { // Black O-O
-                    KingOpeningKingSide = EvaluateBlackKingOpening(6, WhitePawns, BlackPawns); // g8
 
-                    ScoreOpening -= (KingOpening + KingOpeningKingSide) / 2;
-                }
-                else if (Board->CastleFlags & CASTLE_BLACK_QUEEN) { // Black O-O-O
-                    KingOpeningQueenSide = EvaluateBlackKingOpening(2, WhitePawns, BlackPawns); // c8
+                // Seventh rank (4.7.4)
 
-                    ScoreOpening -= (KingOpening + KingOpeningQueenSide) / 2;
+                if (
+                    (BB_SQUARE(Square) & BB_RANK_2)
+                    && (
+                        (WhitePawns & BB_RANK_2)
+                        || (Board->BB_Pieces[WHITE][KING] & BB_RANK_1)
+                    )
+                ) {
+                    ScoreOpening -= RookOnSeventhOpening;
+                    ScoreEnding -= RookOnSeventhEnding;
                 }
-                else {
-                    ScoreOpening -= KingOpening;
-                }
-            }
 
-            break;
+                // Pattern (4.6)
+
+                if (
+                    ((BB_SQUARE(Square) & (BB_A8 | BB_A7 | BB_B8)) && (Board->BB_Pieces[BLACK][KING] & (BB_B8 | BB_C8)))
+                    || ((BB_SQUARE(Square) & (BB_H8 | BB_H7 | BB_G8)) && (Board->BB_Pieces[BLACK][KING] & (BB_F8 | BB_G8)))
+                ) {
+                    ScoreOpening -= BlockedRookOpening;
+                    ScoreEnding -= BlockedRookEnding;
+                }
+
+                break;
+
+            case QUEEN:
+                // Material (4.2)
+
+                ScoreOpening -= PiecesScoreOpening[QUEEN];
+                ScoreEnding -= PiecesScoreEnding[QUEEN];
+
+                // Piece-square tables (4.3)
+
+                ScoreOpening -= QueenSquareScoreOpening[Square ^ 56];
+                ScoreEnding -= QueenSquareScoreEnding[Square ^ 56];
+
+                // Piece attack (4.8.3)
+
+                Attacks = QueenAttacks(Square, AllPieces);
+
+                if (Attacks & WhiteKingZone) {
+                    WhiteKingZoneAttackedCount += 1;
+                    WhiteKingZoneAttackedValue += 4;
+                }
+
+                // Seventh rank (4.7.4)
+
+                if (
+                    (BB_SQUARE(Square) & BB_RANK_2)
+                    && (
+                        (WhitePawns & BB_RANK_2)
+                        || (Board->BB_Pieces[WHITE][KING] & BB_RANK_1)
+                    )
+                ) {
+                    ScoreOpening -= QueenOnSeventhOpening;
+                    ScoreEnding -= QueenOnSeventhEnding;
+                }
+
+                // King distance (4.7.5)
+
+                ScoreOpening -= 10 - ABS(RANK(Square) - RANK(WhiteKingSquare)) - ABS(FILE(Square) - FILE(WhiteKingSquare));
+                ScoreEnding -= 10 - ABS(RANK(Square) - RANK(WhiteKingSquare)) - ABS(FILE(Square) - FILE(WhiteKingSquare));
+
+                break;
+
+            case KING:
+                // Material (4.2)
+
+                ScoreOpening -= PiecesScoreOpening[KING];
+                ScoreEnding -= PiecesScoreEnding[KING];
+
+                // Piece-square tables (4.3)
+
+                ScoreOpening -= KingSquareScoreOpening[Square ^ 56];
+                ScoreEnding -= KingSquareScoreEnding[Square ^ 56];
+
+                // King (4.8)
+
+                // Pawn shelter (4.8.1)
+                // Pawn storm (4.8.2)
+
+                if (Board->BB_Pieces[WHITE][QUEEN] && (Board->BB_Pieces[WHITE][KNIGHT] || Board->BB_Pieces[WHITE][BISHOP] || Board->BB_Pieces[WHITE][ROOK])) {
+                    KingOpening = EvaluateBlackKingOpening(Square, WhitePawns, BlackPawns);
+
+                    if (Board->CastleFlags & (CASTLE_BLACK_KING | CASTLE_BLACK_QUEEN)) { // Black O-O/O-O-O
+                        KingOpeningKingSide = EvaluateBlackKingOpening(6, WhitePawns, BlackPawns); // g8
+                        KingOpeningQueenSide = EvaluateBlackKingOpening(2, WhitePawns, BlackPawns); // c8
+
+                        ScoreOpening -= (KingOpening + MAX(KingOpeningKingSide, KingOpeningQueenSide)) / 2;
+                    }
+                    else if (Board->CastleFlags & CASTLE_BLACK_KING) { // Black O-O
+                        KingOpeningKingSide = EvaluateBlackKingOpening(6, WhitePawns, BlackPawns); // g8
+
+                        ScoreOpening -= (KingOpening + KingOpeningKingSide) / 2;
+                    }
+                    else if (Board->CastleFlags & CASTLE_BLACK_QUEEN) { // Black O-O-O
+                        KingOpeningQueenSide = EvaluateBlackKingOpening(2, WhitePawns, BlackPawns); // c8
+
+                        ScoreOpening -= (KingOpening + KingOpeningQueenSide) / 2;
+                    }
+                    else {
+                        ScoreOpening -= KingOpening;
+                    }
+                }
+
+                break;
         } // switch
 
         Pieces &= Pieces - 1;

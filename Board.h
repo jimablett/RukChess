@@ -82,7 +82,7 @@
 
 #define MOVE_CREATE(From, To, PromotePiece)     (((PromotePiece) << 12) | ((From) << 6) | (To))
 
-// Move flags
+// Move type flags
 
 #define MOVE_QUIET              0   // Quiet move (no pawn)
 
@@ -158,7 +158,7 @@ typedef struct {
 } HistoryItem; // 48 bytes/1152 bytes (NNUE)/2144 (NNUE2)
 
 typedef struct {
-    int Pieces[64]; // (Color << 3) | Piece type
+    int Pieces[64]; // (Color << 3) | Piece
     int CurrentColor;
     int CastleFlags;
     int PassantSquare;

@@ -216,7 +216,7 @@ U64 PawnAttacks(const U64 Pawns, const int Color)
 U64 PushedPawns(const U64 Pawns, const int Color, const U64 NotOccupied)
 {
     if (Color == WHITE) {
-        return (Pawns >> 8)& NotOccupied;
+        return (Pawns >> 8) & NotOccupied;
     }
     else { // BLACK
         return (Pawns << 8) & NotOccupied;
@@ -226,7 +226,7 @@ U64 PushedPawns(const U64 Pawns, const int Color, const U64 NotOccupied)
 U64 PushedPawns2(const U64 Pawns, const int Color, const U64 NotOccupied)
 {
     if (Color == WHITE) {
-        return (((Pawns >> 8)& NotOccupied) >> 8)& NotOccupied& BB_RANK_4;
+        return (((Pawns >> 8) & NotOccupied) >> 8) & NotOccupied & BB_RANK_4;
     }
     else { // BLACK
         return (((Pawns << 8) & NotOccupied) << 8) & NotOccupied & BB_RANK_5;
