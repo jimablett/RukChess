@@ -23,7 +23,7 @@ int main(int, char**)
 
     int Choice;
 
-    printf("%s %s\n", NAME, VERSION);
+    printf("%s %s %s\n", PROGRAM_NAME, PROGRAM_VERSION, EVALUATION_NAME);
     printf("Copyright (C) %s %s\n", YEARS, AUTHOR);
 
 //  printf("MoveItem = %zd\n", sizeof(MoveItem));
