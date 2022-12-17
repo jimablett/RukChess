@@ -40,18 +40,6 @@
 
 #endif // NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
 
-#ifdef NNUE_EVALUATION_FUNCTION_2
-
-#define NET                                     // Required NNUE_EVALUATION_FUNCTION_2
-//#define NET_KS                                // Required NNUE_EVALUATION_FUNCTION_2
-//#define NET_KQ                                // Required NNUE_EVALUATION_FUNCTION_2
-
-//#define PRINT_MIN_MAX_VALUES                  // Required NNUE_EVALUATION_FUNCTION_2
-//#define PRINT_WEIGHT_INDEX                    // Required NNUE_EVALUATION_FUNCTION_2
-//#define PRINT_ACCUMULATOR                     // Required NNUE_EVALUATION_FUNCTION_2
-
-#endif // NNUE_EVALUATION_FUNCTION_2
-
 // Features (enable/disable)
 
 // Debug
@@ -66,6 +54,14 @@
 
 //#define DEBUG_NNUE
 //#define DEBUG_NNUE_2
+
+#ifdef NNUE_EVALUATION_FUNCTION_2
+
+//#define PRINT_MIN_MAX_VALUES                  // Required NNUE_EVALUATION_FUNCTION_2
+//#define PRINT_WEIGHT_INDEX                    // Required NNUE_EVALUATION_FUNCTION_2
+//#define PRINT_ACCUMULATOR                     // Required NNUE_EVALUATION_FUNCTION_2
+
+#endif // NNUE_EVALUATION_FUNCTION_2
 
 //#define DEBUG_STATISTIC
 
@@ -150,7 +146,7 @@
 // Program name, version, evaluation function name and copyright information
 
 #define PROGRAM_NAME                            "RukChess"
-#define PROGRAM_VERSION                         "3.0.6"
+#define PROGRAM_VERSION                         "3.0.7"
 
 #ifdef SIMPLIFIED_EVALUATION_FUNCTION
 

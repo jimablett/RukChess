@@ -12,9 +12,7 @@
 
 #ifdef NNUE_EVALUATION_FUNCTION_2
 
-#ifdef NET
-
-#define NNUE_FILE                   "rukchess.nnue"
+#define NNUE_FILE_NAME              "rukchess.nnue"
 #define NNUE_FILE_MAGIC             ('B' | 'R' << 8 | 'K' << 16 | 'R' << 24)
 //#define NNUE_FILE_HASH            0x000071EB63511CB1
 #define NNUE_FILE_SIZE              1579024
@@ -22,30 +20,6 @@
 #define FEATURE_DIMENSION           768
 #define HIDDEN_DIMENSION            512
 #define OUTPUT_DIMENSION            1
-
-#elif defined(NET_KS)
-
-#define NNUE_FILE                   "berserk_original_ks_768_512_1.nn"
-#define NNUE_FILE_MAGIC             ('B' | 'R' << 8 | 'K' << 16 | 'R' << 24)
-//#define NNUE_FILE_HASH            0x0000751158752607
-#define NNUE_FILE_SIZE              1579024
-
-#define FEATURE_DIMENSION           768
-#define HIDDEN_DIMENSION            512
-#define OUTPUT_DIMENSION            1
-
-#else // NET_KQ
-
-#define NNUE_FILE                   "berserk_original_kq_1536_512_1.nn"
-#define NNUE_FILE_MAGIC             ('B' | 'R' << 8 | 'K' << 16 | 'R' << 24)
-//#define NNUE_FILE_HASH            0x0000E68765EA32A3
-#define NNUE_FILE_SIZE              3151888
-
-#define FEATURE_DIMENSION           1536
-#define HIDDEN_DIMENSION            512
-#define OUTPUT_DIMENSION            1
-
-#endif // NET || NET_KS || NET_KQ
 
 #define QUANTIZATION_PRECISION_IN   32
 #define QUANTIZATION_PRECISION_OUT  512
@@ -60,19 +34,6 @@ _declspec(align(64)) I16 FeatureWeights[FEATURE_DIMENSION * HIDDEN_DIMENSION];  
 _declspec(align(64)) I16 HiddenBiases[HIDDEN_DIMENSION];                        // 512
 _declspec(align(64)) I16 HiddenWeights[HIDDEN_DIMENSION * 2];                   // 512 x 2 = 1024
 I16 OutputBias;                                                                 // 1
-
-#if defined(NET_KS) || defined(NET_KQ)
-const int HalfBoardIndex[64] = {
-    28, 29, 30, 31, 31, 30, 29, 28,
-    24, 25, 26, 27, 27, 26, 25, 24,
-    20, 21, 22, 23, 23, 22, 21, 20,
-    16, 17, 18, 19, 19, 18, 17, 16,
-    12, 13, 14, 15, 15, 14, 13, 12,
-     8,  9, 10, 11, 11, 10,  9,  8,
-     4,  5,  6,  7,  7,  6,  5,  4,
-     0,  1,  2,  3,  3,  2,  1,  0
-};
-#endif // NET_KS || NET_KQ
 
 I16 LoadWeight(const float Value, const int Precision)
 {
@@ -117,10 +78,10 @@ void ReadNetwork(void)
 
     printf("Load network...\n");
 
-    fopen_s(&File, NNUE_FILE, "rb");
+    fopen_s(&File, NNUE_FILE_NAME, "rb");
 
     if (File == NULL) { // File open error
-        printf("File '%s' open error!\n", NNUE_FILE);
+        printf("File '%s' open error!\n", NNUE_FILE_NAME);
 
         Sleep(3000);
 
@@ -134,7 +95,7 @@ void ReadNetwork(void)
 //  printf("FileMagic = %d\n", FileMagic);
 
     if (FileMagic != NNUE_FILE_MAGIC) { // File format error
-        printf("File '%s' format error!\n", NNUE_FILE);
+        printf("File '%s' format error!\n", NNUE_FILE_NAME);
 
         Sleep(3000);
 
@@ -148,7 +109,7 @@ void ReadNetwork(void)
 //  printf("FileHash = 0x%016llX\n", FileHash);
 /*
     if (FileHash != NNUE_FILE_HASH) { // File format error
-        printf("File '%s' format error!\n", NNUE_FILE);
+        printf("File '%s' format error!\n", NNUE_FILE_NAME);
 
         Sleep(3000);
 
@@ -251,7 +212,7 @@ void ReadNetwork(void)
 //  printf("File position = %llu\n", FilePos);
 
     if (FilePos != NNUE_FILE_SIZE) { // File format error
-        printf("File '%s' format error!\n", NNUE_FILE);
+        printf("File '%s' format error!\n", NNUE_FILE_NAME);
 
         Sleep(3000);
 
@@ -260,22 +221,10 @@ void ReadNetwork(void)
 
     fclose(File);
 
-    printf("Load network...DONE (%s; hash = 0x%016llX)\n", NNUE_FILE, FileHash);
+    printf("Load network...DONE (%s; hash = 0x%016llX)\n", NNUE_FILE_NAME, FileHash);
 }
 
-#ifdef NET_KS
-int KingIndex(const int KingSquare, const int Square)
-{
-    return (KingSquare & 4) == (Square & 4);
-}
-#elif defined(NET_KQ)
-int KingIndex(const int KingSquare, const int Square)
-{
-    return (((KingSquare & 4) == (Square & 4)) << 1) + ((KingSquare & 32) == (Square & 32));
-}
-#endif // NET_KS || NET_KQ
-
-int CalculateWeightIndex(const int Perspective, const int KingSquare, const int Square, const int PieceWithColor)
+int CalculateWeightIndex(const int Perspective, const int Square, const int PieceWithColor)
 {
     int PieceIndex;
     int WeightIndex;
@@ -283,34 +232,16 @@ int CalculateWeightIndex(const int Perspective, const int KingSquare, const int 
     if (Perspective == WHITE) {
         PieceIndex = PIECE(PieceWithColor) + 6 * COLOR(PieceWithColor);
 
-#ifdef NET
         WeightIndex = (PieceIndex << 6) + Square;
-#elif defined(NET_KS)
-        WeightIndex = (PieceIndex << 6) + (KingIndex(KingSquare, Square) << 5) + HalfBoardIndex[Square];
-#else // NET_KQ
-        WeightIndex = (PieceIndex << 7) + (KingIndex(KingSquare, Square) << 5) + HalfBoardIndex[Square];
-#endif // NET || NET_KS || NET_KQ
     }
     else { // BLACK
         PieceIndex = PIECE(PieceWithColor) + 6 * CHANGE_COLOR(COLOR(PieceWithColor));
 
-#ifdef NET
         WeightIndex = (PieceIndex << 6) + (Square ^ 56);
-#elif defined(NET_KS)
-        WeightIndex = (PieceIndex << 6) + (KingIndex(KingSquare, Square) << 5) + HalfBoardIndex[Square ^ 56];
-#else // NET_KQ
-        WeightIndex = (PieceIndex << 7) + (KingIndex(KingSquare, Square) << 5) + HalfBoardIndex[Square ^ 56];
-#endif // NET || NET_KS || NET_KQ
     }
 
 #ifdef PRINT_WEIGHT_INDEX
-
-#ifdef NET
     printf("Perspective = %d Square = %d Piece = %d Color = %d PieceIndex = %d WeightIndex = %d\n", Perspective, Square, PIECE(PieceWithColor), COLOR(PieceWithColor), PieceIndex, WeightIndex);
-#else // NET_KS || NET_KQ
-    printf("Perspective = %d KingSquare = %d Square = %d Piece = %d Color = %d PieceIndex = %d KingIndex = %d WeightIndex = %d\n", Perspective, KingSquare, Square, PIECE(PieceWithColor), COLOR(PieceWithColor), PieceIndex, KingIndex(KingSquare, Square) << 5, WeightIndex);
-#endif // NET || NET_KS || NET_KQ
-
 #endif // PRINT_WEIGHT_INDEX
 
     return WeightIndex;
@@ -323,8 +254,6 @@ void RefreshAccumulator(BoardItem* Board)
     for (int Perspective = 0; Perspective < 2; ++Perspective) { // White/Black
         memcpy((*Accumulation)[Perspective], HiddenBiases, sizeof(HiddenBiases));
 
-        int KingSquare = LSB(Board->BB_Pieces[Perspective][KING]);
-
         U64 Pieces = (Board->BB_WhitePieces | Board->BB_BlackPieces);
 
         while (Pieces) {
@@ -332,7 +261,7 @@ void RefreshAccumulator(BoardItem* Board)
 
             int PieceWithColor = Board->Pieces[Square];
 
-            int WeightIndex = CalculateWeightIndex(Perspective, KingSquare, Square, PieceWithColor);
+            int WeightIndex = CalculateWeightIndex(Perspective, Square, PieceWithColor);
 
 #ifdef USE_NNUE_AVX2
             __m256i* AccumulatorTile = (__m256i*)(*Accumulation)[Perspective];
@@ -401,8 +330,6 @@ BOOL UpdateAccumulator(BoardItem* Board)
 {
     HistoryItem* Info;
 
-    int KingSquare;
-
     int PieceWithColor;
 
     int WeightIndex;
@@ -417,15 +344,9 @@ BOOL UpdateAccumulator(BoardItem* Board)
         return FALSE;
     }
 
-#if defined(NET_KS) || defined(NET_KQ)
-    if (Info->PieceFrom == KING) {
-        return FALSE;
-    }
-#else // NET
     if (Info->Type & (MOVE_CASTLE_KING | MOVE_CASTLE_QUEEN)) {
         return FALSE;
     }
-#endif // NET_KS || NET_KQ || NET
 
     if (Info->Type & MOVE_NULL) {
         Board->Accumulator.AccumulationComputed = TRUE;
@@ -434,13 +355,11 @@ BOOL UpdateAccumulator(BoardItem* Board)
     }
 
     for (int Perspective = 0; Perspective < 2; ++Perspective) { // White/Black
-        KingSquare = LSB(Board->BB_Pieces[Perspective][KING]);
-
         // Delete piece (from)
 
         PieceWithColor = PIECE_AND_COLOR(Info->PieceFrom, CHANGE_COLOR(Board->CurrentColor));
 
-        WeightIndex = CalculateWeightIndex(Perspective, KingSquare, Info->From, PieceWithColor);
+        WeightIndex = CalculateWeightIndex(Perspective, Info->From, PieceWithColor);
 
         AccumulatorSub(Board, Perspective, WeightIndex);
 
@@ -449,14 +368,14 @@ BOOL UpdateAccumulator(BoardItem* Board)
         if (Info->Type & MOVE_PAWN_PASSANT) {
             PieceWithColor = PIECE_AND_COLOR(PAWN, Board->CurrentColor);
 
-            WeightIndex = CalculateWeightIndex(Perspective, KingSquare, Info->EatPawnSquare, PieceWithColor);
+            WeightIndex = CalculateWeightIndex(Perspective, Info->EatPawnSquare, PieceWithColor);
 
             AccumulatorSub(Board, Perspective, WeightIndex);
         }
         else if (Info->Type & MOVE_CAPTURE) {
             PieceWithColor = PIECE_AND_COLOR(Info->PieceTo, Board->CurrentColor);
 
-            WeightIndex = CalculateWeightIndex(Perspective, KingSquare, Info->To, PieceWithColor);
+            WeightIndex = CalculateWeightIndex(Perspective, Info->To, PieceWithColor);
 
             AccumulatorSub(Board, Perspective, WeightIndex);
         }
@@ -466,14 +385,14 @@ BOOL UpdateAccumulator(BoardItem* Board)
         if (Info->Type & MOVE_PAWN_PROMOTE) {
             PieceWithColor = PIECE_AND_COLOR(Info->PromotePiece, CHANGE_COLOR(Board->CurrentColor));
 
-            WeightIndex = CalculateWeightIndex(Perspective, KingSquare, Info->To, PieceWithColor);
+            WeightIndex = CalculateWeightIndex(Perspective, Info->To, PieceWithColor);
 
             AccumulatorAdd(Board, Perspective, WeightIndex);
         }
         else {
             PieceWithColor = PIECE_AND_COLOR(Info->PieceFrom, CHANGE_COLOR(Board->CurrentColor));
 
-            WeightIndex = CalculateWeightIndex(Perspective, KingSquare, Info->To, PieceWithColor);
+            WeightIndex = CalculateWeightIndex(Perspective, Info->To, PieceWithColor);
 
             AccumulatorAdd(Board, Perspective, WeightIndex);
         }
