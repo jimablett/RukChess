@@ -1245,8 +1245,8 @@ void TuningAdamSGD(void)
     double M_Corrected;
     double V_Corrected;
 
-    int Offset;
     int Batches;
+    int Offset;
 
     double BestError;
     double CompleteError;
@@ -1305,7 +1305,6 @@ void TuningAdamSGD(void)
 
     SaveTuningParams();
 
-    Offset = 0;
     Batches = PositionStore.Count / TUNING_BATCH_SIZE;
 
     for (int Epoch = 1; Epoch <= TUNING_MAX_EPOCHS; ++Epoch) {
@@ -1320,6 +1319,8 @@ void TuningAdamSGD(void)
         printf("Best error = %.8f\n", BestError);
 
         ShufflePositions();
+
+        Offset = 0;
 
         for (int Batch = 0; Batch < Batches; ++Batch) {
             printf("\n");

@@ -146,7 +146,7 @@
 // Program name, version, evaluation function name and copyright information
 
 #define PROGRAM_NAME                            "RukChess"
-#define PROGRAM_VERSION                         "3.0.8"
+#define PROGRAM_VERSION                         "3.0.9"
 
 #ifdef SIMPLIFIED_EVALUATION_FUNCTION
 
