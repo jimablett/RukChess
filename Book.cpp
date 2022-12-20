@@ -177,6 +177,7 @@ void GenerateBook(void)
     }
 
     // No cache used
+
     InitHashTable(1);
     ClearHash();
 

@@ -465,6 +465,7 @@ void GeneratorTest1(void)
     char* ResultString;
 
     // No cache used
+
     InitHashTable(1);
     ClearHash();
 
@@ -505,6 +506,7 @@ void GeneratorTest2(void)
     U64 ResultNodes;
 
     // No cache used
+
     InitHashTable(1);
     ClearHash();
 
