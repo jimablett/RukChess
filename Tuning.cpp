@@ -1325,7 +1325,7 @@ void TuningAdamSGD(void)
         for (int Batch = 0; Batch < Batches; ++Batch) {
             printf("\n");
 
-            printf("Batch = %d / %d\n", Batch + 1, Batches + 1);
+            printf("Batch = %d / %d\n", Batch + 1, Batches);
 
             CalculateGradients(Offset, TUNING_BATCH_SIZE);
 
