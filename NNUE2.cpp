@@ -92,7 +92,7 @@ void ReadNetwork(void)
 
     fread(&FileMagic, 4, 1, File);
 
-//  printf("FileMagic = %d\n", FileMagic);
+//    printf("FileMagic = %d\n", FileMagic);
 
     if (FileMagic != NNUE_FILE_MAGIC) { // File format error
         printf("File '%s' format error!\n", NNUE_FILE_NAME);
@@ -106,7 +106,7 @@ void ReadNetwork(void)
 
     fread(&FileHash, sizeof(U64), 1, File);
 
-//  printf("FileHash = 0x%016llX\n", FileHash);
+//    printf("FileHash = 0x%016llX\n", FileHash);
 /*
     if (FileHash != NNUE_FILE_HASH) { // File format error
         printf("File '%s' format error!\n", NNUE_FILE_NAME);
@@ -209,7 +209,7 @@ void ReadNetwork(void)
 
     fgetpos(File, &FilePos);
 
-//  printf("File position = %llu\n", FilePos);
+//    printf("File position = %llu\n", FilePos);
 
     if (FilePos != NNUE_FILE_SIZE) { // File format error
         printf("File '%s' format error!\n", NNUE_FILE_NAME);

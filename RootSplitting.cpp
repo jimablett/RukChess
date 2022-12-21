@@ -342,10 +342,10 @@ NextMove:
             && !(MoveList[MoveNumber].Type & MOVE_PAWN_PROMOTE)
             && MoveList[MoveNumber].SortValue >= 0
 //#ifdef PVS
-//          && MoveList[MoveNumber].SortValue != SORT_PVS_MOVE_VALUE
+//            && MoveList[MoveNumber].SortValue != SORT_PVS_MOVE_VALUE
 //#endif // PVS
 //#ifdef HASH_MOVE
-//          && MoveList[MoveNumber].Move != HashMove
+//            && MoveList[MoveNumber].Move != HashMove
 //#endif // HASH_MOVE
         ) {
             SEE_Value = CaptureSEE(Board, MOVE_FROM(MoveList[MoveNumber].Move), MOVE_TO(MoveList[MoveNumber].Move), MOVE_PROMOTE_PIECE(MoveList[MoveNumber].Move), MoveList[MoveNumber].Type);
@@ -433,10 +433,10 @@ NextMove:
             && !GiveCheck
             && !(MoveList[MoveNumber].Type & (MOVE_CAPTURE | MOVE_PAWN_PROMOTE)) // Not capture/promote move
 //#ifdef PVS
-//          && MoveList[MoveNumber].SortValue != SORT_PVS_MOVE_VALUE
+//            && MoveList[MoveNumber].SortValue != SORT_PVS_MOVE_VALUE
 //#endif // PVS
 //#ifdef HASH_MOVE
-//          && MoveList[MoveNumber].Move != HashMove
+//            && MoveList[MoveNumber].Move != HashMove
 //#endif // HASH_MOVE
             && Depth >= 5
         ) {

@@ -96,7 +96,7 @@ void InitThreadNode(void)
 
     free(Buffer);
 
-//  printf("Nodes = %d Cores = %d Threads = %d\n", Nodes, Cores, Threads);
+//    printf("Nodes = %d Cores = %d Threads = %d\n", Nodes, Cores, Threads);
 
     // Run as many threads as possible on the same node until core limit is reached,
     // then move on filling the next node
@@ -112,13 +112,13 @@ void InitThreadNode(void)
         ThreadNode[Index++] = Thread % Nodes;
     }
 
-//  printf("ThreadNode[0..%d] =", Threads - 1);
+//    printf("ThreadNode[0..%d] =", Threads - 1);
 
-//  for (int Thread = 0; Thread < Threads; ++Thread) {
-//      printf(" %d", ThreadNode[Thread]);
-//  }
+//    for (int Thread = 0; Thread < Threads; ++Thread) {
+//        printf(" %d", ThreadNode[Thread]);
+//    }
 
-//  printf("\n");
+//    printf("\n");
 }
 
 void BindThread(const int ThreadNumber)
@@ -134,7 +134,7 @@ void BindThread(const int ThreadNumber)
     Node = (USHORT)ThreadNode[ThreadNumber];
 
     if (GetNumaNodeProcessorMaskEx(Node, &GroupAffinity)) {
-//      printf("ThreadNumber = %d Node = %d Mask = 0x%016llx\n", ThreadNumber, Node, GroupAffinity.Mask);
+//        printf("ThreadNumber = %d Node = %d Mask = 0x%016llx\n", ThreadNumber, Node, GroupAffinity.Mask);
 
         SetThreadGroupAffinity(GetCurrentThread(), &GroupAffinity, nullptr);
     }

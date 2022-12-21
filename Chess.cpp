@@ -30,10 +30,10 @@ int main(int, char**)
 
     // Print debug information
 
-//  printf("MoveItem = %zd\n", sizeof(MoveItem));
-//  printf("AccumulatorItem = %zd\n", sizeof(AccumulatorItem));
-//  printf("HistoryItem = %zd\n", sizeof(HistoryItem));
-//  printf("BoardItem = %zd\n", sizeof(BoardItem));
+//    printf("MoveItem = %zd\n", sizeof(MoveItem));
+//    printf("AccumulatorItem = %zd\n", sizeof(AccumulatorItem));
+//    printf("HistoryItem = %zd\n", sizeof(HistoryItem));
+//    printf("BoardItem = %zd\n", sizeof(BoardItem));
 
     // Initialize threads
 
@@ -89,7 +89,7 @@ int main(int, char**)
     for (int Depth = 0; Depth < 7; ++Depth) {
         LateMovePruningTable[Depth] = (int)round(2.98484 + pow(Depth, 1.74716)); // Hakkapeliitta
 
-//      printf("LateMovePruningTable[%d] = %d\n", Depth, LateMovePruningTable[Depth]); // 3, 4, 6, 10, 14, 20, 26
+//        printf("LateMovePruningTable[%d] = %d\n", Depth, LateMovePruningTable[Depth]); // 3, 4, 6, 10, 14, 20, 26
     }
 #endif // LATE_MOVE_PRUNING
 
@@ -97,15 +97,15 @@ int main(int, char**)
 
 #if defined(NEGA_SCOUT) && defined(LATE_MOVE_REDUCTION)
     for (int Depth = 0; Depth < 64; ++Depth) {
-//      printf("LateMoveReductionTable[%2d] = ", Depth);
+//        printf("LateMoveReductionTable[%2d] = ", Depth);
 
         for (int MoveNumber = 0; MoveNumber < 64; ++MoveNumber) {
             LateMoveReductionTable[Depth][MoveNumber] = MAX((int)(log(Depth + 1) * log(MoveNumber + 1) / 1.70), 1); // Hakkapeliitta
 
-//          printf("%d", LateMoveReductionTable[Depth][MoveNumber]);
+//            printf("%d", LateMoveReductionTable[Depth][MoveNumber]);
         }
 
-//      printf("\n");
+//        printf("\n");
     }
 #endif // NEGA_SCOUT && LATE_MOVE_REDUCTION
 

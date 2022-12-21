@@ -34,13 +34,13 @@ BOOL IsSearching(int MoveHash)
 
     for (int Way = 0; Way < ABDADA_HASH_WAYS; ++Way) {
         if (SearchingMovesHashTable[Index][Way] == MoveHash) {
-//          printf("!");
+//            printf("!");
 
             return TRUE;
         }
     }
 
-//  printf(".");
+//    printf(".");
 
     return FALSE;
 }
@@ -51,7 +51,7 @@ void StartingSearch(int MoveHash)
 
     for (int Way = 0; Way < ABDADA_HASH_WAYS; ++Way) {
         if (SearchingMovesHashTable[Index][Way] == 0) {
-//          printf("0");
+//            printf("0");
 
             SearchingMovesHashTable[Index][Way] = MoveHash;
 
@@ -59,13 +59,13 @@ void StartingSearch(int MoveHash)
         }
 
         if (SearchingMovesHashTable[Index][Way] == MoveHash) {
-//          printf("1");
+//            printf("1");
 
             return;
         }
     }
 
-//  printf("x");
+//    printf("x");
 
     SearchingMovesHashTable[Index][0] = MoveHash;
 }
@@ -511,7 +511,7 @@ int ABDADA_Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Pl
                         }
 #endif // MOVES_SORT_HEURISTIC || KILLER_MOVE || COUNTER_MOVE
 
-//                      printf("h");
+//                        printf("h");
 
                         return HashScore;
                     }
@@ -937,10 +937,10 @@ int ABDADA_Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Pl
             && !InCheck
             && !GiveCheck
 //#ifdef PVS
-//          && DeferMoveList[MoveNumber].SortValue != SORT_PVS_MOVE_VALUE
+//            && DeferMoveList[MoveNumber].SortValue != SORT_PVS_MOVE_VALUE
 //#endif // PVS
 //#ifdef HASH_MOVE
-//          && DeferMoveList[MoveNumber].Move != HashMove
+//            && DeferMoveList[MoveNumber].Move != HashMove
 //#endif // HASH_MOVE
         ) {
 #if defined(SEE_CAPTURE_MOVE_PRUNING) && (defined(MOVES_SORT_SEE) || defined(BAD_CAPTURE_LAST))
@@ -999,10 +999,10 @@ int ABDADA_Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Pl
             && !GiveCheck
             && !(DeferMoveList[MoveNumber].Type & (MOVE_CAPTURE | MOVE_PAWN_PROMOTE)) // Not capture/promote move
 //#ifdef PVS
-//          && DeferMoveList[MoveNumber].SortValue != SORT_PVS_MOVE_VALUE
+//            && DeferMoveList[MoveNumber].SortValue != SORT_PVS_MOVE_VALUE
 //#endif // PVS
 //#ifdef HASH_MOVE
-//          && DeferMoveList[MoveNumber].Move != HashMove
+//            && DeferMoveList[MoveNumber].Move != HashMove
 //#endif // HASH_MOVE
             && Depth >= 5
         ) {

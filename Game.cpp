@@ -539,7 +539,7 @@ BOOL ComputerMove(void)
 
 #pragma omp critical
             {
-//              printf("-- End: Depth = %d Thread number = %d\n", Depth, omp_get_thread_num());
+//                printf("-- End: Depth = %d Thread number = %d\n", Depth, omp_get_thread_num());
 
                 CurrentBoard.Nodes += ThreadBoard.Nodes;
 
@@ -762,7 +762,7 @@ BOOL ComputerMove(void)
 
 #pragma omp critical
             {
-//              printf("-- End: Depth = %d Thread number = %d\n", Depth, omp_get_thread_num());
+//                printf("-- End: Depth = %d Thread number = %d\n", Depth, omp_get_thread_num());
 
                 CurrentBoard.Nodes += ThreadBoard.Nodes;
 
