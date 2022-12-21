@@ -176,12 +176,13 @@ void GenerateBook(void)
         exit(0);
     }
 
-    // No cache used
+    // Cache not used
 
     InitHashTable(1);
     ClearHash();
 
-    // Only the main thread is used
+    // Threads not used
+
     omp_set_num_threads(1);
 
     // Prepare new game

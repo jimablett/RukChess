@@ -279,12 +279,13 @@ void Pgn2Fen(void)
         exit(0);
     }
 
-    // No cache used
+    // Cache not used
 
     InitHashTable(1);
     ClearHash();
 
-    // Only the main thread is used
+    // Threads not used
+
     omp_set_num_threads(1);
 
     // Prepare new game
@@ -709,7 +710,7 @@ void FindBestK(void)
 
     double BestK = 1.0;
 
-    // No cache used
+    // Cache not used
 
     InitHashTable(1);
     ClearHash();
@@ -1080,7 +1081,7 @@ void TuningLocalSearch(void)
 
     BOOL Improved;
 
-    // No cache used
+    // Cache not used
 
     InitHashTable(1);
     ClearHash();
@@ -1256,7 +1257,7 @@ void TuningAdamSGD(void)
 
     double Delta;
 
-    // No cache used
+    // Cache not used
 
     InitHashTable(1);
     ClearHash();

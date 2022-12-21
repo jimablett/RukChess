@@ -464,12 +464,13 @@ void GeneratorTest1(void)
 
     char* ResultString;
 
-    // No cache used
+    // Cache not used
 
     InitHashTable(1);
     ClearHash();
 
-    // Only the main thread is used
+    // Threads not used
+
     omp_set_num_threads(1);
 
     for (int TestNumber = 0; TestNumber < GeneratorTestCount; ++TestNumber) {
@@ -505,12 +506,13 @@ void GeneratorTest2(void)
 
     U64 ResultNodes;
 
-    // No cache used
+    // Cache not used
 
     InitHashTable(1);
     ClearHash();
 
-    // Only the main thread is used
+    // Threads not used
+
     omp_set_num_threads(1);
 
     printf("\n");
