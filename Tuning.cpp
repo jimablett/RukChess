@@ -1284,10 +1284,6 @@ void TuningAdamSGD(void)
 
     ReadFenFile();
 
-    // Initialize random generator
-
-    SetRandState(Clock());
-
     // Initialize M[] and V[]
 
     for (int ParamIndex = 0; ParamIndex < TuningParamStore.Count; ++ParamIndex) {

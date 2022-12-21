@@ -23,13 +23,19 @@ int main(int, char**)
 
     int Choice;
 
+    // Print program name, program version, evaluation function name and copyright information
+
     printf("%s %s %s\n", PROGRAM_NAME, PROGRAM_VERSION, EVALUATION_NAME);
     printf("Copyright (C) %s %s\n", YEARS, AUTHOR);
+
+    // Print debug information
 
 //  printf("MoveItem = %zd\n", sizeof(MoveItem));
 //  printf("AccumulatorItem = %zd\n", sizeof(AccumulatorItem));
 //  printf("HistoryItem = %zd\n", sizeof(HistoryItem));
 //  printf("BoardItem = %zd\n", sizeof(BoardItem));
+
+    // Initialize threads
 
     omp_set_dynamic(0); // Disable dynamic thread control
 
@@ -50,7 +56,11 @@ int main(int, char**)
     InitThreadNode();
 #endif // BIND_THREAD
 
+    // Initialize bit boards
+
     InitBitBoards();
+
+    // Initialize hash table
 
     InitHashTable(DEFAULT_HASH_TABLE_SIZE);
     ClearHash();
@@ -60,13 +70,20 @@ int main(int, char**)
     printf("Max. hash table size = %d Mb\n", MAX_HASH_TABLE_SIZE);
     printf("Hash table size = %d Mb\n", DEFAULT_HASH_TABLE_SIZE);
 
+    // Initialize hash boards
+
+    SetRandState(0ULL); // For reproducibility
     InitHashBoards();
+
+    // Initialize evaluation function / Network reading
 
 #if defined(SIMPLIFIED_EVALUATION_FUNCTION) || defined(TOGA_EVALUATION_FUNCTION)
     InitEvaluation();
 #elif defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
     ReadNetwork();
 #endif // SIMPLIFIED_EVALUATION_FUNCTION || TOGA_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
+
+    // Initialize LMP
 
 #ifdef LATE_MOVE_PRUNING
     for (int Depth = 0; Depth < 7; ++Depth) {
@@ -75,6 +92,8 @@ int main(int, char**)
 //      printf("LateMovePruningTable[%d] = %d\n", Depth, LateMovePruningTable[Depth]); // 3, 4, 6, 10, 14, 20, 26
     }
 #endif // LATE_MOVE_PRUNING
+
+    // Initialize LMR
 
 #if defined(NEGA_SCOUT) && defined(LATE_MOVE_REDUCTION)
     for (int Depth = 0; Depth < 64; ++Depth) {
@@ -90,10 +109,18 @@ int main(int, char**)
     }
 #endif // NEGA_SCOUT && LATE_MOVE_REDUCTION
 
+    // Initialize tuning function and read params (if present)
+
 #if defined(TUNING) && defined(TOGA_EVALUATION_FUNCTION)
     InitTuningParams();
     LoadTuningParams();
 #endif // TUNING && TOGA_EVALUATION_FUNCTION
+
+    // Initialize random generator
+
+    SetRandState(Clock());
+
+    // Load book
 
     UseBook = LoadBook();
 

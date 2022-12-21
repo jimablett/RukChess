@@ -59,14 +59,14 @@ void InitHashTable(int SizeInMb) // Xiphos
     HashStore.Size = RoundItems * sizeof(HashItem);
     HashStore.Mask = RoundItems - 1;
 
+    HashStore.Iteration = 0;
+
     HashStore.Item = (HashItem*)realloc(HashStore.Item, HashStore.Size);
 }
 
 void InitHashBoards(void)
 {
-//  printf("HashDataS = %zd HashDataU = %zd HashItem = %zd\n", sizeof(HashDataS), sizeof(HashDataU), sizeof(HashItem));
-
-    SetRandState(0ULL);
+//    printf("HashDataS = %zd HashDataU = %zd HashItem = %zd\n", sizeof(HashDataS), sizeof(HashDataU), sizeof(HashItem));
 
     for (int Color = 0; Color < 2; ++Color) {
         for (int Piece = 0; Piece < 6; ++Piece) {
@@ -128,9 +128,9 @@ void InitHash(BoardItem* Board)
 
 void ClearHash(void)
 {
-    memset(HashStore.Item, 0, HashStore.Size);
-
     HashStore.Iteration = 0;
+
+    memset(HashStore.Item, 0, HashStore.Size);
 }
 
 void AddHashStoreIteration(void)

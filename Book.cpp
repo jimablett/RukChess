@@ -704,8 +704,6 @@ BOOL GetBookMove(const BoardItem* Board, MoveItem* BestMoves)
 
     // Weighted random choice
 
-    SetRandState(Clock());
-
     RandomValue = Rand64();
 
     Selected = (int)(RandomValue & 0x7FFFFFFF) % Total;

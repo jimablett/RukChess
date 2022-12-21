@@ -143,10 +143,10 @@
 
 // Parameter values
 
-// Program name, version, evaluation function name and copyright information
+// Program name, program version, evaluation function name and copyright information
 
 #define PROGRAM_NAME                            "RukChess"
-#define PROGRAM_VERSION                         "3.0.9"
+#define PROGRAM_VERSION                         "3.0.10"
 
 #ifdef SIMPLIFIED_EVALUATION_FUNCTION
 
