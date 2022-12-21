@@ -230,7 +230,7 @@ void ReadNetwork(void)
 
     Version = ReadInt32(File);
 
-//  printf("Version = 0x%8X\n", Version);
+//    printf("Version = 0x%8X\n", Version);
 
     if (Version != NNUE_VERSION) { // File format error
         printf("File '%s' format error!\n", NNUE_FILE);
@@ -244,7 +244,7 @@ void ReadNetwork(void)
 
     Hash = ReadInt32(File);
 
-//  printf("Hash = 0x%8X\n", Hash);
+//    printf("Hash = 0x%8X\n", Hash);
 
     if (Hash != NNUE_HASH) { // File format error
         printf("File '%s' format error!\n", NNUE_FILE);
@@ -258,7 +258,7 @@ void ReadNetwork(void)
 
     ArcLength = ReadInt32(File);
 
-//  printf("Architecture length = %d\n", ArcLength);
+//    printf("Architecture length = %d\n", ArcLength);
 
     if (ArcLength != NNUE_ARC_LENGTH) { // File format error
         printf("File '%s' format error!\n", NNUE_FILE);
@@ -278,13 +278,13 @@ void ReadNetwork(void)
         exit(0);
     }
 
-//  printf("Architecture = %s\n", Architecture);
+//    printf("Architecture = %s\n", Architecture);
 
     // Header 1
 
     Header1 = ReadInt32(File);
 
-//  printf("Header 1 = 0x%8X\n", Header1);
+//    printf("Header 1 = 0x%8X\n", Header1);
 
     if (Header1 != NNUE_HEADER_1) { // File format error
         printf("File '%s' format error!\n", NNUE_FILE);
@@ -299,7 +299,7 @@ void ReadNetwork(void)
     for (int Index = 0; Index < HALF_FEATURE_OUTPUT_DIMENSION; ++Index) { // 256
         InputBiases[Index] = ReadInt16(File);
 
-//      printf("InputBiases[%d] = %d\n", Index, InputBiases[Index]);
+//        printf("InputBiases[%d] = %d\n", Index, InputBiases[Index]);
     }
 
     // Input weights
@@ -307,14 +307,14 @@ void ReadNetwork(void)
     for (int Index = 0; Index < HALF_FEATURE_INPUT_DIMENSION * HALF_FEATURE_OUTPUT_DIMENSION; ++Index) { // 41024 x 256 = 10502144
         InputWeights[Index] = ReadInt16(File);
 
-//      printf("InputWeights[%d] = %d\n", Index, InputWeights[Index]);
+//        printf("InputWeights[%d] = %d\n", Index, InputWeights[Index]);
     }
 
     // Header 2
 
     Header2 = ReadInt32(File);
 
-//  printf("Header 2 = 0x%8X\n", Header2);
+//    printf("Header 2 = 0x%8X\n", Header2);
 
     if (Header2 != NNUE_HEADER_2) { // File format error
         printf("File '%s' format error!\n", NNUE_FILE);
@@ -329,7 +329,7 @@ void ReadNetwork(void)
     for (int Index = 0; Index < HIDDEN_1_DIMENSION; ++Index) { // 32
         Hidden_1_Biases[Index] = ReadInt32(File);
 
-//      printf("Hidden_1_Biases[%d] = %d\n", Index, Hidden_1_Biases[Index]);
+//        printf("Hidden_1_Biases[%d] = %d\n", Index, Hidden_1_Biases[Index]);
     }
 
 #ifdef USE_NNUE_AVX2
@@ -344,7 +344,7 @@ void ReadNetwork(void)
 
             Hidden_1_Weights[Index] = ReadInt8(File);
 
-//          printf("Hidden_1_Weights[%d] = %d\n", Index, Hidden_1_Weights[Index]);
+//            printf("Hidden_1_Weights[%d] = %d\n", Index, Hidden_1_Weights[Index]);
         }
     }
 
@@ -353,7 +353,7 @@ void ReadNetwork(void)
     for (int Index = 0; Index < HIDDEN_2_DIMENSION; ++Index) { // 32
         Hidden_2_Biases[Index] = ReadInt32(File);
 
-//      printf("Hidden_2_Biases[%d] = %d\n", Index, Hidden_2_Biases[Index]);
+//        printf("Hidden_2_Biases[%d] = %d\n", Index, Hidden_2_Biases[Index]);
     }
 
 #ifdef USE_NNUE_AVX2
@@ -368,7 +368,7 @@ void ReadNetwork(void)
 
             Hidden_2_Weights[Index] = ReadInt8(File);
 
-//          printf("Hidden_2_Weights[%d] = %d\n", Index, Hidden_2_Weights[Index]);
+//            printf("Hidden_2_Weights[%d] = %d\n", Index, Hidden_2_Weights[Index]);
         }
     }
 
@@ -377,7 +377,7 @@ void ReadNetwork(void)
     for (int Index = 0; Index < OUTPUT_DIMENSION; ++Index) { // 1
         OutputBiases[Index] = ReadInt32(File);
 
-//      printf("OutputBiases[%d] = %d\n", Index, OutputBiases[Index]);
+//        printf("OutputBiases[%d] = %d\n", Index, OutputBiases[Index]);
     }
 
     // Output weights
@@ -385,12 +385,12 @@ void ReadNetwork(void)
     for (int Index = 0; Index < HIDDEN_2_DIMENSION * OUTPUT_DIMENSION; ++Index) { // 32 x 1 = 32
         OutputWeights[Index] = ReadInt8(File);
 
-//      printf("OutputWeights[%d] = %d\n", Index, OutputWeights[Index]);
+//        printf("OutputWeights[%d] = %d\n", Index, OutputWeights[Index]);
     }
 
     fgetpos(File, &FilePos);
 
-//  printf("File position = %llu\n", FilePos);
+//    printf("File position = %llu\n", FilePos);
 
     if (FilePos != NNUE_FILE_SIZE) { // File format error
         printf("File '%s' format error!\n", NNUE_FILE);
