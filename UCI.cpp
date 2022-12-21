@@ -163,9 +163,7 @@ void UCI(void)
 
                             MakeMove(&CurrentBoard, MoveList[MoveNumber]);
 
-                            if (IsInCheck(&CurrentBoard, CHANGE_COLOR(CurrentBoard.CurrentColor))) {
-                                MoveInCheck = TRUE;
-                            }
+                            MoveInCheck = IsInCheck(&CurrentBoard, CHANGE_COLOR(CurrentBoard.CurrentColor));
 
                             break; // for
                         }

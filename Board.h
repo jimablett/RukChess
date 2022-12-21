@@ -207,7 +207,7 @@ typedef struct {
 #endif // NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
 } BoardItem; // 58280 bytes/1189920 bytes (NNUE)/2206688 (NNUE2)
 
-extern const char BoardName[][64];
+extern const char* BoardName[64];
 
 extern const char PiecesCharWhite[6];
 extern const char PiecesCharBlack[6];

@@ -1284,7 +1284,7 @@ void TuningAdamSGD(void)
 
     ReadFenFile();
 
-    // Initialize M[] and V[]
+    // Initialize M and V
 
     for (int ParamIndex = 0; ParamIndex < TuningParamStore.Count; ++ParamIndex) {
         M[ParamIndex] = 0.0;

@@ -699,9 +699,6 @@ BOOL GetBookMove(const BoardItem* Board, MoveItem* BestMoves)
         return FALSE;
     }
 
-    GenMoveCount = 0;
-    GenerateAllMoves(Board, MoveList, &GenMoveCount);
-
     // Weighted random choice
 
     RandomValue = Rand64();
@@ -718,6 +715,9 @@ BOOL GetBookMove(const BoardItem* Board, MoveItem* BestMoves)
         Offset += BookItemPointer->Total;
 
         if (Selected < Offset) {
+            GenMoveCount = 0;
+            GenerateAllMoves(Board, MoveList, &GenMoveCount);
+
             for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
                 if (
                     MOVE_FROM(MoveList[MoveNumber].Move) == BookItemPointer->From
