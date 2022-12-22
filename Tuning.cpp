@@ -30,16 +30,16 @@
 #define MAX_TUNING_PARAMS       1000    // 742 used
 
 // Adam SGD
-
+/*
 #define TUNING_BATCH_SIZE       16384
 
 #define TUNING_MAX_EPOCHS       100
 
-#define ALPHA                   1.0     // 0.001
+#define ALPHA                   0.3     // 0.001
 #define BETA1                   0.9
 #define BETA2                   0.999
 #define EPSILON                 1.0e-8
-
+*/
 typedef struct {
     char Fen[MAX_FEN_LENGTH];
 
@@ -59,11 +59,12 @@ struct {
 
     SCORE* Params[MAX_TUNING_PARAMS];
 
-    double Gradients[MAX_TUNING_PARAMS];
+//    double Gradients[MAX_TUNING_PARAMS];
 } TuningParamStore;
 
-//double K = 1.0;       // Default
-double K = 0.93847620;  // 12207453 FENs (19.12.2022)
+//double K = 1.0;           // Default
+double K = 0.93847620;      // 12207453 FENs (19.12.2022) - TuningSearch()
+//double K = 0.75977492;    // 12207453 FENs (19.12.2022) - Evaluate()
 
 SCORE TuningSearch(BoardItem* Board, SCORE Alpha, SCORE Beta, const int Ply, const BOOL InCheck)
 {
@@ -667,6 +668,7 @@ double CalculateError(const int Offset, const int BatchSize)
         InCheck = IsInCheck(&ThreadBoard, ThreadBoard.CurrentColor);
 
         Score = TuningSearch(&ThreadBoard, -INF, INF, 0, InCheck);
+//        Score = Evaluate(&ThreadBoard);
 
         if (ThreadBoard.CurrentColor == BLACK) {
             Score = -Score;
@@ -1029,8 +1031,8 @@ void LoadTuningParams(void)
     for (int ParamIndex = 0; ParamIndex < TuningParamStore.Count; ++ParamIndex) {
         fgets(Buf, sizeof(Buf), File);
 
-//        *TuningParamStore.Params[ParamIndex] = atoi(Buf);
-        *TuningParamStore.Params[ParamIndex] = atof(Buf);
+        *TuningParamStore.Params[ParamIndex] = atoi(Buf);
+//        *TuningParamStore.Params[ParamIndex] = atof(Buf);
     }
 
     fclose(File);
@@ -1053,8 +1055,8 @@ void SaveTuningParams(void)
     }
 
     for (int ParamIndex = 0; ParamIndex < TuningParamStore.Count; ++ParamIndex) {
-//        fprintf(File, "%d\n", *TuningParamStore.Params[ParamIndex]);
-        fprintf(File, "%.2f\n", *TuningParamStore.Params[ParamIndex]);
+        fprintf(File, "%d\n", *TuningParamStore.Params[ParamIndex]);
+//        fprintf(File, "%.2f\n", *TuningParamStore.Params[ParamIndex]);
     }
 
     fclose(File);
@@ -1065,8 +1067,8 @@ void PrintTuningParams(void)
     printf("\n");
 
     for (int ParamIndex = 0; ParamIndex < TuningParamStore.Count; ++ParamIndex) {
-//        printf("ParamIndex = %d Value = %d\n", ParamIndex + 1, *TuningParamStore.Params[ParamIndex]);
-        printf("ParamIndex = %d Value = %.2f\n", ParamIndex + 1, *TuningParamStore.Params[ParamIndex]);
+        printf("ParamIndex = %d Value = %d\n", ParamIndex + 1, *TuningParamStore.Params[ParamIndex]);
+//        printf("ParamIndex = %d Value = %.2f\n", ParamIndex + 1, *TuningParamStore.Params[ParamIndex]);
     }
 }
 
@@ -1131,6 +1133,8 @@ void TuningLocalSearch(void)
         Improved = FALSE;
 
         for (int ParamIndex = 0; ParamIndex < TuningParamStore.Count; ++ParamIndex) {
+            printf("."); // TODO
+
             *TuningParamStore.Params[ParamIndex] += 1; // Param + 1
 
             Error = CalculateError(0, PositionStore.Count);
@@ -1177,7 +1181,7 @@ void TuningLocalSearch(void)
 
     PositionStoreFree();
 }
-
+/*
 void ShufflePositions(void)
 {
     PositionItem** PositionPointer1;
@@ -1220,6 +1224,8 @@ void CalculateGradients(const int Offset, const int BatchSize)
 //    printf("\n");
 
     for (int ParamIndex = 0; ParamIndex < TuningParamStore.Count; ++ParamIndex) {
+        printf("."); // TODO
+
         *TuningParamStore.Params[ParamIndex] += 2.0; // Param + 2.0
 
         Error = CalculateError(Offset, BatchSize);
@@ -1352,6 +1358,10 @@ void TuningAdamSGD(void)
 
             printf("Apply gradients...DONE\n");
 
+//            PrintTuningParams();
+
+            SaveTuningParams();
+
             Offset += TUNING_BATCH_SIZE;
         } // for (Batch)
 
@@ -1380,5 +1390,5 @@ void TuningAdamSGD(void)
 
     PositionStoreFree();
 }
-
+*/
 #endif // TUNING && TOGA_EVALUATION_FUNCTION

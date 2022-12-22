@@ -169,7 +169,7 @@ int main(int, char**)
         printf("14: Find best K (required games.fen)\n");
 
         printf("15: Tuning evaluation function - Local search (required games.fen)\n");
-        printf("16: Tuning evaluation function - Adam SGD (required games.fen)\n");
+//        printf("16: Tuning evaluation function - Adam SGD (required games.fen)\n");
 
         printf("17: Load tuning params (params.txt)\n");
         printf("18: Save tuning params (params.txt)\n");
@@ -257,9 +257,9 @@ int main(int, char**)
                 TuningLocalSearch();
                 break;
 
-            case 16:
-                TuningAdamSGD();
-                break;
+//            case 16:
+//                TuningAdamSGD();
+//                break;
 
             case 17:
                 LoadTuningParams();

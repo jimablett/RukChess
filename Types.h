@@ -14,15 +14,15 @@
 
 #define INF                 10000
 
-#ifdef TUNING
+//#ifdef TUNING
 
-#define SCORE               double
+//#define SCORE               double
 
-#else
+//#else
 
 #define SCORE               int
 
-#endif // TUNING
+//#endif // TUNING
 
 typedef __int8              I8;
 typedef __int16             I16;

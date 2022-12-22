@@ -16,7 +16,7 @@
     https://www.chessprogramming.org/Toga_Log
     https://manualzz.com/doc/6937632/toga-log-user-manual
 */
-//#define TOGA_EVALUATION_FUNCTION
+#define TOGA_EVALUATION_FUNCTION
 
 /*
     https://www.chessprogramming.org/Stockfish_NNUE
@@ -31,7 +31,7 @@
     https://github.com/jhonnold/berserk-trainer
     https://github.com/Ilya-Ruk/RukChessTrainer
 */
-#define NNUE_EVALUATION_FUNCTION_2
+//#define NNUE_EVALUATION_FUNCTION_2
 
 #if defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
 
@@ -137,7 +137,7 @@
 
 // Tuning
 
-//#define TUNING                                // Required TOGA_EVALUATION_FUNCTION
+#define TUNING                                  // Required TOGA_EVALUATION_FUNCTION
 
 // ------------------------------------------------------------------
 
