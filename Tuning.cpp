@@ -63,8 +63,8 @@ struct {
 } TuningParamStore;
 
 //double K = 1.0;           // Default
-double K = 0.93847620;      // 12207453 FENs (19.12.2022) - TuningSearch()
-//double K = 0.75977492;    // 12207453 FENs (19.12.2022) - Evaluate()
+//double K = 0.76276560;    // 4028460 FENs (23.12.2022) - Evaluate()
+double K = 0.94117474;      // 4028460 FENs (23.12.2022) - TuningSearch()
 
 SCORE TuningSearch(BoardItem* Board, SCORE Alpha, SCORE Beta, const int Ply, const BOOL InCheck)
 {
@@ -667,8 +667,8 @@ double CalculateError(const int Offset, const int BatchSize)
 
         InCheck = IsInCheck(&ThreadBoard, ThreadBoard.CurrentColor);
 
-        Score = TuningSearch(&ThreadBoard, -INF, INF, 0, InCheck);
 //        Score = Evaluate(&ThreadBoard);
+        Score = TuningSearch(&ThreadBoard, -INF, INF, 0, InCheck);
 
         if (ThreadBoard.CurrentColor == BLACK) {
             Score = -Score;
@@ -1061,7 +1061,7 @@ void SaveTuningParams(void)
 
     fclose(File);
 }
-
+/*
 void PrintTuningParams(void)
 {
     printf("\n");
@@ -1071,7 +1071,7 @@ void PrintTuningParams(void)
 //        printf("ParamIndex = %d Value = %.2f\n", ParamIndex + 1, *TuningParamStore.Params[ParamIndex]);
     }
 }
-
+*/
 void TuningLocalSearch(void)
 {
     int InputThreads;
@@ -1117,10 +1117,6 @@ void TuningLocalSearch(void)
 
     printf("Tuning...\n");
 
-//    PrintTuningParams();
-
-    SaveTuningParams();
-
     BestError = CalculateError(0, PositionStore.Count);
 
     printf("\n");
@@ -1133,7 +1129,7 @@ void TuningLocalSearch(void)
         Improved = FALSE;
 
         for (int ParamIndex = 0; ParamIndex < TuningParamStore.Count; ++ParamIndex) {
-            printf("."); // TODO
+            printf(".");
 
             *TuningParamStore.Params[ParamIndex] += 1; // Param + 1
 
@@ -1167,8 +1163,6 @@ void TuningLocalSearch(void)
         printf("\n");
 
         printf("Epoch = %d Best error = %.8f\n", Epoch, BestError);
-
-//        PrintTuningParams();
 
         SaveTuningParams();
 
@@ -1224,7 +1218,7 @@ void CalculateGradients(const int Offset, const int BatchSize)
 //    printf("\n");
 
     for (int ParamIndex = 0; ParamIndex < TuningParamStore.Count; ++ParamIndex) {
-        printf("."); // TODO
+        printf(".");
 
         *TuningParamStore.Params[ParamIndex] += 2.0; // Param + 2.0
 
@@ -1237,7 +1231,7 @@ void CalculateGradients(const int Offset, const int BatchSize)
         *TuningParamStore.Params[ParamIndex] -= 2.0; // Param = Old param
     }
 
-//    printf("\n");
+    printf("\n");
 
     printf("Calculation gradients...DONE\n");
 }
@@ -1304,10 +1298,6 @@ void TuningAdamSGD(void)
 
     printf("Tuning...\n");
 
-//    PrintTuningParams();
-
-    SaveTuningParams();
-
     Batches = PositionStore.Count / TUNING_BATCH_SIZE;
 
     for (int Epoch = 1; Epoch <= TUNING_MAX_EPOCHS; ++Epoch) {
@@ -1358,8 +1348,6 @@ void TuningAdamSGD(void)
 
             printf("Apply gradients...DONE\n");
 
-//            PrintTuningParams();
-
             SaveTuningParams();
 
             Offset += TUNING_BATCH_SIZE;
@@ -1372,8 +1360,6 @@ void TuningAdamSGD(void)
         printf("\n");
 
         printf("Epoch = %d Best error = %.8f CompleteError = %.8f DiffError = %.8f\n", Epoch, BestError, CompleteError, DiffError);
-
-//        PrintTuningParams();
 
         SaveTuningParams();
 
