@@ -62,9 +62,8 @@ struct {
 //    double Gradients[MAX_TUNING_PARAMS];
 } TuningParamStore;
 
-//double K = 1.0;           // Default
-//double K = 0.76276560;    // 4028460 FENs (23.12.2022) - Evaluate()
-double K = 0.94117474;      // 4028460 FENs (23.12.2022) - TuningSearch()
+//double K = 1.0;       // Default
+double K = 0.94117474;  // 4028460 FENs (24.12.2022)
 
 SCORE TuningSearch(BoardItem* Board, SCORE Alpha, SCORE Beta, const int Ply, const BOOL InCheck)
 {
@@ -667,7 +666,6 @@ double CalculateError(const int Offset, const int BatchSize)
 
         InCheck = IsInCheck(&ThreadBoard, ThreadBoard.CurrentColor);
 
-//        Score = Evaluate(&ThreadBoard);
         Score = TuningSearch(&ThreadBoard, -INF, INF, 0, InCheck);
 
         if (ThreadBoard.CurrentColor == BLACK) {
