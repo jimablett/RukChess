@@ -33,7 +33,7 @@
 
 #define TUNING_BATCH_SIZE       16384
 
-#define TUNING_MAX_EPOCHS       100
+#define TUNING_MAX_EPOCH        100
 
 #define ALPHA                   0.1     // 0.001
 #define BETA1                   0.9
@@ -1317,7 +1317,7 @@ void TuningAdamSGD(void)
 
     Batches = PositionStore.Count / TUNING_BATCH_SIZE;
 
-    for (int Epoch = 1; Epoch <= TUNING_MAX_EPOCHS; ++Epoch) {
+    for (int Epoch = 1; Epoch <= TUNING_MAX_EPOCH; ++Epoch) {
         printf("\n");
 
         printf("Epoch = %d\n", Epoch);

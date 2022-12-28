@@ -124,6 +124,8 @@ int main(int, char**)
 
     UseBook = LoadBook();
 
+    // UCI
+
     printf("\n");
 
     printf("Use UCI commands or press Enter to display the menu\n");
@@ -137,6 +139,8 @@ int main(int, char**)
 
         return 0;
     }
+
+    // Console interface
 
     PrintMode = PRINT_MODE_NORMAL;
 
@@ -162,6 +166,7 @@ int main(int, char**)
         printf("11: Win-At-Chess test (300 positions)\n");
 
         printf("12: Generate book file (book.txt) from PGN file (book.pgn)\n");
+
         printf("13: Convert PGN file (games.pgn) to FEN file (games.fen)\n");
 
 #if defined(TUNING_LOCAL_SEARCH) || defined(TUNING_ADAM_SGD)
@@ -255,15 +260,19 @@ int main(int, char**)
                 break;
 
 #ifdef TUNING_LOCAL_SEARCH
+
             case 15:
                 TuningLocalSearch();
                 break;
+
 #endif // TUNING_LOCAL_SEARCH
 
 #ifdef TUNING_ADAM_SGD
+
             case 16:
                 TuningAdamSGD();
                 break;
+
 #endif // TUNING_ADAM_SGD
 
             case 17:

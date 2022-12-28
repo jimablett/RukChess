@@ -16,7 +16,7 @@
     https://www.chessprogramming.org/Toga_Log
     https://manualzz.com/doc/6937632/toga-log-user-manual
 */
-#define TOGA_EVALUATION_FUNCTION
+//#define TOGA_EVALUATION_FUNCTION
 
 /*
     https://www.chessprogramming.org/Stockfish_NNUE
@@ -31,7 +31,7 @@
     https://github.com/jhonnold/berserk-trainer
     https://github.com/Ilya-Ruk/RukChessTrainer
 */
-//#define NNUE_EVALUATION_FUNCTION_2
+#define NNUE_EVALUATION_FUNCTION_2
 
 #if defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
 
@@ -39,6 +39,14 @@
 #define USE_NNUE_UPDATE                         // Required NNUE_EVALUATION_FUNCTION or NNUE_EVALUATION_FUNCTION_2
 
 #endif // NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
+
+#ifdef NNUE_EVALUATION_FUNCTION_2
+
+//#define PRINT_MIN_MAX_VALUES                  // Required NNUE_EVALUATION_FUNCTION_2
+//#define PRINT_WEIGHT_INDEX                    // Required NNUE_EVALUATION_FUNCTION_2
+//#define PRINT_ACCUMULATOR                     // Required NNUE_EVALUATION_FUNCTION_2
+
+#endif // NNUE_EVALUATION_FUNCTION_2
 
 // Features (enable/disable)
 
@@ -54,14 +62,6 @@
 
 //#define DEBUG_NNUE
 //#define DEBUG_NNUE_2
-
-#ifdef NNUE_EVALUATION_FUNCTION_2
-
-//#define PRINT_MIN_MAX_VALUES                  // Required NNUE_EVALUATION_FUNCTION_2
-//#define PRINT_WEIGHT_INDEX                    // Required NNUE_EVALUATION_FUNCTION_2
-//#define PRINT_ACCUMULATOR                     // Required NNUE_EVALUATION_FUNCTION_2
-
-#endif // NNUE_EVALUATION_FUNCTION_2
 
 //#define DEBUG_STATISTIC
 
@@ -125,7 +125,7 @@
 //#define BIND_THREAD                           // Required LAZY_SMP or ABDADA
 //#define BIND_THREAD_V2                        // Required LAZY_SMP or ABDADA (Max. 64 CPUs)
 
-// Heuristic/Killer move tables
+// Heuristic/Killer move/Counter move tables
 
 #ifndef LAZY_SMP
 
@@ -142,7 +142,7 @@
 #define TUNING_LOCAL_SEARCH                     // Required TOGA_EVALUATION_FUNCTION
 //#define TUNING_ADAM_SGD                       // Required TOGA_EVALUATION_FUNCTION
 
-#endif
+#endif // TOGA_EVALUATION_FUNCTION
 
 // ------------------------------------------------------------------
 
