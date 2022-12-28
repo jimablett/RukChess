@@ -137,7 +137,12 @@
 
 // Tuning
 
-#define TUNING                                  // Required TOGA_EVALUATION_FUNCTION
+#ifdef TOGA_EVALUATION_FUNCTION
+
+#define TUNING_LOCAL_SEARCH                     // Required TOGA_EVALUATION_FUNCTION
+//#define TUNING_ADAM_SGD                       // Required TOGA_EVALUATION_FUNCTION
+
+#endif
 
 // ------------------------------------------------------------------
 
@@ -146,7 +151,7 @@
 // Program name, program version, evaluation function name and copyright information
 
 #define PROGRAM_NAME                            "RukChess"
-#define PROGRAM_VERSION                         "3.0.11"
+#define PROGRAM_VERSION                         "3.0.12"
 
 #ifdef SIMPLIFIED_EVALUATION_FUNCTION
 

@@ -25,21 +25,23 @@
 
 #define MIN_USE_PLY             0       // 0 moves
 
-#if defined(TUNING) && defined(TOGA_EVALUATION_FUNCTION)
+#if defined(TUNING_LOCAL_SEARCH) || defined(TUNING_ADAM_SGD)
 
 #define MAX_TUNING_PARAMS       1000    // 742 used
 
-// Adam SGD
-/*
+#ifdef TUNING_ADAM_SGD
+
 #define TUNING_BATCH_SIZE       16384
 
 #define TUNING_MAX_EPOCHS       100
 
-#define ALPHA                   0.3     // 0.001
+#define ALPHA                   0.1     // 0.001
 #define BETA1                   0.9
 #define BETA2                   0.999
 #define EPSILON                 1.0e-8
-*/
+
+#endif // TUNING_ADAM_SGD
+
 typedef struct {
     char Fen[MAX_FEN_LENGTH];
 
@@ -59,7 +61,9 @@ struct {
 
     SCORE* Params[MAX_TUNING_PARAMS];
 
-//    double Gradients[MAX_TUNING_PARAMS];
+#ifdef TUNING_ADAM_SGD
+    double Gradients[MAX_TUNING_PARAMS];
+#endif // TUNING_ADAM_SGD
 } TuningParamStore;
 
 //double K = 1.0;       // Default
@@ -220,7 +224,7 @@ SCORE TuningSearch(BoardItem* Board, SCORE Alpha, SCORE Beta, const int Ply, con
     return BestScore;
 }
 
-#endif // TUNING && TOGA_EVALUATION_FUNCTION
+#endif // TUNING_LOCAL_SEARCH || TUNING_ADAM_SGD
 
 void Pgn2Fen(void)
 {
@@ -514,7 +518,7 @@ void Pgn2Fen(void)
     printf("Read PGN file...DONE\n");
 }
 
-#if defined(TUNING) && defined(TOGA_EVALUATION_FUNCTION)
+#if defined(TUNING_LOCAL_SEARCH) || defined(TUNING_ADAM_SGD)
 
 void ReadFenFile(void)
 {
@@ -1029,8 +1033,11 @@ void LoadTuningParams(void)
     for (int ParamIndex = 0; ParamIndex < TuningParamStore.Count; ++ParamIndex) {
         fgets(Buf, sizeof(Buf), File);
 
+#ifdef TUNING_ADAM_SGD
+        *TuningParamStore.Params[ParamIndex] = atof(Buf);
+#else
         *TuningParamStore.Params[ParamIndex] = atoi(Buf);
-//        *TuningParamStore.Params[ParamIndex] = atof(Buf);
+#endif // TUNING_ADAM_SGD
     }
 
     fclose(File);
@@ -1053,8 +1060,11 @@ void SaveTuningParams(void)
     }
 
     for (int ParamIndex = 0; ParamIndex < TuningParamStore.Count; ++ParamIndex) {
+#ifdef TUNING_ADAM_SGD
+        fprintf(File, "%.2f\n", *TuningParamStore.Params[ParamIndex]);
+#else
         fprintf(File, "%d\n", *TuningParamStore.Params[ParamIndex]);
-//        fprintf(File, "%.2f\n", *TuningParamStore.Params[ParamIndex]);
+#endif // TUNING_ADAM_SGD
     }
 
     fclose(File);
@@ -1065,11 +1075,17 @@ void PrintTuningParams(void)
     printf("\n");
 
     for (int ParamIndex = 0; ParamIndex < TuningParamStore.Count; ++ParamIndex) {
+#ifdef TUNING_ADAM_SGD
+        printf("ParamIndex = %d Value = %.2f\n", ParamIndex + 1, *TuningParamStore.Params[ParamIndex]);
+#else
         printf("ParamIndex = %d Value = %d\n", ParamIndex + 1, *TuningParamStore.Params[ParamIndex]);
-//        printf("ParamIndex = %d Value = %.2f\n", ParamIndex + 1, *TuningParamStore.Params[ParamIndex]);
+#endif // TUNING_ADAM_SGD
     }
 }
 */
+#endif // TUNING_LOCAL_SEARCH || TUNING_ADAM_SGD
+
+#ifdef TUNING_LOCAL_SEARCH
 void TuningLocalSearch(void)
 {
     int InputThreads;
@@ -1173,7 +1189,10 @@ void TuningLocalSearch(void)
 
     PositionStoreFree();
 }
-/*
+#endif // TUNING_LOCAL_SEARCH
+
+#ifdef TUNING_ADAM_SGD
+
 void ShufflePositions(void)
 {
     PositionItem** PositionPointer1;
@@ -1374,5 +1393,5 @@ void TuningAdamSGD(void)
 
     PositionStoreFree();
 }
-*/
-#endif // TUNING && TOGA_EVALUATION_FUNCTION
+
+#endif // TUNING_ADAM_SGD
