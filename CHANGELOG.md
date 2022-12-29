@@ -6,7 +6,7 @@
 2. Search speed optimization
 3. NNUE2 speed optimization
 4. Added evaluation function name in program name
-5. Removed king side (KS) and king quadrant (KQ) architectures for NNUE2
+5. Removed king side (KS) and king quadrant (KQ) architectures from NNUE2
 6. Reworked tuning code (for Toga evaluation function only)
 
 ## RukChess 3.0 (05.09.2022)
