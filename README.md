@@ -1,4 +1,4 @@
-# RukChess 3.0
+# RukChess 3.0.12
 Chess engine with console interface, UCI support and several evaluation functions (including NNUE).
 
 # Inspiration
