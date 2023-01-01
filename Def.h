@@ -151,7 +151,7 @@
 // Program name, program version, evaluation function name and copyright information
 
 #define PROGRAM_NAME                            "RukChess"
-#define PROGRAM_VERSION                         "3.0.12"
+#define PROGRAM_VERSION                         "3.0.13"
 
 #ifdef SIMPLIFIED_EVALUATION_FUNCTION
 
@@ -171,7 +171,7 @@
 
 #endif // SIMPLIFIED_EVALUATION_FUNCTION || TOGA_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
 
-#define YEARS                                   "1999-2022"
+#define YEARS                                   "1999-2023"
 #define AUTHOR                                  "Ilya Rukavishnikov"
 
 // Max. limits and default values
