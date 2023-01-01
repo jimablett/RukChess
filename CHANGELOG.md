@@ -1,5 +1,9 @@
 # RukChess Change Log
 
+## RukChess 3.0.13 (01.01.2023)
+
+1. Reverted correct SEE
+
 ## RukChess 3.0.12 (29.12.2022)
 
 1. Corrected SEE
