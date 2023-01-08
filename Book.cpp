@@ -703,7 +703,6 @@ BOOL GetBookMove(const BoardItem* Board, MoveItem* BestMoves)
     // Weighted random choice
 
     RandomValue = Rand64();
-
     Selected = (int)(RandomValue & 0x7FFFFFFF) % Total;
 
 //    printf("Total = %d Selected = %d\n", Total, Selected);

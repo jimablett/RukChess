@@ -144,6 +144,10 @@
 
 #endif // TOGA_EVALUATION_FUNCTION
 
+// Monte Carlo tree search
+
+#define MCTS
+
 // ------------------------------------------------------------------
 
 // Parameter values

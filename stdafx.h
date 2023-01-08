@@ -20,6 +20,6 @@
 #include <immintrin.h>  // _pdep_u64(), _pext_u64()
 #include <float.h>      // DBL_MAX
 #include <limits.h>     // INT_MAX
-#include <math.h>       // round(), pow(), log()
+#include <math.h>       // round(), pow(), log(), sqrt()
 
 #endif // !STDAFX_H

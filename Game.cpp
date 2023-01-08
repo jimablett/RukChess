@@ -678,16 +678,14 @@ BOOL ComputerMove(void)
         goto Done;
     }
 
+#ifdef MCTS
 
-/*
     MonteCarloTreeSearch(&CurrentBoard, CurrentBoard.BestMovesRoot, &BestScore);
 
     BestMove = CurrentBoard.BestMovesRoot[0];
     PonderMove = CurrentBoard.BestMovesRoot[1];
 
-    goto Done;
-*/
-
+#else
 
     for (int Depth = 0; Depth < MAX_PLY; ++Depth) {
         ThreadDepth[Depth] = 0;
@@ -839,6 +837,8 @@ BOOL ComputerMove(void)
             }
         } // for
     } // pragma omp parallel
+
+#endif // MCTS
 
 Done:
 

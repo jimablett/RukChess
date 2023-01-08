@@ -7,7 +7,6 @@
 
 #include "Board.h"
 #include "Def.h"
-#include "Types.h"
 
 #ifdef NNUE_EVALUATION_FUNCTION_2
 void ReadNetwork(void);
