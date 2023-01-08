@@ -9,6 +9,7 @@
 #include "Def.h"
 #include "Evaluate.h"
 #include "Heuristic.h"
+#include "Move.h"
 #include "SEE.h"
 #include "Sort.h"
 #include "Types.h"
@@ -662,4 +663,27 @@ void GenerateCaptureMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMo
 
         CaptureMoves &= CaptureMoves - 1;
     }
+}
+
+int GenerateAllLegalMoves(BoardItem* Board, MoveItem* LegalMoveList)
+{
+    int GenMoveCount;
+    MoveItem MoveList[MAX_GEN_MOVES];
+
+    int LegalMoveCount = 0;
+
+    GenMoveCount = 0;
+    GenerateAllMoves(Board, MoveList, &GenMoveCount);
+
+    for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
+        MakeMove(Board, MoveList[MoveNumber]);
+
+        if (!IsInCheck(Board, CHANGE_COLOR(Board->CurrentColor))) {
+            LegalMoveList[LegalMoveCount++] = MoveList[MoveNumber];
+        }
+
+        UnmakeMove(Board);
+    }
+
+    return LegalMoveCount;
 }

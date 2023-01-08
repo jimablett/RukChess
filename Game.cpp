@@ -11,6 +11,7 @@
 #include "Gen.h"
 #include "Hash.h"
 #include "Heuristic.h"
+#include "MCTS.h"
 #include "Move.h"
 #include "PV_Splitting.h"
 #include "RootSplitting.h"
@@ -676,6 +677,17 @@ BOOL ComputerMove(void)
 
         goto Done;
     }
+
+
+/*
+    MonteCarloTreeSearch(&CurrentBoard, CurrentBoard.BestMovesRoot, &BestScore);
+
+    BestMove = CurrentBoard.BestMovesRoot[0];
+    PonderMove = CurrentBoard.BestMovesRoot[1];
+
+    goto Done;
+*/
+
 
     for (int Depth = 0; Depth < MAX_PLY; ++Depth) {
         ThreadDepth[Depth] = 0;
