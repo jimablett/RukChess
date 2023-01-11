@@ -146,7 +146,7 @@
 
 // Monte Carlo tree search
 
-#define MCTS
+//#define MCTS
 
 // ------------------------------------------------------------------
 
