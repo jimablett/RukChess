@@ -9,6 +9,7 @@
 #include "Evaluate.h"
 #include "Game.h"
 #include "Gen.h"
+#include "Hash.h"
 #include "Move.h"
 #include "QuiescenceSearch.h"
 #include "Search.h"
@@ -19,7 +20,7 @@
 
 #define MAX_ITERATIONS  10000
 
-#define SEARCH_DEPTH    5
+//#define SEARCH_DEPTH    5
 
 typedef struct Node {
     struct Node* Parent;
@@ -36,11 +37,11 @@ typedef struct Node {
 
     int MoveNumber;
 
-    int Score;
+//    int Score;
 
     double Q;
     double N;
-} NodeItem; // 5176 bytes (aligned 5176 bytes)
+} NodeItem; // 5172 bytes (aligned 5176 bytes)
 
 BOOL IsGameOver(BoardItem* Board, const int LegalMoveCount, const int Ply, int* Result)
 {
@@ -110,8 +111,14 @@ BOOL IsGameOver(BoardItem* Board, const int LegalMoveCount, const int Ply, int* 
     return FALSE;
 }
 
-NodeItem* CreateNodeMCTS(NodeItem* Parent, BoardItem* Board, const MoveItem Move)
+NodeItem* CreateNodeMCTS(NodeItem* Parent, BoardItem* Board, const MoveItem Move, int* Ply)
 {
+//    int HashScore = -INF;
+//    int HashStaticScore = -INF;
+//    int HashMove = 0;
+//    int HashDepth = -MAX_PLY;
+//    int HashFlag = 0;
+
     NodeItem* Node = (NodeItem*)calloc(1, sizeof(NodeItem));
 
     Node->Parent = Parent;
@@ -126,13 +133,22 @@ NodeItem* CreateNodeMCTS(NodeItem* Parent, BoardItem* Board, const MoveItem Move
 
     Node->MoveNumber = 0;
 
-//    Node->Score = Evaluate(Board);
-//    Node->Score = QuiescenceSearch(Board, -INF, INF, 0, 0, Board->BestMovesRoot, TRUE, IsInCheck(Board, Board->CurrentColor));
-    Node->Score = Search(Board, -INF, INF, SEARCH_DEPTH, 0, Board->BestMovesRoot, TRUE, IsInCheck(Board, Board->CurrentColor), FALSE, 0);
+//    LoadHash(Board->Hash, &HashDepth, *Ply, &HashScore, &HashStaticScore, &HashMove, &HashFlag);
 
-    if (Board->CurrentColor == BLACK) {
-        Node->Score = -Node->Score;
-    }
+//    if (HashFlag) {
+//        Node->Score = HashStaticScore;
+//    }
+//    else {
+//        Node->Score = Evaluate(Board);
+//        Node->Score = QuiescenceSearch(Board, -INF, INF, 0, 0, Board->BestMovesRoot, TRUE, IsInCheck(Board, Board->CurrentColor));
+//        Node->Score = Search(Board, -INF, INF, SEARCH_DEPTH, 0, Board->BestMovesRoot, TRUE, IsInCheck(Board, Board->CurrentColor), FALSE, 0);
+
+//        SaveHash(Board->Hash, -MAX_PLY, 0, 0, Node->Score, 0, HASH_STATIC_SCORE);
+//    }
+
+//    if (Board->CurrentColor == BLACK) {
+//        Node->Score = -Node->Score;
+//    }
 
 //    if (Move.Move) {
 //        printf("Move = %s%s Score = %d\n", BoardName[MOVE_FROM(Move.Move)], BoardName[MOVE_TO(Move.Move)], Node->Score);
@@ -223,7 +239,7 @@ NodeItem* Expand(NodeItem* Node, BoardItem* Board, int* Ply)
 
     ++(*Ply);
 
-    NodeItem* ChildNode = CreateNodeMCTS(Node, Board, Move);
+    NodeItem* ChildNode = CreateNodeMCTS(Node, Board, Move, Ply);
 
     Node->Children[Node->ChildCount++] = ChildNode;
 
@@ -264,6 +280,8 @@ int BestMoveNumber(BoardItem* Board, const MoveItem* LegalMoveList, const int Le
         MakeMove(Board, LegalMoveList[MoveNumber]);
 
         Score = -Evaluate(Board);
+//        Score = -QuiescenceSearch(Board, -INF, INF, 0, 0, Board->BestMovesRoot, TRUE, IsInCheck(Board, Board->CurrentColor));
+//        Score = -Search(Board, -INF, INF, SEARCH_DEPTH, 0, Board->BestMovesRoot, TRUE, IsInCheck(Board, Board->CurrentColor), FALSE, 0);
 
 //        printf("MoveNumber = %d Move = %s%s Score = %d\n", MoveNumber, BoardName[MOVE_FROM(LegalMoveList[MoveNumber].Move)], BoardName[MOVE_TO(LegalMoveList[MoveNumber].Move)], Score);
 
@@ -278,7 +296,7 @@ int BestMoveNumber(BoardItem* Board, const MoveItem* LegalMoveList, const int Le
 
     return SelectedMoveNumber;
 }
-*//*
+*/
 double Rollout(NodeItem* Node, BoardItem* Board, int* Ply)
 {
     int GameResult;
@@ -333,7 +351,7 @@ double Rollout(NodeItem* Node, BoardItem* Board, int* Ply)
 
     return (double)GameResult;
 }
-*/
+/*
 double Rollout(NodeItem* Node, BoardItem* Board, int* Ply)
 {
     static const double Scale = 1.75 / 512;
@@ -344,7 +362,7 @@ double Rollout(NodeItem* Node, BoardItem* Board, int* Ply)
 
     return tanh((double)Node->Score * Scale);
 }
-
+*/
 void Backpropagate(NodeItem* Node, BoardItem* Board, const double SimulationResult)
 {
     while (!IsRootNode(Node)) {
@@ -366,7 +384,9 @@ void Backpropagate(NodeItem* Node, BoardItem* Board, const double SimulationResu
 
 void MonteCarloTreeSearch(BoardItem* Board, MoveItem* BestMoves, int* BestScore)
 {
-    NodeItem* RootNode = CreateNodeMCTS(nullptr, Board, { 0, 0, 0 });
+    int Ply = 0;
+
+    NodeItem* RootNode = CreateNodeMCTS(nullptr, Board, { 0, 0, 0 }, &Ply);
     NodeItem* Node;
     NodeItem* BestNode;
 
@@ -378,8 +398,6 @@ void MonteCarloTreeSearch(BoardItem* Board, MoveItem* BestMoves, int* BestScore)
     MoveItem LegalMoveList[MAX_GEN_MOVES];
 
     int Iteration;
-
-    int Ply;
 
 //    printf("NodeItem = %zd\n", sizeof(NodeItem));
 
@@ -402,7 +420,9 @@ void MonteCarloTreeSearch(BoardItem* Board, MoveItem* BestMoves, int* BestScore)
     Iteration = 0;
 
     while (TRUE) {
-//        printf(".");
+//        if ((Iteration % 1000) == 0) {
+//            printf(".");
+//        }
 
         if (Iteration >= MAX_ITERATIONS) {
             break;
