@@ -251,7 +251,73 @@ BOOL PrintResult(const BOOL InCheck, const MoveItem BestMove, const MoveItem Pon
     }
 }
 
-#if !defined(ABDADA) && !defined(LAZY_SMP)
+#ifdef MCTS
+BOOL ComputerMove(void)
+{
+    BOOL InCheck;
+
+    int BestScore = 0;
+
+    MoveItem BestMove = { 0, 0, 0 };
+    MoveItem PonderMove = { 0, 0, 0 };
+
+    TimeStart = Clock();
+    TimeStop = TimeStart + MaxTime;
+
+    TimeStep = 0;
+
+    CompletedDepth = 0;
+
+    InCheck = IsInCheck(&CurrentBoard, CurrentBoard.CurrentColor);
+
+#if defined(PVS) || defined(QUIESCENCE_PVS)
+    CurrentBoard.FollowPV = TRUE;
+#endif // PVS || QUIESCENCE_PVS
+
+    CurrentBoard.Nodes = 0ULL;
+
+#ifdef DEBUG_STATISTIC
+    CurrentBoard.HashCount = 0ULL;
+    CurrentBoard.EvaluateCount = 0ULL;
+    CurrentBoard.CutoffCount = 0ULL;
+    CurrentBoard.QuiescenceCount = 0ULL;
+#endif // DEBUG_STATISTIC
+
+    CurrentBoard.SelDepth = 0;
+
+    CurrentBoard.BestMovesRoot[0] = { 0, 0, 0 };
+
+#ifdef MOVES_SORT_HEURISTIC
+    ClearHeuristic(&CurrentBoard);
+#endif // MOVES_SORT_HEURISTIC
+
+#ifdef KILLER_MOVE
+    ClearKillerMove(&CurrentBoard);
+#endif // KILLER_MOVE
+
+#ifdef COUNTER_MOVE
+    ClearCounterMove(&CurrentBoard);
+#endif // COUNTER_MOVE
+
+    AddHashStoreIteration();
+
+    if (UseBook && GetBookMove(&CurrentBoard, CurrentBoard.BestMovesRoot)) {
+        BestMove = CurrentBoard.BestMovesRoot[0];
+        PonderMove = CurrentBoard.BestMovesRoot[1];
+    }
+    else {
+        MonteCarloTreeSearch(&CurrentBoard, CurrentBoard.BestMovesRoot, &BestScore);
+
+        BestMove = CurrentBoard.BestMovesRoot[0];
+        PonderMove = CurrentBoard.BestMovesRoot[1];
+    }
+
+    TimeStop = Clock();
+    TotalTime = TimeStop - TimeStart;
+
+    return PrintResult(InCheck, BestMove, PonderMove, BestScore);
+}
+#elif !defined(ABDADA) && !defined(LAZY_SMP)
 BOOL ComputerMove(void)
 {
     BOOL InCheck;
@@ -678,15 +744,6 @@ BOOL ComputerMove(void)
         goto Done;
     }
 
-#ifdef MCTS
-
-    MonteCarloTreeSearch(&CurrentBoard, CurrentBoard.BestMovesRoot, &BestScore);
-
-    BestMove = CurrentBoard.BestMovesRoot[0];
-    PonderMove = CurrentBoard.BestMovesRoot[1];
-
-#else
-
     for (int Depth = 0; Depth < MAX_PLY; ++Depth) {
         ThreadDepth[Depth] = 0;
     }
@@ -838,8 +895,6 @@ BOOL ComputerMove(void)
         } // for
     } // pragma omp parallel
 
-#endif // MCTS
-
 Done:
 
     TimeStop = Clock();
@@ -847,7 +902,7 @@ Done:
 
     return PrintResult(InCheck, BestMove, PonderMove, BestScore);
 }
-#endif // ROOT_SPLITTING || PV_SPLITTING || ABDADA || LAZY_SMP
+#endif // MCTS || ROOT_SPLITTING || PV_SPLITTING || ABDADA || LAZY_SMP
 
 void ComputerMoveThread(void*)
 {

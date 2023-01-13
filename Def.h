@@ -65,6 +65,10 @@
 
 //#define DEBUG_STATISTIC
 
+// Monte Carlo tree search
+
+//#define MCTS
+
 // Common
 
 #define ASPIRATION_WINDOW
@@ -143,10 +147,6 @@
 //#define TUNING_ADAM_SGD                       // Required TOGA_EVALUATION_FUNCTION
 
 #endif // TOGA_EVALUATION_FUNCTION
-
-// Monte Carlo tree search
-
-//#define MCTS
 
 // ------------------------------------------------------------------
 
