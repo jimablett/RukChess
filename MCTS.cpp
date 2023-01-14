@@ -190,41 +190,54 @@ double Sigmoid(const int Score)
     return 1.0 / (1.0 + exp(-(double)Score * Scale));
 }
 
-double UCB_Score(NodeItem* Node, NodeItem* ChildNode, const double C)
+double UCT_Score(NodeItem* Node, NodeItem* ChildNode, const double C)
 {
     double P = Sigmoid(ChildNode->Score);
 
-    double UCB = (ChildNode->Q / ChildNode->N) + C * P * sqrt(Node->N) / (1.0 + ChildNode->N);
+    double UCT = (ChildNode->Q / ChildNode->N) + C * P * sqrt(Node->N) / (1.0 + ChildNode->N);
 
-    return UCB;
+    return UCT;
 }
 */
 NodeItem* BestChild(NodeItem* Node, const double C)
 {
-    NodeItem* SelectedNode = nullptr;
     NodeItem* ChildNode;
 
-    double UCB;
-    double MaxUCB = -DBL_MAX;
+    double UCT;
+    double MaxUCT = -DBL_MAX;
+
+    int MaxIndexCount = 0;
+    int MaxIndexList[MAX_GEN_MOVES];
+
+    U64 RandomValue;
+    int SelectedMaxIndex;
 
     for (int Index = 0; Index < Node->ChildCount; ++Index) {
         ChildNode = Node->Children[Index];
 
-        UCB = (ChildNode->Q / ChildNode->N) + C * sqrt(log(Node->N) / ChildNode->N);
-//        UCB = UCB_Score(Node, ChildNode, C);
+        UCT = (ChildNode->Q / ChildNode->N) + C * sqrt(2.0 * log(Node->N) / ChildNode->N);
+//        UCT = UCT_Score(Node, ChildNode, C);
 
-//        if (C == 0.0) {
-//            printf("Index = %d Move = %s%s Score = %d UCB = %f (Q = %f N = %f)\n", Index, BoardName[MOVE_FROM(ChildNode->Move.Move)], BoardName[MOVE_TO(ChildNode->Move.Move)], ChildNode->Score, UCB, ChildNode->Q, ChildNode->N);
-//        }
+        if (C == 0.0) {
+            printf("Index = %d Move = %s%s UCT = %f (Q = %f N = %f)\n", Index, BoardName[MOVE_FROM(ChildNode->Move.Move)], BoardName[MOVE_TO(ChildNode->Move.Move)], UCT, ChildNode->Q, ChildNode->N);
+        }
 
-        if (UCB > MaxUCB) {
-            MaxUCB = UCB;
+        if (UCT > MaxUCT) {
+            MaxUCT = UCT;
 
-            SelectedNode = ChildNode;
+            MaxIndexCount = 0;
+
+            MaxIndexList[MaxIndexCount++] = Index;
+        }
+        else if (UCT == MaxUCT) {
+            MaxIndexList[MaxIndexCount++] = Index;
         }
     }
 
-    return SelectedNode;
+    RandomValue = Rand64();
+    SelectedMaxIndex = (int)(RandomValue & 0x7FFFFFFF) % MaxIndexCount;
+
+    return Node->Children[MaxIndexList[SelectedMaxIndex]];
 }
 
 NodeItem* Expand(NodeItem* Node, BoardItem* Board, int* Ply)
