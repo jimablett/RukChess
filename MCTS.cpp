@@ -9,10 +9,7 @@
 #include "Evaluate.h"
 #include "Game.h"
 #include "Gen.h"
-#include "Hash.h"
 #include "Move.h"
-#include "QuiescenceSearch.h"
-#include "Search.h"
 #include "Types.h"
 #include "Utils.h"
 
