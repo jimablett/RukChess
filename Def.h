@@ -67,6 +67,11 @@
 
 // Monte Carlo tree search
 
+/*
+    https://netman.aiops.org/~peidan/ANM2017/7.AnomalyLocalization/LectureCoverage/mcts-survey-master-origin.pdf
+    https://int8.io/monte-carlo-tree-search-beginners-guide/
+    https://github.com/int8/gomcts
+*/
 //#define MCTS
 
 // Common
@@ -155,7 +160,7 @@
 // Program name, program version, evaluation function name and copyright information
 
 #define PROGRAM_NAME                            "RukChess"
-#define PROGRAM_VERSION                         "3.0.13"
+#define PROGRAM_VERSION                         "3.0.14"
 
 #ifdef SIMPLIFIED_EVALUATION_FUNCTION
 
