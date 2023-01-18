@@ -262,11 +262,13 @@ BOOL ComputerMove(void)
     MoveItem PonderMove = { 0, 0, 0 };
 
     TimeStart = Clock();
-    TimeStop = TimeStart + MaxTime;
+    TimeStop = TimeStart + (TimeForMove > 0ULL ? TimeForMove : MaxTime);
 
     TimeStep = 0;
 
     CompletedDepth = 0;
+
+    StopSearch = FALSE;
 
     InCheck = IsInCheck(&CurrentBoard, CurrentBoard.CurrentColor);
 
@@ -307,6 +309,8 @@ BOOL ComputerMove(void)
     }
     else {
         MonteCarloTreeSearch(&CurrentBoard, CurrentBoard.BestMovesRoot, &BestScore);
+
+        PrintBestMoves(&CurrentBoard, CompletedDepth, CurrentBoard.BestMovesRoot, BestScore);
 
         BestMove = CurrentBoard.BestMovesRoot[0];
         PonderMove = CurrentBoard.BestMovesRoot[1];

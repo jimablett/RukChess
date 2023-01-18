@@ -378,6 +378,12 @@ void MonteCarloTreeSearch(BoardItem* Board, MoveItem* BestMoves, int* BestScore)
 //        }
 
         if (Clock() >= TimeStop) {
+            StopSearch = TRUE;
+
+            break;
+        }
+
+        if (StopSearch) {
             break;
         }
 
