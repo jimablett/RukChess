@@ -310,6 +310,8 @@ BOOL ComputerMove(void)
     else {
         MonteCarloTreeSearch(&CurrentBoard, CurrentBoard.BestMovesRoot, &BestScore);
 
+        CompletedDepth = 1;
+
         PrintBestMoves(&CurrentBoard, CompletedDepth, CurrentBoard.BestMovesRoot, BestScore);
 
         BestMove = CurrentBoard.BestMovesRoot[0];
