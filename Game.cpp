@@ -92,7 +92,7 @@ void SaveBestMoves(MoveItem* BestMoves, const MoveItem BestMove, const MoveItem*
 {
     BestMoves[0] = BestMove;
 
-    for (int MoveNumber = 0; MoveNumber < (MAX_PLY - 1); ++MoveNumber) {
+    for (int MoveNumber = 0; MoveNumber < MAX_PLY - 1; ++MoveNumber) {
         BestMoves[MoveNumber + 1] = TempBestMoves[MoveNumber];
 
         if (!BestMoves[MoveNumber + 1].Move) {
