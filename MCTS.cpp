@@ -85,12 +85,7 @@ BOOL IsGameOver(BoardItem* Board, const int Ply, int* Result)
         if (Board->FiftyMove >= 100) {
             if (IsInCheck(Board, Board->CurrentColor)) {
                 if (!HasLegalMoves(Board)) { // Checkmate
-                    if (Board->CurrentColor == WHITE) {
-                        *Result = -INF + Ply; // Black win
-                    }
-                    else { // BLACK
-                        *Result = INF - Ply; // White win
-                    }
+                    *Result = -INF + Ply;
 
 //                    printf("GameOver: FiftyMove -> Checkmate (%d)\n", *Result);
 
@@ -114,14 +109,9 @@ BOOL IsGameOver(BoardItem* Board, const int Ply, int* Result)
         }
     } // if
 
-    if (!HasLegalMoves(Board)) {
+    if (!HasLegalMoves(Board)) { // No legal move (checkmate or stalemate)
         if (IsInCheck(Board, Board->CurrentColor)) { // Checkmate
-            if (Board->CurrentColor == WHITE) {
-                *Result = -INF + Ply; // Black win
-            }
-            else { // BLACK
-                *Result = INF - Ply; // White win
-            }
+            *Result = -INF + Ply;
 
 //            printf("GameOver: Checkmate (%d)\n", *Result);
         }
@@ -354,19 +344,17 @@ int RolloutEvaluate(NodeItem* Node, BoardItem* Board, int* Ply)
 //    Score = QuiescenceSearch(Board, -INF, INF, 0, *Ply, TempBestMoves, TRUE, IsInCheck(Board, Board->CurrentColor));
 //    Score = Search(Board, -INF, INF, SEARCH_DEPTH, *Ply, TempBestMoves, TRUE, IsInCheck(Board, Board->CurrentColor), FALSE, 0);
 
-    if (Board->CurrentColor == BLACK) {
-        Score = -Score;
-    }
-
 //    printf("RolloutEvaluate: Score = %d\n", Score);
 
     return Score;
 }
 
-void Backpropagate(NodeItem* Node, BoardItem* Board, int* Ply, const int Result)
+void Backpropagate(NodeItem* Node, BoardItem* Board, int* Ply, int Result)
 {
     while (!IsRootNode(Node)) {
-        Node->Q += (Node->Parent->Color == WHITE ? Result : -Result);
+        Result = -Result;
+
+        Node->Q += Result;
         Node->N += 1;
 
 //        printf("Backpropagate: Result = %d Q = %d N = %d\n", (Node->Parent->Color == WHITE ? Result : -Result), Node->Q, Node->N);
@@ -467,7 +455,7 @@ void MonteCarloTreeSearch(BoardItem* Board, MoveItem* BestMoves, int* BestScore)
         *BestScore = GameResult;
     }
     else {
-        *BestScore = Evaluate(Board);
+        *BestScore = -Evaluate(Board);
     }
 
     UnmakeMove(Board);
