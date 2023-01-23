@@ -735,7 +735,7 @@ U64 CountLegalMoves(const int Depth)
     int GenMoveCount;
     MoveItem MoveList[MAX_GEN_MOVES];
 
-    U64 LegalMoves = 0ULL;
+    U64 LegalMoveCount = 0ULL;
 
     if (Depth == 0) {
         return 1ULL;
@@ -747,12 +747,12 @@ U64 CountLegalMoves(const int Depth)
     for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
         MakeMove(&CurrentBoard, MoveList[MoveNumber]);
 
-        if (!IsInCheck(&CurrentBoard, CHANGE_COLOR(CurrentBoard.CurrentColor))) {
-            LegalMoves += CountLegalMoves(Depth - 1);
+        if (!IsInCheck(&CurrentBoard, CHANGE_COLOR(CurrentBoard.CurrentColor))) { // Legal move
+            LegalMoveCount += CountLegalMoves(Depth - 1);
         }
 
         UnmakeMove(&CurrentBoard);
     }
 
-    return LegalMoves;
+    return LegalMoveCount;
 }

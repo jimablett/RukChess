@@ -77,11 +77,11 @@ void PrintBestMoves(const BoardItem* Board, const int Depth, const MoveItem* Bes
         printf(" PV");
     }
 
-    for (int MoveNumber = 0; (MoveNumber < MAX_PLY && BestMoves[MoveNumber].Move); ++MoveNumber) {
-        printf(" %s%s", BoardName[MOVE_FROM(BestMoves[MoveNumber].Move)], BoardName[MOVE_TO(BestMoves[MoveNumber].Move)]);
+    for (int Ply = 0; (Ply < MAX_PLY && BestMoves[Ply].Move); ++Ply) {
+        printf(" %s%s", BoardName[MOVE_FROM(BestMoves[Ply].Move)], BoardName[MOVE_TO(BestMoves[Ply].Move)]);
 
-        if (BestMoves[MoveNumber].Type & MOVE_PAWN_PROMOTE) {
-            printf("%c", PiecesCharBlack[MOVE_PROMOTE_PIECE(BestMoves[MoveNumber].Move)]);
+        if (BestMoves[Ply].Type & MOVE_PAWN_PROMOTE) {
+            printf("%c", PiecesCharBlack[MOVE_PROMOTE_PIECE(BestMoves[Ply].Move)]);
         }
     }
 
@@ -92,10 +92,10 @@ void SaveBestMoves(MoveItem* BestMoves, const MoveItem BestMove, const MoveItem*
 {
     BestMoves[0] = BestMove;
 
-    for (int MoveNumber = 0; MoveNumber < MAX_PLY - 1; ++MoveNumber) {
-        BestMoves[MoveNumber + 1] = TempBestMoves[MoveNumber];
+    for (int Ply = 0; Ply < MAX_PLY - 1; ++Ply) {
+        BestMoves[Ply + 1] = TempBestMoves[Ply];
 
-        if (!BestMoves[MoveNumber + 1].Move) {
+        if (!BestMoves[Ply + 1].Move) {
             break;
         }
     }
@@ -628,11 +628,11 @@ BOOL ComputerMove(void)
                 if (!StopSearch) {
                     Score = ThreadScore;
 
-                    for (int MoveNumber = 0; MoveNumber < MAX_PLY; ++MoveNumber) {
-                        CurrentBoard.BestMovesRoot[MoveNumber] = ThreadBoard.BestMovesRoot[MoveNumber];
+                    for (int Ply = 0; Ply < MAX_PLY; ++Ply) {
+                        CurrentBoard.BestMovesRoot[Ply] = ThreadBoard.BestMovesRoot[Ply];
 
-                        if (!CurrentBoard.BestMovesRoot[MoveNumber].Move) {
-                            break; // for (moves)
+                        if (!CurrentBoard.BestMovesRoot[Ply].Move) {
+                            break; // for (ply)
                         }
                     }
                 }
@@ -858,11 +858,11 @@ BOOL ComputerMove(void)
                 {
                     Score = ThreadScore;
 
-                    for (int MoveNumber = 0; MoveNumber < MAX_PLY; ++MoveNumber) {
-                        CurrentBoard.BestMovesRoot[MoveNumber] = ThreadBoard.BestMovesRoot[MoveNumber];
+                    for (int Ply = 0; Ply < MAX_PLY; ++Ply) {
+                        CurrentBoard.BestMovesRoot[Ply] = ThreadBoard.BestMovesRoot[Ply];
 
-                        if (!CurrentBoard.BestMovesRoot[MoveNumber].Move) {
-                            break; // for (moves)
+                        if (!CurrentBoard.BestMovesRoot[Ply].Move) {
+                            break; // for (ply)
                         }
                     }
 

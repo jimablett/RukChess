@@ -17,10 +17,11 @@
 
 #ifdef MCTS
 
-//#define MAX_NODES       100001
-#define MAX_ITERATIONS  100000 // ~200 Gbyte
+//#define MAX_ITERATIONS  100000 // ~200 Mbyte
+#define MAX_ITERATIONS  200000 // ~400 Mbyte
+//#define MAX_ITERATIONS  500000 // ~1 Gbyte
 
-#define SEARCH_DEPTH    2
+//#define SEARCH_DEPTH    2
 
 typedef struct Node {
     struct Node* Parent;
@@ -41,11 +42,37 @@ typedef struct Node {
     int N;
 } NodeItem; // 2096 bytes (aligned 2096 bytes)
 
+BOOL HasLegalMoves(BoardItem* Board)
+{
+    int GenMoveCount;
+    MoveItem MoveList[MAX_GEN_MOVES];
+
+    GenMoveCount = 0;
+    GenerateAllMoves(Board, MoveList, &GenMoveCount);
+
+    for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
+        MakeMove(Board, MoveList[MoveNumber]);
+
+        if (IsInCheck(Board, CHANGE_COLOR(Board->CurrentColor))) { // Illegal move
+            UnmakeMove(Board);
+
+            continue; // Next move
+        }
+
+        // Legal move
+
+        UnmakeMove(Board);
+
+        return TRUE;
+    }
+
+    // No legal move
+
+    return FALSE;
+}
+
 BOOL IsGameOver(BoardItem* Board, const int Ply, int* Result)
 {
-    int LegalMoveCount;
-    MoveItem LegalMoveList[MAX_GEN_MOVES];
-
     if (Ply > 0) {
         if (IsInsufficientMaterial(Board)) {
             *Result = 0; // Draw
@@ -57,9 +84,7 @@ BOOL IsGameOver(BoardItem* Board, const int Ply, int* Result)
 
         if (Board->FiftyMove >= 100) {
             if (IsInCheck(Board, Board->CurrentColor)) {
-                LegalMoveCount = GenerateAllLegalMoves(Board, LegalMoveList);
-
-                if (LegalMoveCount == 0) {
+                if (!HasLegalMoves(Board)) { // Checkmate
                     if (Board->CurrentColor == WHITE) {
                         *Result = -INF + Ply; // Black win
                     }
@@ -89,10 +114,8 @@ BOOL IsGameOver(BoardItem* Board, const int Ply, int* Result)
         }
     } // if
 
-    LegalMoveCount = GenerateAllLegalMoves(Board, LegalMoveList);
-
-    if (LegalMoveCount == 0) {
-        if (IsInCheck(Board, Board->CurrentColor)) {
+    if (!HasLegalMoves(Board)) {
+        if (IsInCheck(Board, Board->CurrentColor)) { // Checkmate
             if (Board->CurrentColor == WHITE) {
                 *Result = -INF + Ply; // Black win
             }
@@ -116,7 +139,7 @@ BOOL IsGameOver(BoardItem* Board, const int Ply, int* Result)
     return FALSE;
 }
 
-NodeItem* CreateNodeMCTS(NodeItem* Parent, const MoveItem Move, BoardItem* Board, const int Ply, int* Nodes)
+NodeItem* CreateNodeMCTS(NodeItem* Parent, const MoveItem Move, BoardItem* Board, const int Ply)
 {
     int GameResult;
 
@@ -138,7 +161,7 @@ NodeItem* CreateNodeMCTS(NodeItem* Parent, const MoveItem Move, BoardItem* Board
     Node->Q = 0;
     Node->N = 0;
 
-    ++(*Nodes);
+    ++Board->Nodes;
 
     return Node;
 }
@@ -177,7 +200,7 @@ NodeItem* BestChild(NodeItem* Node, const double C)
     for (int Index = 0; Index < Node->ChildCount; ++Index) {
         ChildNode = Node->Children[Index];
 
-        UCT = ((double)ChildNode->Q / (double)ChildNode->N) + C * sqrt(2.0 * log((double)Node->N) / (double)ChildNode->N);
+        UCT = ((double)ChildNode->Q / (double)ChildNode->N / (double)INF) + C * sqrt(2.0 * log((double)Node->N) / (double)ChildNode->N);
 
 //        if (C == 0.0) {
 //            printf("Index = %d Move = %s%s UCT = %f Q = %d N = %d\n", Index, BoardName[MOVE_FROM(ChildNode->Move.Move)], BoardName[MOVE_TO(ChildNode->Move.Move)], UCT, ChildNode->Q, ChildNode->N);
@@ -205,7 +228,7 @@ NodeItem* BestChild(NodeItem* Node, const double C)
     return Node->Children[MaxIndexList[SelectedMaxIndex]];
 }
 
-NodeItem* Expand(NodeItem* Node, BoardItem* Board, int* Ply, int* Nodes)
+NodeItem* Expand(NodeItem* Node, BoardItem* Board, int* Ply)
 {
     int GenMoveCount;
     MoveItem MoveList[MAX_GEN_MOVES];
@@ -225,9 +248,7 @@ NodeItem* Expand(NodeItem* Node, BoardItem* Board, int* Ply, int* Nodes)
         ++(*Ply);
 
         if (!IsInCheck(Board, CHANGE_COLOR(Board->CurrentColor))) {
-            ++Board->Nodes;
-
-            ChildNode = CreateNodeMCTS(Node, MoveList[MoveNumber], Board, *Ply, Nodes);
+            ChildNode = CreateNodeMCTS(Node, MoveList[MoveNumber], Board, *Ply);
 
             Node->Children[Node->ChildCount++] = ChildNode;
 
@@ -248,28 +269,26 @@ NodeItem* Expand(NodeItem* Node, BoardItem* Board, int* Ply, int* Nodes)
     return nullptr;
 }
 
-NodeItem* TreePolicy(NodeItem* Node, BoardItem* Board, int* Ply, int* Nodes)
+NodeItem* TreePolicy(NodeItem* Node, BoardItem* Board, int* Ply)
 {
     NodeItem* ChildNode;
 
     while (!Node->IsTerminal) {
         if (!Node->IsFullyExpanded) {
-            ChildNode = Expand(Node, Board, Ply, Nodes);
+            ChildNode = Expand(Node, Board, Ply);
 
             if (ChildNode != nullptr) {
                 return ChildNode;
             }
         }
 
-        Node = BestChild(Node, 1.4);
+        Node = BestChild(Node, 1.0);
 
 //        printf("TreePolicy (make move): Ply = %d Move = %s%s\n", *Ply, BoardName[MOVE_FROM(Node->Move.Move)], BoardName[MOVE_TO(Node->Move.Move)]);
 
         MakeMove(Board, Node->Move);
 
         ++(*Ply);
-
-        ++Board->Nodes;
     }
 
     return Node;
@@ -292,8 +311,8 @@ int RolloutRandom(NodeItem* Node, BoardItem* Board, int* Ply)
             break;
         }
 
-        if (Board->HalfMoveNumber >= MAX_GAME_MOVES) {
-            GameResult = 0;
+        if (*Ply >= MAX_PLY) {
+            GameResult = 0; // Draw (default)
 
             break;
         }
@@ -310,8 +329,6 @@ int RolloutRandom(NodeItem* Node, BoardItem* Board, int* Ply)
         ++(*Ply);
 
         ++Ply2;
-
-        ++Board->Nodes;
     }
 
     while (Ply2--) {
@@ -329,13 +346,13 @@ int RolloutEvaluate(NodeItem* Node, BoardItem* Board, int* Ply)
 {
     int Score;
 
-    MoveItem TempBestMoves[MAX_PLY];
+//    MoveItem TempBestMoves[MAX_PLY];
 
-    TempBestMoves[0] = { 0, 0, 0 };
+//    TempBestMoves[0] = { 0, 0, 0 };
 
-//    Score = Evaluate(Board);
+    Score = Evaluate(Board);
 //    Score = QuiescenceSearch(Board, -INF, INF, 0, *Ply, TempBestMoves, TRUE, IsInCheck(Board, Board->CurrentColor));
-    Score = Search(Board, -INF, INF, SEARCH_DEPTH, *Ply, TempBestMoves, TRUE, IsInCheck(Board, Board->CurrentColor), FALSE, 0);
+//    Score = Search(Board, -INF, INF, SEARCH_DEPTH, *Ply, TempBestMoves, TRUE, IsInCheck(Board, Board->CurrentColor), FALSE, 0);
 
     if (Board->CurrentColor == BLACK) {
         Score = -Score;
@@ -374,9 +391,7 @@ void MonteCarloTreeSearch(BoardItem* Board, MoveItem* BestMoves, int* BestScore)
 
     NodeItem* RootNode;
     NodeItem* Node;
-    NodeItem* BestNode;
 
-    int Nodes = 0;
     int Iterations = 0;
 
     int Ply = 0;
@@ -394,28 +409,18 @@ void MonteCarloTreeSearch(BoardItem* Board, MoveItem* BestMoves, int* BestScore)
         return;
     }
 
-    RootNode = CreateNodeMCTS(nullptr, { 0, 0, 0 }, Board, 0, &Nodes);
+    RootNode = CreateNodeMCTS(nullptr, { 0, 0, 0 }, Board, 0);
 
     while (TRUE) {
-//        if (Nodes >= MAX_NODES) {
-//            StopSearch = TRUE;
-
-//            break;
-//        }
-
         if (Iterations >= MAX_ITERATIONS) {
             StopSearch = TRUE;
 
             break;
         }
 
-//        if ((Iterations & 4095) == 0) {
-//            printf(".");
-//        }
-
         if (
-            (Iterations & 4095) == 0
-            && Clock() >= TimeStop
+            (Iterations & 1023) == 0
+            && Clock() >= TimeStop - 300ULL
         ) {
             StopSearch = TRUE;
 
@@ -428,7 +433,7 @@ void MonteCarloTreeSearch(BoardItem* Board, MoveItem* BestMoves, int* BestScore)
 
 //        printf("\n");
 
-        Node = TreePolicy(RootNode, Board, &Ply, &Nodes);
+        Node = TreePolicy(RootNode, Board, &Ply);
 
 //        Result = RolloutRandom(Node, Board, &Ply);
         Result = RolloutEvaluate(Node, Board, &Ply);
@@ -440,20 +445,29 @@ void MonteCarloTreeSearch(BoardItem* Board, MoveItem* BestMoves, int* BestScore)
 
 //    printf("\n");
 
-//    printf("Nodes = %d Iterations = %d\n", Nodes, Iterations);
+//    printf("Nodes = %d Iterations = %d\n", Board->Nodes, Iterations);
 
-    BestNode = BestChild(RootNode, 0.0);
+    Node = RootNode;
 
-    BestMoves[0] = BestNode->Move;
-    BestMoves[1] = { 0, 0, 0 };
+    for (int Ply2 = 0; Ply2 < MAX_PLY - 1; ++Ply2) {
+        Node = BestChild(Node, 0.0);
 
-    MakeMove(Board, BestNode->Move);
+        BestMoves[Ply2] = Node->Move;
+
+        if (Node->IsTerminal || !Node->IsFullyExpanded) {
+            BestMoves[Ply2 + 1] = { 0, 0, 0 };
+
+            break;
+        }
+    }
+
+    MakeMove(Board, BestMoves[0]);
 
     if (IsGameOver(Board, 1, &GameResult)) {
         *BestScore = GameResult;
     }
     else {
-        *BestScore = 0;
+        *BestScore = Evaluate(Board);
     }
 
     UnmakeMove(Board);

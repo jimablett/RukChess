@@ -678,7 +678,7 @@ int GenerateAllLegalMoves(BoardItem* Board, MoveItem* LegalMoveList)
     for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
         MakeMove(Board, MoveList[MoveNumber]);
 
-        if (!IsInCheck(Board, CHANGE_COLOR(Board->CurrentColor))) {
+        if (!IsInCheck(Board, CHANGE_COLOR(Board->CurrentColor))) { // Legal move
             LegalMoveList[LegalMoveCount++] = MoveList[MoveNumber];
         }
 
