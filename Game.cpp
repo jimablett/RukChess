@@ -77,7 +77,7 @@ void PrintBestMoves(const BoardItem* Board, const int Depth, const MoveItem* Bes
         printf(" PV");
     }
 
-    for (int Ply = 0; (Ply < MAX_PLY && BestMoves[Ply].Move); ++Ply) {
+    for (int Ply = 0; Ply < MAX_PLY && BestMoves[Ply].Move; ++Ply) {
         printf(" %s%s", BoardName[MOVE_FROM(BestMoves[Ply].Move)], BoardName[MOVE_TO(BestMoves[Ply].Move)]);
 
         if (BestMoves[Ply].Type & MOVE_PAWN_PROMOTE) {
@@ -92,10 +92,10 @@ void SaveBestMoves(MoveItem* BestMoves, const MoveItem BestMove, const MoveItem*
 {
     BestMoves[0] = BestMove;
 
-    for (int Ply = 0; Ply < MAX_PLY - 1; ++Ply) {
-        BestMoves[Ply + 1] = TempBestMoves[Ply];
+    for (int Ply = 1; Ply < MAX_PLY; ++Ply) {
+        BestMoves[Ply] = TempBestMoves[Ply - 1];
 
-        if (!BestMoves[Ply + 1].Move) {
+        if (!BestMoves[Ply].Move) {
             break;
         }
     }
@@ -133,7 +133,7 @@ BOOL PrintResult(const BOOL InCheck, const MoveItem BestMove, const MoveItem Pon
                 }
             }
         }
-        else { // No move (checkmate or stalemate)
+        else { // No legal moves
             printf("bestmove (none)");
         }
 
@@ -142,7 +142,7 @@ BOOL PrintResult(const BOOL InCheck, const MoveItem BestMove, const MoveItem Pon
         return FALSE;
     }
     else if (PrintMode == PRINT_MODE_NORMAL) {
-        if (!BestMove.Move) { // No legal move (checkmate or stalemate)
+        if (!BestMove.Move) { // No legal moves
             if (InCheck) { // Checkmate
                 printf("\n");
 
@@ -203,7 +203,7 @@ BOOL PrintResult(const BOOL InCheck, const MoveItem BestMove, const MoveItem Pon
         printf("Hash count %llu Evaluate count %llu Cutoff count %llu Quiescence count %llu\n", CurrentBoard.HashCount, CurrentBoard.EvaluateCount, CurrentBoard.CutoffCount, CurrentBoard.QuiescenceCount);
 #endif // DEBUG_STATISTIC
 
-        if (BestScore >= INF - 1 || BestScore <= -INF + 1) { // Checkmate
+        if (BestScore >= INF - 1 || BestScore <= -INF + 1) { // Checkmate // TODO: INF - 1, -INF
             printf("\n");
 
             printf("Checkmate!\n");
@@ -458,7 +458,7 @@ BOOL ComputerMove(void)
 
         BestScore = Score;
 
-        if (!BestMove.Move) { // No move (checkmate or stalemate)
+        if (!BestMove.Move) { // No legal moves
             break; // for (depth)
         }
 
@@ -658,7 +658,7 @@ BOOL ComputerMove(void)
 
         BestScore = Score;
 
-        if (!BestMove.Move) { // No move (checkmate or stalemate)
+        if (!BestMove.Move) { // No legal moves
             break; // for (depth)
         }
 
@@ -885,7 +885,7 @@ BOOL ComputerMove(void)
                         StopSearch = TRUE;
                     }
 
-                    if (!BestMove.Move) { // No move (checkmate or stalemate)
+                    if (!BestMove.Move) { // No legal moves
                         StopSearch = TRUE;
                     }
 
@@ -993,7 +993,7 @@ BOOL HumanMove(void)
 
                     MakeMove(&CurrentBoard, MoveList[MoveNumber]);
 
-                    if (IsInCheck(&CurrentBoard, CHANGE_COLOR(CurrentBoard.CurrentColor))) {
+                    if (IsInCheck(&CurrentBoard, CHANGE_COLOR(CurrentBoard.CurrentColor))) { // Illegal move
                         UnmakeMove(&CurrentBoard);
 
                         break; // for

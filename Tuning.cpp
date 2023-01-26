@@ -96,28 +96,9 @@ SCORE TuningSearch(BoardItem* Board, SCORE Alpha, SCORE Beta, const int Ply, con
 
     if (Board->FiftyMove >= 100) {
         if (InCheck) {
-            GenMoveCount = 0;
-            GenerateAllMoves(Board, MoveList, &GenMoveCount);
-
-            for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
-                MakeMove(Board, MoveList[MoveNumber]);
-
-                if (IsInCheck(Board, CHANGE_COLOR(Board->CurrentColor))) {
-                    UnmakeMove(Board);
-
-                    continue; // Next move
-                }
-
-                // Legal move
-
-                UnmakeMove(Board);
-
-                return 0;
+            if (!HasLegalMoves(Board)) { // Checkmate
+                return -INF + Ply;
             }
-
-            // No legal move
-
-            return -INF + Ply;
         }
 
         return 0;
@@ -187,7 +168,7 @@ SCORE TuningSearch(BoardItem* Board, SCORE Alpha, SCORE Beta, const int Ply, con
 
         MakeMove(Board, MoveList[MoveNumber]);
 
-        if (IsInCheck(Board, CHANGE_COLOR(Board->CurrentColor))) {
+        if (IsInCheck(Board, CHANGE_COLOR(Board->CurrentColor))) { // Illegal move
             UnmakeMove(Board);
 
             continue; // Next move
@@ -437,7 +418,7 @@ void Pgn2Fen(void)
                         if (strcmp(MoveString, NotateMoveStr) == 0) {
                             MakeMove(&CurrentBoard, MoveList[MoveNumber]);
 
-                            if (IsInCheck(&CurrentBoard, CHANGE_COLOR(CurrentBoard.CurrentColor))) {
+                            if (IsInCheck(&CurrentBoard, CHANGE_COLOR(CurrentBoard.CurrentColor))) { // Illegal move
                                 UnmakeMove(&CurrentBoard);
 
                                 PrintBoard(&CurrentBoard);
@@ -472,7 +453,7 @@ void Pgn2Fen(void)
                             fprintf(FileOut, "%s|%.1f\n", FenOut, Result);
                         }
                     }
-                    else { // No move found
+                    else { // Move not found
                         Error = TRUE;
 
                         PrintBoard(&CurrentBoard);

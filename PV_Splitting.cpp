@@ -108,28 +108,9 @@ int PVSplitting_Search(BoardItem* Board, int Alpha, int Beta, int Depth, const i
 
         if (Board->FiftyMove >= 100) {
             if (InCheck) {
-                GenMoveCount = 0;
-                GenerateAllMoves(Board, MoveList, &GenMoveCount);
-
-                for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
-                    MakeMove(Board, MoveList[MoveNumber]);
-
-                    if (IsInCheck(Board, CHANGE_COLOR(Board->CurrentColor))) {
-                        UnmakeMove(Board);
-
-                        continue; // Next move
-                    }
-
-                    // Legal move
-
-                    UnmakeMove(Board);
-
-                    return 0;
+                if (!HasLegalMoves(Board)) { // Checkmate
+                    return -INF + Ply;
                 }
-
-                // No legal move
-
-                return -INF + Ply;
             }
 
             return 0;
@@ -306,7 +287,7 @@ NextMove0:
         Prefetch(Board->Hash);
 #endif // HASH_PREFETCH && (HASH_SCORE || HASH_MOVE)
 
-        if (IsInCheck(Board, CHANGE_COLOR(Board->CurrentColor))) {
+        if (IsInCheck(Board, CHANGE_COLOR(Board->CurrentColor))) { // Illegal move
             UnmakeMove(Board);
 
             continue; // Next move
@@ -515,7 +496,7 @@ NextMove:
         Prefetch(ThreadBoard->Hash);
 #endif // HASH_PREFETCH && (HASH_SCORE || HASH_MOVE)
 
-        if (IsInCheck(ThreadBoard, CHANGE_COLOR(ThreadBoard->CurrentColor))) {
+        if (IsInCheck(ThreadBoard, CHANGE_COLOR(ThreadBoard->CurrentColor))) { // Illegal move
             UnmakeMove(ThreadBoard);
 
             continue; // Next move
@@ -723,7 +704,7 @@ NextMove:
 
 PV_Done:
 
-    if (LegalMoveCount == 0) { // No legal move (checkmate or stalemate)
+    if (LegalMoveCount == 0) { // No legal moves
         if (SkipMove) {
             BestScore = Alpha;
         }

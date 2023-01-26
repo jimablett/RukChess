@@ -641,8 +641,8 @@ void Tests(char* Tests[], const int TestCount)
 
             printf("Best move: %s %s\n", NotateMoveStr, ResultString);
         }
-        else { // No move (checkmate or stalemate)
-            printf("No move (checkmate or stalemate)\n");
+        else { // No legal moves
+            printf("No legal moves\n");
         }
     } // for
 

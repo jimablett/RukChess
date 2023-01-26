@@ -165,12 +165,18 @@ void UCI(void)
 
                             MoveInCheck = IsInCheck(&CurrentBoard, CHANGE_COLOR(CurrentBoard.CurrentColor));
 
+                            if (MoveInCheck) { // Illegal move
+                                UnmakeMove(&CurrentBoard);
+                            }
+
                             break; // for
                         }
                     }
 
-                    if (!MoveFound || MoveInCheck) { // No move found or check
+                    if (!MoveFound || MoveInCheck) { // Move not found or illegal move
                         printf("info string illegal move\n");
+
+                        // TODO: print illegal move
 
                         break; // while (moves)
                     }

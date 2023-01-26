@@ -28,13 +28,13 @@ typedef struct Node {
     MoveItem Move;
 
     int White;
-    int Black;
     int Draw;
+    int Black;
 
     int Total;
 
     struct Node* Children[MAX_CHILDREN];
-} NodeItem; // 288 bytes
+} NodeItem; // 284 bytes (aligned 288 bytes)
 
 typedef struct {
     U64 Hash;
@@ -43,7 +43,7 @@ typedef struct {
     int To;
 
     int Total;
-} BookItem; // 24 bytes
+} BookItem; // 20 bytes (aligned 24 bytes)
 
 struct {
     int Count;
@@ -370,7 +370,7 @@ void GenerateBook(void)
                         if (strcmp(MoveString, NotateMoveStr) == 0) {
                             MakeMove(&CurrentBoard, MoveList[MoveNumber]);
 
-                            if (IsInCheck(&CurrentBoard, CHANGE_COLOR(CurrentBoard.CurrentColor))) {
+                            if (IsInCheck(&CurrentBoard, CHANGE_COLOR(CurrentBoard.CurrentColor))) { // Illegal move
                                 UnmakeMove(&CurrentBoard);
 
                                 PrintBoard(&CurrentBoard);
@@ -444,7 +444,7 @@ void GenerateBook(void)
                         } // if
                     } // for
 
-                    if (!MoveFound) { // No move found
+                    if (!MoveFound) { // Move not found
                         Error = TRUE;
 
                         PrintBoard(&CurrentBoard);
@@ -696,7 +696,7 @@ BOOL GetBookMove(const BoardItem* Board, MoveItem* BestMoves)
 
 //    printf("BookCount = %d\n", BookCount);
 
-    if (BookCount == 0) { // No moves found in book
+    if (BookCount == 0) { // No moves in book
         return FALSE;
     }
 

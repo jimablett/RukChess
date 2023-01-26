@@ -222,7 +222,7 @@ NextMove0:
         Prefetch(Board->Hash);
 #endif // HASH_PREFETCH && (HASH_SCORE || HASH_MOVE)
 
-        if (IsInCheck(Board, CHANGE_COLOR(Board->CurrentColor))) {
+        if (IsInCheck(Board, CHANGE_COLOR(Board->CurrentColor))) { // Illegal move
             UnmakeMove(Board);
 
             continue; // Next move
@@ -388,7 +388,7 @@ NextMove:
         Prefetch(ThreadBoard->Hash);
 #endif // HASH_PREFETCH && (HASH_SCORE || HASH_MOVE)
 
-        if (IsInCheck(ThreadBoard, CHANGE_COLOR(ThreadBoard->CurrentColor))) {
+        if (IsInCheck(ThreadBoard, CHANGE_COLOR(ThreadBoard->CurrentColor))) { // Illegal move
             UnmakeMove(ThreadBoard);
 
             continue; // Next move
@@ -557,7 +557,7 @@ NextMove:
 
 Root_Done:
 
-    if (LegalMoveCount == 0) { // No legal move (checkmate or stalemate)
+    if (LegalMoveCount == 0) { // No legal moves
         if (InCheck) { // Checkmate
             BestScore = -INF + Ply;
         }

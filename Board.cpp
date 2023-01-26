@@ -96,6 +96,35 @@ BOOL IsInCheck(const BoardItem* Board, const int Color)
     return IsSquareAttacked(Board, KingSquare, Color);
 }
 
+BOOL HasLegalMoves(BoardItem* Board)
+{
+    int GenMoveCount;
+    MoveItem MoveList[MAX_GEN_MOVES];
+
+    GenMoveCount = 0;
+    GenerateAllMoves(Board, MoveList, &GenMoveCount);
+
+    for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
+        MakeMove(Board, MoveList[MoveNumber]);
+
+        if (IsInCheck(Board, CHANGE_COLOR(Board->CurrentColor))) { // Illegal move
+            UnmakeMove(Board);
+
+            continue; // Next move
+        }
+
+        // Legal move
+
+        UnmakeMove(Board);
+
+        return TRUE;
+    }
+
+    // No legal moves
+
+    return FALSE;
+}
+
 void NotateMove(BoardItem* Board, const MoveItem Move, char* Result)
 {
     int From = MOVE_FROM(Move.Move);
@@ -142,7 +171,7 @@ void NotateMove(BoardItem* Board, const MoveItem Move, char* Result)
 
         MakeMove(Board, MoveList[MoveNumber]);
 
-        if (IsInCheck(Board, CHANGE_COLOR(Board->CurrentColor))) {
+        if (IsInCheck(Board, CHANGE_COLOR(Board->CurrentColor))) { // Illegal move
             UnmakeMove(Board);
 
             continue; // Next move
@@ -182,24 +211,7 @@ void NotateMove(BoardItem* Board, const MoveItem Move, char* Result)
     GiveCheck = IsInCheck(Board, Board->CurrentColor);
 
     if (GiveCheck) {
-        GenMoveCount = 0;
-        GenerateAllMoves(Board, MoveList, &GenMoveCount);
-
-        for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
-            MakeMove(Board, MoveList[MoveNumber]);
-
-            if (IsInCheck(Board, CHANGE_COLOR(Board->CurrentColor))) {
-                UnmakeMove(Board);
-
-                continue; // Next move
-            }
-
-            LegalMoves = TRUE;
-
-            UnmakeMove(Board);
-
-            break;
-        }
+        LegalMoves = HasLegalMoves(Board);
     }
 
     UnmakeMove(Board);
@@ -291,7 +303,7 @@ int PositionRepeat1(const BoardItem* Board)
         return 0;
     }
 
-    for (int Index = (Board->HalfMoveNumber - 2); Index >= (Board->HalfMoveNumber - Board->FiftyMove); Index -= 2) {
+    for (int Index = Board->HalfMoveNumber - 2; Index >= Board->HalfMoveNumber - Board->FiftyMove; Index -= 2) {
         if (Board->MoveTable[Index].Hash == Board->Hash) {
             return 1;
         }
@@ -308,7 +320,7 @@ int PositionRepeat2(const BoardItem* Board)
         return 0;
     }
 
-    for (int Index = (Board->HalfMoveNumber - 2); Index >= (Board->HalfMoveNumber - Board->FiftyMove); Index -= 2) {
+    for (int Index = Board->HalfMoveNumber - 2; Index >= Board->HalfMoveNumber - Board->FiftyMove; Index -= 2) {
         if (Board->MoveTable[Index].Hash == Board->Hash) {
             ++RepeatCounter;
         }
@@ -367,11 +379,11 @@ void PrintBoard(BoardItem* Board)
 
     printf("   +---+---+---+---+---+---+---+---+\n");
     printf("     a   b   c   d   e   f   g   h\n");
-/*
-    printf("\n");
 
-    printf("Hash = 0x%016llx\n", Board->Hash);
-*/
+//    printf("\n");
+
+//    printf("Hash = 0x%016llx\n", Board->Hash);
+
     printf("\n");
 
     printf("Static evaluate = %.2f\n", (double)Evaluate(Board) / 100.0);

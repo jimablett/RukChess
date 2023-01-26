@@ -84,7 +84,7 @@
 
 // Move type flags
 
-#define MOVE_QUIET              0   // Quiet move (no pawn)
+#define MOVE_QUIET              0   // Quiet move (not pawn)
 
 #define MOVE_PAWN               1   // Pawn move (capture or pushed move)
 #define MOVE_PAWN_2             2   // Pawn move (pused move 2)
@@ -231,6 +231,8 @@ extern int LateMoveReductionTable[64][64]; // [LMR depth][Move number]
 
 BOOL IsSquareAttacked(const BoardItem* Board, const int Square, const int Color);
 BOOL IsInCheck(const BoardItem* Board, const int Color);
+
+BOOL HasLegalMoves(BoardItem* Board);
 
 void NotateMove(BoardItem* Board, const MoveItem Move, char* Result);
 

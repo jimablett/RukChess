@@ -135,28 +135,9 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
 
         if (Board->FiftyMove >= 100) {
             if (InCheck) {
-                GenMoveCount = 0;
-                GenerateAllMoves(Board, MoveList, &GenMoveCount);
-
-                for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
-                    MakeMove(Board, MoveList[MoveNumber]);
-
-                    if (IsInCheck(Board, CHANGE_COLOR(Board->CurrentColor))) {
-                        UnmakeMove(Board);
-
-                        continue; // Next move
-                    }
-
-                    // Legal move
-
-                    UnmakeMove(Board);
-
-                    return 0;
+                if (!HasLegalMoves(Board)) { // Checkmate
+                    return -INF + Ply;
                 }
-
-                // No legal move
-
-                return -INF + Ply;
             }
 
             return 0;
@@ -434,7 +415,7 @@ NextMove:
         Prefetch(Board->Hash);
 #endif // HASH_PREFETCH && (HASH_SCORE || HASH_MOVE)
 
-        if (IsInCheck(Board, CHANGE_COLOR(Board->CurrentColor))) {
+        if (IsInCheck(Board, CHANGE_COLOR(Board->CurrentColor))) { // Illegal move
             UnmakeMove(Board);
 
             continue; // Next move
@@ -698,7 +679,7 @@ NextMove:
         }
     } // for
 
-    if (LegalMoveCount == 0) { // No legal move (checkmate or stalemate)
+    if (LegalMoveCount == 0) { // No legal moves
         if (SkipMove) {
             BestScore = Alpha;
         }
