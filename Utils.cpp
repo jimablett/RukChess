@@ -101,14 +101,14 @@ void InitThreadNode(void)
     // Run as many threads as possible on the same node until core limit is reached,
     // then move on filling the next node
     for (int Node = 0; Node < Nodes; ++Node) {
-        for (int Core = 0; Core < (Cores / Nodes); ++Core) {
+        for (int Core = 0; Core < Cores / Nodes; ++Core) {
             ThreadNode[Index++] = Node;
         }
     }
 
     // In case a core has more than one logical processor (we assume 2) and
     // we have still threads to allocate, then spread them evenly across available nodes
-    for (int Thread = 0; Thread < (Threads - Cores); ++Thread) {
+    for (int Thread = 0; Thread < Threads - Cores; ++Thread) {
         ThreadNode[Index++] = Thread % Nodes;
     }
 

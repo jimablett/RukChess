@@ -86,7 +86,7 @@ void UpdateKillerMove(BoardItem* Board, const int Move, const int Ply)
 void ClearKillerMove(BoardItem* Board)
 {
 #ifdef COMMON_KILLER_MOVE_TABLE
-    for (int Ply = 0; Ply < (MAX_PLY + 1); ++Ply) {
+    for (int Ply = 0; Ply < MAX_PLY + 1; ++Ply) {
         KillerMoveTable[Ply][0] = 0;
         KillerMoveTable[Ply][1] = 0;
     }
