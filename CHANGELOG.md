@@ -25,13 +25,14 @@
 
 ## RukChess 3.0.11 (24.12.2022)
 
-1. Corrected the code
-2. Formatted the code
-3. Disabled TuningAdamSGD
+1. Disabled TuningAdamSGD
+2. Corrected the code
+3. Formatted the code
 
 ## RukChess 3.0.10 (21.12.2022)
 
-Corrected the code
+1. Fixed bug in TuningAdamSGD
+2. Corrected the code
 
 ## RukChess 3.0.9 (20.12.2022)
 
