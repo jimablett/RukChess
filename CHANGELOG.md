@@ -2,7 +2,7 @@
 
 ## RukChess 3.0.15 (...)
 
-1. Refactored code
+1. Refactored the code
 2. Corrected the code
 3. Cleaned up the code
 4. ...
