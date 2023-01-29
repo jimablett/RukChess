@@ -9,7 +9,7 @@
 
 ## RukChess 3.0.14 (16.01.2023)
 
-1. Added Monte Carlo Tree Search (MCTS)
+1. Added Monte Carlo Tree Search (just for experimentation)
 2. Cleaned up the code
 
 ## RukChess 3.0.13 (01.01.2023)
