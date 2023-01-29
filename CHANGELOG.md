@@ -48,7 +48,7 @@ Removed king side (KS) and king quadrant (KQ) architectures from NNUE2
 
 ## RukChess 3.0.6 (17.12.2022)
 
-1. Added evaluation function name in program name
+1. Added evaluation function name to program name
 2. Cleaned up the code
 
 ## RukChess 3.0.5 (16.11.2022)
@@ -61,16 +61,16 @@ Cleaned up the code
 
 ## RukChess 3.0.3 (18.10.2022)
 
-NNUE2 optimization
+Optimized NNUE2
 
 ## RukChess 3.0.2 (14.10.2022)
 
-NNUE2 optimization
+Optimized NNUE2
 
 ## RukChess 3.0.1 (03.10.2022)
 
-1. SEE optimization
-2. Search optimization
+1. Optimized SEE
+2. Optimized search
 3. Fixed bug in LazySMP
 4. Added README.md
 5. Added LICENSE
