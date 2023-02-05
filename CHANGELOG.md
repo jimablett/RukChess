@@ -1,11 +1,11 @@
 # RukChess Change Log
 
-## RukChess 3.0.15 (...)
+## RukChess 3.0.15 (05.02.2023)
 
 1. Refactored the code
 2. Corrected the code
 3. Cleaned up the code
-4. ...
+4. New neural net "[Nets 070, epoch 120](https://github.com/Ilya-Ruk/RukChessNets/blob/master/Nets%20070/rukchess_120.nnue)"
 
 ## RukChess 3.0.14 (16.01.2023)
 
@@ -79,4 +79,5 @@ Optimized NNUE2
 
 ## RukChess 3.0 (05.09.2022)
 
-Initial commit
+1. Initial commit
+2. Neural net "[Nets 001, epoch 040](https://github.com/Ilya-Ruk/RukChessNets/blob/master/Nets%20001/rukchess_040.nnue)"
