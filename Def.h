@@ -74,6 +74,7 @@
     https://netman.aiops.org/~peidan/ANM2017/7.AnomalyLocalization/LectureCoverage/mcts-survey-master-origin.pdf
     https://int8.io/monte-carlo-tree-search-beginners-guide/
     https://github.com/int8/gomcts
+    http://www.tckerrigan.com/Chess/TSCP/Community/tscp_mcts_export.zip
 */
 //#define MCTS
 
@@ -98,6 +99,7 @@
 #define REVERSE_FUTILITY_PRUNING
 #define RAZORING                                // Required QUIESCENCE
 #define NULL_MOVE_PRUNING
+//#define PROBCUT                               // Not implemented for ABDADA
 #define IID
 //#define IIR
 //#define PVS                                   // Required MOVES_SORT_...

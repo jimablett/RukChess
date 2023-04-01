@@ -320,7 +320,10 @@ int ABDADA_Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Pl
         if (Depth <= 3 && (StaticScore + RazoringMargin(Depth)) <= Alpha) { // Hakkapeliitta
             RazoringAlpha = Alpha - RazoringMargin(Depth);
 
-            Score = QuiescenceSearch(Board, RazoringAlpha, RazoringAlpha + 1, 0, Ply, BestMoves, FALSE, FALSE);
+            // Zero window quiescence search
+            TempBestMoves[0] = { 0, 0, 0 };
+
+            Score = QuiescenceSearch(Board, RazoringAlpha, RazoringAlpha + 1, 0, Ply, TempBestMoves, FALSE, FALSE);
 
             if (Score <= RazoringAlpha) {
                 return Score;

@@ -85,6 +85,10 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
     int NullMoveReduction;
 #endif // NULL_MOVE_PRUNING
 
+#ifdef PROBCUT
+    int BetaCut;
+#endif // PROBCUT
+
 #if defined(MOVES_SORT_MVV_LVA) && defined(BAD_CAPTURE_LAST)
     int SEE_Value;
 #endif // MOVES_SORT_MVV_LVA && BAD_CAPTURE_LAST
@@ -241,7 +245,7 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
 #endif // HASH_SCORE
     }
 
-#if defined(REVERSE_FUTILITY_PRUNING) || defined(RAZORING) || defined(NULL_MOVE_PRUNING)
+#if defined(REVERSE_FUTILITY_PRUNING) || defined(RAZORING) || defined(NULL_MOVE_PRUNING) || defined(PROBCUT)
     if (UsePruning && !IsPrincipal && !InCheck) {
 #ifdef REVERSE_FUTILITY_PRUNING
         if (NonPawnMaterial && Depth <= 5 && (StaticScore - ReverseFutilityMargin(Depth)) >= Beta) { // Hakkapeliitta
@@ -253,7 +257,10 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
         if (Depth <= 3 && (StaticScore + RazoringMargin(Depth)) <= Alpha) { // Hakkapeliitta
             RazoringAlpha = Alpha - RazoringMargin(Depth);
 
-            Score = QuiescenceSearch(Board, RazoringAlpha, RazoringAlpha + 1, 0, Ply, BestMoves, FALSE, FALSE);
+            // Zero window quiescence search
+            TempBestMoves[0] = { 0, 0, 0 };
+
+            Score = QuiescenceSearch(Board, RazoringAlpha, RazoringAlpha + 1, 0, Ply, TempBestMoves, FALSE, FALSE);
 
             if (Score <= RazoringAlpha) {
                 return Score;
@@ -294,8 +301,57 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
             }
         }
 #endif // NULL_MOVE_PRUNING
+
+#ifdef PROBCUT
+        if (Depth >= 5) { // Xiphos
+            BetaCut = Beta + 100;
+
+            GenMoveCount = 0;
+            GenerateCaptureMoves(Board, MoveList, &GenMoveCount);
+
+            for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
+                if (!(MoveList[MoveNumber].Type & MOVE_CAPTURE)) {
+                    continue; // Next move
+                }
+
+                if (CaptureSEE(Board, MOVE_FROM(MoveList[MoveNumber].Move), MOVE_TO(MoveList[MoveNumber].Move), MOVE_PROMOTE_PIECE(MoveList[MoveNumber].Move), MoveList[MoveNumber].Type) < BetaCut - StaticScore) {
+                    continue; // Next move
+                }
+
+                MakeMove(Board, MoveList[MoveNumber]);
+
+                if (IsInCheck(Board, CHANGE_COLOR(Board->CurrentColor))) { // Illegal move
+                    UnmakeMove(Board);
+
+                    continue; // Next move
+                }
+
+                // Zero window quiescence search
+                TempBestMoves[0] = { 0, 0, 0 };
+
+                Score = -QuiescenceSearch(Board, -BetaCut, -BetaCut + 1, 0, Ply, TempBestMoves, FALSE, FALSE);
+
+                if (Score >= BetaCut) {
+                    // Zero window search for reduced depth
+                    TempBestMoves[0] = { 0, 0, 0 };
+
+                    Score = -Search(Board, -BetaCut, -BetaCut + 1, Depth - 4, Ply + 1, TempBestMoves, FALSE, FALSE, FALSE, 0);
+                }
+
+                UnmakeMove(Board);
+
+                if (StopSearch) {
+                    return 0;
+                }
+
+                if (Score >= BetaCut) {
+                    return Score;
+                }
+            }
+        }
+#endif // PROBCUT
     } // if
-#endif // REVERSE_FUTILITY_PRUNING || RAZORING || NULL_MOVE_PRUNING
+#endif // REVERSE_FUTILITY_PRUNING || RAZORING || NULL_MOVE_PRUNING || PROBCUT
 
 #if defined(HASH_MOVE) && defined(IID)
     if (!SkipMove && !HashMove && (IsPrincipal ? Depth > 4 : Depth > 7)) { // Hakkapeliitta
