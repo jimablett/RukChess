@@ -112,6 +112,10 @@ SCORE TuningSearch(BoardItem* Board, SCORE Alpha, SCORE Beta, const int Ply, con
         return Evaluate(Board);
     }
 
+    if (Board->HalfMoveNumber >= MAX_GAME_MOVES) {
+        return Evaluate(Board);
+    }
+
 #ifdef QUIESCENCE_CHECK_EXTENSION
     if (InCheck) {
         BestScore = -INF + Ply;
