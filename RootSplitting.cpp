@@ -76,6 +76,10 @@ int RootSplitting_Search(BoardItem* Board, int Alpha, int Beta, int Depth, const
     }
 #endif // MATE_DISTANCE_PRUNING
 
+    if (Board->HalfMoveNumber >= MAX_GAME_MOVES) {
+        return (int)Evaluate(Board);
+    }
+
     Board->SelDepth = 1;
 
 #if defined(HASH_SCORE) || defined(HASH_MOVE)
