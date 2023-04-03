@@ -96,6 +96,10 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
         return (int)Evaluate(Board);
     }
 
+    if (Board->HalfMoveNumber >= MAX_GAME_MOVES) {
+        return (int)Evaluate(Board);
+    }
+
 #if defined(QUIESCENCE_HASH_SCORE) || defined(QUIESCENCE_HASH_MOVE)
     LoadHash(Board->Hash, &HashDepth, Ply, &HashScore, &HashStaticScore, &HashMove, &HashFlag);
 

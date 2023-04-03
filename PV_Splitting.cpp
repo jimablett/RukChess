@@ -125,6 +125,10 @@ int PVSplitting_Search(BoardItem* Board, int Alpha, int Beta, int Depth, const i
         return (int)Evaluate(Board);
     }
 
+    if (Board->HalfMoveNumber >= MAX_GAME_MOVES) {
+        return (int)Evaluate(Board);
+    }
+
 #ifndef QUIESCENCE
     if (Depth <= 0) {
         return (int)Evaluate(Board);
