@@ -945,8 +945,27 @@ BOOL HumanMove(void)
 
         printf("\n");
 
-        printf("Enter move (e2e4, e7e8q, save, exit) %c ", (InCheck ? '!' : '>'));
+        printf("Enter move (e2e4, e7e8q, undo, save, exit) %c ", (InCheck ? '!' : '>'));
         scanf_s("%9s", ReadStr, (unsigned)_countof(ReadStr));
+
+        if (
+            !strcmp(ReadStr, "undo")
+            && CurrentBoard.HalfMoveNumber >= 2
+            && CurrentBoard.MoveTable[CurrentBoard.HalfMoveNumber - 1].Hash
+            && CurrentBoard.MoveTable[CurrentBoard.HalfMoveNumber - 2].Hash
+        ) {
+            UnmakeMove(&CurrentBoard);
+            UnmakeMove(&CurrentBoard);
+
+            PrintBoard(&CurrentBoard);
+
+            InCheck = IsInCheck(&CurrentBoard, CurrentBoard.CurrentColor);
+
+            GenMoveCount = 0;
+            GenerateAllMoves(&CurrentBoard, MoveList, &GenMoveCount);
+
+            continue; // Next string
+        }
 
         if (!strcmp(ReadStr, "save")) {
             SaveGame(&CurrentBoard);
