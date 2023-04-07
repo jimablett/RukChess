@@ -50,9 +50,7 @@
 #define PIECES_END                      (10 * 64 + 1)
 
 #ifdef USE_NNUE_AVX2
-
-#define NUM_REGS                        (HALF_FEATURE_OUTPUT_DIMENSION * 16 / 256) // Half feature output dimension x 16 bits (I16) / 256 bits (AVX2 register size)
-
+#define NUM_REGS                        (HALF_FEATURE_OUTPUT_DIMENSION * sizeof(I16) / sizeof(__m256i)) // 16
 #endif // USE_NNUE_AVX2
 
 const int PieceToIndex[2][16] = { // [Perspective][PieceWithColor]

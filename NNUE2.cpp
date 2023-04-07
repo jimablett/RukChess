@@ -22,18 +22,25 @@
 #define OUTPUT_DIMENSION            1
 
 #define QUANTIZATION_PRECISION_IN   32
+
+#ifndef LAST_LAYER_AS_FLOAT
 #define QUANTIZATION_PRECISION_OUT  512
+#endif // !LAST_LAYER_AS_FLOAT
 
 #ifdef USE_NNUE_AVX2
-
 #define NUM_REGS                    (HIDDEN_DIMENSION * sizeof(I16) / sizeof(__m256i)) // 32
-
 #endif // USE_NNUE_AVX2
 
 _declspec(align(64)) I16 FeatureWeights[FEATURE_DIMENSION * HIDDEN_DIMENSION];  // 768 x 512 = 393216
 _declspec(align(64)) I16 HiddenBiases[HIDDEN_DIMENSION];                        // 512
+
+#ifdef LAST_LAYER_AS_FLOAT
+_declspec(align(64)) float HiddenWeights[HIDDEN_DIMENSION * 2];                 // 512 x 2 = 1024
+float OutputBias;                                                               // 1
+#else
 _declspec(align(64)) I16 HiddenWeights[HIDDEN_DIMENSION * 2];                   // 512 x 2 = 1024
 I16 OutputBias;                                                                 // 1
+#endif // LAST_LAYER_AS_FLOAT
 
 I16 LoadWeight(const float Value, const int Precision)
 {
@@ -190,7 +197,11 @@ void ReadNetwork(void)
         }
 #endif // PRINT_MIN_MAX_VALUES
 
+#ifdef LAST_LAYER_AS_FLOAT
+        HiddenWeights[Index] = Value;
+#else
         HiddenWeights[Index] = LoadWeight(Value, QUANTIZATION_PRECISION_OUT);
+#endif // LAST_LAYER_AS_FLOAT
     }
 
 #ifdef PRINT_MIN_MAX_VALUES
@@ -201,7 +212,11 @@ void ReadNetwork(void)
 
     fread(&Value, sizeof(float), 1, File);
 
+#ifdef LAST_LAYER_AS_FLOAT
+    OutputBias = Value;
+#else
     OutputBias = LoadWeight(Value, QUANTIZATION_PRECISION_OUT);
+#endif // LAST_LAYER_AS_FLOAT
 
 #ifdef PRINT_MIN_MAX_VALUES
     printf("OutputBias: Value = %f\n", Value);
@@ -421,6 +436,28 @@ BOOL UpdateAccumulator(BoardItem* Board)
 
 #endif // USE_NNUE_UPDATE
 
+#ifdef LAST_LAYER_AS_FLOAT
+I32 OutputLayer(BoardItem* Board)
+{
+    float Result = OutputBias * QUANTIZATION_PRECISION_IN;
+
+//#ifdef USE_NNUE_AVX2
+    // TODO
+//#else
+    I16 (*Accumulation)[2][HIDDEN_DIMENSION] = &Board->Accumulator.Accumulation;
+
+    for (int Index = 0; Index < HIDDEN_DIMENSION; ++Index) { // 512
+        const I16 Acc0 = MAX(0, (*Accumulation)[Board->CurrentColor][Index]); // ReLU
+        const I16 Acc1 = MAX(0, (*Accumulation)[CHANGE_COLOR(Board->CurrentColor)][Index]); // ReLU
+
+        Result += (float)Acc0 * HiddenWeights[Index]; // Offset 0
+        Result += (float)Acc1 * HiddenWeights[HIDDEN_DIMENSION + Index]; // Offset 512
+    }
+
+    return (I32)(Result / QUANTIZATION_PRECISION_IN);
+//#endif // USE_NNUE_AVX2
+}
+#else
 I32 OutputLayer(BoardItem* Board)
 {
     I32 Result = (I32)OutputBias * QUANTIZATION_PRECISION_IN;
@@ -474,6 +511,7 @@ I32 OutputLayer(BoardItem* Board)
 
     return Result / QUANTIZATION_PRECISION_IN / QUANTIZATION_PRECISION_OUT;
 }
+#endif // LAST_LAYER_AS_FLOAT
 
 int NetworkEvaluate(BoardItem* Board)
 {
