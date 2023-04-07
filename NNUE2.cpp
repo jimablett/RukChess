@@ -453,9 +453,9 @@ I32 OutputLayer(BoardItem* Board)
         Result += (float)Acc0 * HiddenWeights[Index]; // Offset 0
         Result += (float)Acc1 * HiddenWeights[HIDDEN_DIMENSION + Index]; // Offset 512
     }
+//#endif // USE_NNUE_AVX2
 
     return (I32)(Result / QUANTIZATION_PRECISION_IN);
-//#endif // USE_NNUE_AVX2
 }
 #else
 I32 OutputLayer(BoardItem* Board)
