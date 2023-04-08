@@ -33,14 +33,19 @@
 */
 #define NNUE_EVALUATION_FUNCTION_2
 
-#if defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
+#ifdef NNUE_EVALUATION_FUNCTION
 
-#define USE_NNUE_AVX2                           // Required NNUE_EVALUATION_FUNCTION or NNUE_EVALUATION_FUNCTION_2
-#define USE_NNUE_UPDATE                         // Required NNUE_EVALUATION_FUNCTION or NNUE_EVALUATION_FUNCTION_2
+#define USE_NNUE_AVX2                           // Required NNUE_EVALUATION_FUNCTION
+#define USE_NNUE_UPDATE                         // Required NNUE_EVALUATION_FUNCTION
 
-#endif // NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
+#endif // NNUE_EVALUATION_FUNCTION
 
 #ifdef NNUE_EVALUATION_FUNCTION_2
+
+#define USE_NNUE_AVX2                           // Required NNUE_EVALUATION_FUNCTION_2
+#define USE_NNUE_UPDATE                         // Required NNUE_EVALUATION_FUNCTION_2
+
+//#define LAST_LAYER_AS_FLOAT                   // Required NNUE_EVALUATION_FUNCTION_2
 
 //#define PRINT_MIN_MAX_VALUES                  // Required NNUE_EVALUATION_FUNCTION_2
 //#define PRINT_WEIGHT_INDEX                    // Required NNUE_EVALUATION_FUNCTION_2
@@ -100,20 +105,20 @@
 #define RAZORING                                // Required QUIESCENCE
 #define NULL_MOVE_PRUNING
 //#define PROBCUT                               // Not implemented for ABDADA
-#define IID
-//#define IIR
+#define IID                                     // Required HASH_MOVE
+//#define IIR                                   // Required HASH_MOVE
 //#define PVS                                   // Required MOVES_SORT_...
 #define HASH_MOVE                               // Required MOVES_SORT_...
 #define KILLER_MOVE                             // Required MOVES_SORT_... and HASH_MOVE
 #define KILLER_MOVE_2                           // Required MOVES_SORT_..., HASH_MOVE and KILLER_MOVE
 #define COUNTER_MOVE                            // Required MOVES_SORT_..., HASH_MOVE, KILLER_MOVE and KILLER_MOVE_2
 #define BAD_CAPTURE_LAST                        // Required MOVES_SORT_MVV_LVA
+#define CHECK_EXTENSION
+#define SINGULAR_EXTENSION                      // Required HASH_SCORE and HASH_MOVE
 #define FUTILITY_PRUNING
 #define LATE_MOVE_PRUNING
 #define SEE_QUIET_MOVE_PRUNING
 #define SEE_CAPTURE_MOVE_PRUNING                // Required MOVES_SORT_SEE or BAD_CAPTURE_LAST
-#define CHECK_EXTENSION
-#define SINGULAR_EXTENSION                      // Required HASH_SCORE and HASH_MOVE
 #define NEGA_SCOUT
 #define LATE_MOVE_REDUCTION                     // Required NEGA_SCOUT
 
@@ -124,7 +129,7 @@
 #define QUIESCENCE_MATE_DISTANCE_PRUNING
 #define QUIESCENCE_HASH_SCORE
 #define QUIESCENCE_CHECK_EXTENSION
-//#define QUIESCENCE_CHECK_EXTENSION_EXTENDED
+//#define QUIESCENCE_CHECK_EXTENSION_EXTENDED   // Required QUIESCENCE_CHECK_EXTENSION
 //#define QUIESCENCE_PVS                        // Required MOVES_SORT_...
 #define QUIESCENCE_HASH_MOVE                    // Required MOVES_SORT_...
 #define QUIESCENCE_SEE_MOVE_PRUNING             // Required MOVES_SORT_SEE or MOVES_SORT_MVV_LVA
@@ -165,7 +170,7 @@
 // Program name, program version, evaluation function name and copyright information
 
 #define PROGRAM_NAME                            "RukChess"
-#define PROGRAM_VERSION                         "3.0.15"
+#define PROGRAM_VERSION                         "3.0.16"
 
 #ifdef SIMPLIFIED_EVALUATION_FUNCTION
 
