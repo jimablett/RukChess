@@ -12,9 +12,12 @@
 
 #ifdef NNUE_EVALUATION_FUNCTION_2
 
+/*
+    https://github.com/Ilya-Ruk/RukChessNets
+*/
 #define NNUE_FILE_NAME              "rukchess.nnue"
 #define NNUE_FILE_MAGIC             ('B' | 'R' << 8 | 'K' << 16 | 'R' << 24)
-//#define NNUE_FILE_HASH            0x000071EB63511CB1
+//#define NNUE_FILE_HASH            0x0000755B16A94877
 #define NNUE_FILE_SIZE              1579024
 
 #define FEATURE_DIMENSION           768
@@ -441,9 +444,36 @@ I32 OutputLayer(BoardItem* Board)
 {
     float Result = OutputBias * QUANTIZATION_PRECISION_IN;
 
-//#ifdef USE_NNUE_AVX2
-    // TODO
-//#else
+#ifdef USE_NNUE_AVX2
+    const __m256i ConstZero = _mm256_setzero_si256();
+
+    __m256i* AccumulatorTile0 = (__m256i*)&Board->Accumulator.Accumulation[Board->CurrentColor];
+    __m256i* AccumulatorTile1 = (__m256i*)&Board->Accumulator.Accumulation[CHANGE_COLOR(Board->CurrentColor)];
+
+    __m256 Sum0 = _mm256_setzero_ps();
+    __m256 Sum1 = _mm256_setzero_ps();
+
+    __m256* Weights0 = (__m256*)&HiddenWeights;
+    __m256* Weights1 = (__m256*)&HiddenWeights[HIDDEN_DIMENSION];
+
+    for (int Reg = 0; Reg < NUM_REGS; ++Reg) { // 32
+        const __m256i Acc0 = _mm256_max_epi16(ConstZero, AccumulatorTile0[Reg]); // ReLU
+        const __m256i Acc1 = _mm256_max_epi16(ConstZero, AccumulatorTile1[Reg]); // ReLU
+
+        Sum0 = _mm256_add_ps(Sum0, _mm256_mul_ps(_mm256_cvtepi32_ps(_mm256_cvtepi16_epi32(_mm256_castsi256_si128(Acc0))), Weights0[Reg * 2 + 0]));
+        Sum0 = _mm256_add_ps(Sum0, _mm256_mul_ps(_mm256_cvtepi32_ps(_mm256_cvtepi16_epi32(_mm256_extractf128_si256(Acc0, 1))), Weights0[Reg * 2 + 1]));
+
+        Sum1 = _mm256_add_ps(Sum1, _mm256_mul_ps(_mm256_cvtepi32_ps(_mm256_cvtepi16_epi32(_mm256_castsi256_si128(Acc1))), Weights1[Reg * 2 + 0]));
+        Sum1 = _mm256_add_ps(Sum1, _mm256_mul_ps(_mm256_cvtepi32_ps(_mm256_cvtepi16_epi32(_mm256_extractf128_si256(Acc1, 1))), Weights1[Reg * 2 + 1]));
+    }
+
+    const __m256 R8 = _mm256_add_ps(Sum0, Sum1);
+    const __m128 R4 = _mm_add_ps(_mm256_castps256_ps128(R8), _mm256_extractf128_ps(R8, 1));
+    const __m128 R2 = _mm_add_ps(R4, _mm_movehl_ps(R4, R4));
+    const __m128 R1 = _mm_add_ss(R2, _mm_shuffle_ps(R2, R2, 0x1));
+
+    Result += _mm_cvtss_f32(R1);
+#else
     I16 (*Accumulation)[2][HIDDEN_DIMENSION] = &Board->Accumulator.Accumulation;
 
     for (int Index = 0; Index < HIDDEN_DIMENSION; ++Index) { // 512
@@ -453,7 +483,7 @@ I32 OutputLayer(BoardItem* Board)
         Result += (float)Acc0 * HiddenWeights[Index]; // Offset 0
         Result += (float)Acc1 * HiddenWeights[HIDDEN_DIMENSION + Index]; // Offset 512
     }
-//#endif // USE_NNUE_AVX2
+#endif // USE_NNUE_AVX2
 
     return (I32)(Result / QUANTIZATION_PRECISION_IN);
 }
@@ -474,8 +504,8 @@ I32 OutputLayer(BoardItem* Board)
 #ifdef USE_NNUE_AVX2
     const __m256i ConstZero = _mm256_setzero_si256();
 
-    __m256i Sum0 = _mm256_setzero_si256();
-    __m256i Sum1 = _mm256_setzero_si256();
+    __m256i Sum0 = ConstZero;
+    __m256i Sum1 = ConstZero;
 
     __m256i* AccumulatorTile0 = (__m256i*)&Board->Accumulator.Accumulation[Board->CurrentColor];
     __m256i* AccumulatorTile1 = (__m256i*)&Board->Accumulator.Accumulation[CHANGE_COLOR(Board->CurrentColor)];
