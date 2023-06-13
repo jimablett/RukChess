@@ -272,10 +272,6 @@ BOOL ComputerMove(void)
 
     InCheck = IsInCheck(&CurrentBoard, CurrentBoard.CurrentColor);
 
-#if defined(PVS) || defined(QUIESCENCE_PVS)
-    CurrentBoard.FollowPV = TRUE;
-#endif // PVS || QUIESCENCE_PVS
-
     CurrentBoard.Nodes = 0ULL;
 
 #ifdef DEBUG_STATISTIC

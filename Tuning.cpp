@@ -622,7 +622,7 @@ void PositionStoreFree(void)
     free(PositionStore.Positions);
 }
 
-double Sigmoid(SCORE Score)
+double Sigmoid(const SCORE Score)
 {
     return 1.0 / (1.0 + pow(10.0, -K * (double)Score / 400.0));
 }

@@ -53,7 +53,7 @@ void UCI(void)
     setvbuf(stdin, NULL, _IONBF, 0);
     setvbuf(stdout, NULL, _IONBF, 0);
 
-    printf("id name %s %s %s\n", PROGRAM_NAME, PROGRAM_VERSION, EVALUATION_NAME);
+    printf("id name %s %s %s %s\n", PROGRAM_NAME, PROGRAM_VERSION, ALGORITHM_NAME, EVALUATION_NAME);
     printf("id author %s\n", AUTHOR);
 
     printf("option name Hash type spin default %d min %d max %d\n", DEFAULT_HASH_TABLE_SIZE, 1, MAX_HASH_TABLE_SIZE);

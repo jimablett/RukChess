@@ -172,22 +172,20 @@
 #define PROGRAM_NAME                            "RukChess"
 #define PROGRAM_VERSION                         "3.0.16"
 
+#ifdef MCTS
+#define ALGORITHM_NAME                          "MCTS"
+#else // PVS
+#define ALGORITHM_NAME                          "PVS"
+#endif // MCTS || PVS
+
 #ifdef SIMPLIFIED_EVALUATION_FUNCTION
-
 #define EVALUATION_NAME                         "SEF"
-
 #elif defined(TOGA_EVALUATION_FUNCTION)
-
 #define EVALUATION_NAME                         "Toga"
-
 #elif defined(NNUE_EVALUATION_FUNCTION)
-
 #define EVALUATION_NAME                         "NNUE"
-
 #elif defined(NNUE_EVALUATION_FUNCTION_2)
-
 #define EVALUATION_NAME                         "NNUE2"
-
 #endif // SIMPLIFIED_EVALUATION_FUNCTION || TOGA_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
 
 #define YEARS                                   "1999-2023"
