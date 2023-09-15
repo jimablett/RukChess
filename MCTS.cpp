@@ -6,17 +6,23 @@
 
 #include "Board.h"
 #include "Def.h"
+#include "Evaluate.h"
 #include "Game.h"
 #include "Gen.h"
 #include "Move.h"
+#include "QuiescenceSearch.h"
+#include "Search.h"
 #include "Types.h"
 #include "Utils.h"
 
 #ifdef MCTS
 
-#define UCT_C           1.4
+#define UCT_C           (1.4 * 10000.0)
 
+//#define MAX_ITERATIONS  10000 // ~20 Mbyte
 #define MAX_ITERATIONS  50000 // ~100 Mbyte
+
+#define SEARCH_DEPTH    2
 
 typedef struct Node {
     struct Node* Parent;
@@ -36,7 +42,7 @@ typedef struct Node {
     int NextMoveNumber;
 
     int N;
-    double Q;
+    I64 Q;
 } NodeItem; // 2104 bytes (aligned 2104 bytes)
 
 BOOL IsGameOver(BoardItem* Board, const int Ply, int* Result)
@@ -53,12 +59,7 @@ BOOL IsGameOver(BoardItem* Board, const int Ply, int* Result)
         if (Board->FiftyMove >= 100) {
             if (IsInCheck(Board, Board->CurrentColor)) {
                 if (!HasLegalMoves(Board)) { // Checkmate
-                    if (Board->CurrentColor == WHITE) {
-                        *Result = -1; // Black win
-                    }
-                    else { // BLACK
-                        *Result = 1; // White win
-                    }
+                    *Result = -INF + Ply;
 
 //                    printf("GameOver: FiftyMove -> Checkmate (%d)\n", *Result);
 
@@ -84,12 +85,7 @@ BOOL IsGameOver(BoardItem* Board, const int Ply, int* Result)
 
     if (!HasLegalMoves(Board)) { // No legal moves
         if (IsInCheck(Board, Board->CurrentColor)) { // Checkmate
-            if (Board->CurrentColor == WHITE) {
-                *Result = -1; // Black win
-            }
-            else { // BLACK
-                *Result = 1; // White win
-            }
+            *Result = -INF + Ply;
 
 //            printf("GameOver: Checkmate (%d)\n", *Result);
         }
@@ -129,7 +125,7 @@ NodeItem* CreateNodeMCTS(NodeItem* Parent, const MoveItem Move, BoardItem* Board
     Node->NextMoveNumber = 0;
 
     Node->N = 0;
-    Node->Q = 0.0;
+    Node->Q = 0LL;
 
     ++Board->Nodes;
 
@@ -167,19 +163,19 @@ NodeItem* BestChild(NodeItem* Node, const double C)
     U64 RandomValue;
     int SelectedMaxIndex;
 
-//    if (C == 0.0) {
-//        printf("\n");
-//    }
+    if (C == 0.0) {
+        printf("\n");
+    }
 
     for (int Index = 0; Index < Node->ChildCount; ++Index) {
         ChildNode = Node->Children[Index];
 
-        UCT = (ChildNode->Q / (double)ChildNode->N) + C * sqrt(log((double)Node->N) / (double)ChildNode->N);
+        UCT = (double)(ChildNode->Q / ChildNode->N) + C * sqrt(log((double)Node->N) / (double)ChildNode->N);
 
-//        if (C == 0.0) {
+        if (C == 0.0) {
 //            printf("Index = %3d Move = %s%s Q = %13f N = %8d Q/N = %13f Exploration = %13f UCT = %13f\n", Index, BoardName[MOVE_FROM(ChildNode->Move.Move)], BoardName[MOVE_TO(ChildNode->Move.Move)], ChildNode->Q, ChildNode->N, ChildNode->Q / (double)ChildNode->N, C * sqrt(log((double)Node->N) / (double)ChildNode->N), UCT);
-//            printf("Index = %3d Move = %s%s Q = %13f N = %8d UCT = %13f\n", Index, BoardName[MOVE_FROM(ChildNode->Move.Move)], BoardName[MOVE_TO(ChildNode->Move.Move)], ChildNode->Q, ChildNode->N, UCT);
-//        }
+            printf("Index = %3d Move = %s%s Q = %lld N = %8d UCT = %13f\n", Index, BoardName[MOVE_FROM(ChildNode->Move.Move)], BoardName[MOVE_TO(ChildNode->Move.Move)], ChildNode->Q, ChildNode->N, UCT);
+        }
 
         if (UCT > MaxUCT) {
             MaxUCT = UCT;
@@ -270,7 +266,7 @@ NodeItem* TreePolicy(NodeItem* Node, BoardItem* Board, int* Ply)
 
     return Node;
 }
-
+/*
 double RolloutRandom(NodeItem* Node, BoardItem* Board, int* Ply)
 {
     int GameResult;
@@ -328,13 +324,66 @@ double RolloutRandom(NodeItem* Node, BoardItem* Board, int* Ply)
 
     return (double)GameResult;
 }
+*//*
+double SigmoidMCTS(const int Score)
+{
+    return 1.0 / (1.0 + pow(10.0, -(double)Score / 400.0));
+}
+*/
+int RolloutSearch(NodeItem* Node, BoardItem* Board, int* Ply)
+{
+    int GameResult;
 
-void Backpropagate(NodeItem* Node, BoardItem* Board, int* Ply, const double Result)
+    BOOL InCheck;
+
+    int Score = 0;
+    int BestScore = 0;
+
+    if (IsGameOver(Board, 0, &GameResult)) {
+//        printf("GameResult = %d\n", GameResult);
+
+        return GameResult;
+    }
+
+    InCheck = IsInCheck(Board, Board->CurrentColor);
+
+    for (int Depth = 1; Depth <= SEARCH_DEPTH; ++Depth) {
+#if defined(PVS) || defined(QUIESCENCE_PVS)
+        Board->FollowPV = TRUE;
+#endif // PVS || QUIESCENCE_PVS
+
+        Board->SelDepth = 0;
+
+        Score = Search(Board, -INF, INF, Depth, *Ply, Board->BestMovesRoot, TRUE, InCheck, FALSE, 0);
+
+        if (StopSearch) {
+            break; // for (depth)
+        }
+
+        BestScore = Score;
+
+        if (!Board->BestMovesRoot[0].Move) { // No legal moves
+            break; // for (depth)
+        }
+    }
+
+//    BestScore = Evaluate(Board);
+//    BestScore = QuiescenceSearch(Board, -INF, INF, 0, *Ply, Board->BestMovesRoot, TRUE, InCheck);
+
+//    printf("BestScore = %d Sigmoid = %f\n", BestScore, SigmoidMCTS(BestScore));
+
+    return BestScore;
+}
+
+void Backpropagate(NodeItem* Node, BoardItem* Board, int* Ply, int Result)
 {
     while (!IsRootNode(Node)) {
         ++Node->N;
 
-        Node->Q += (Node->Parent->Color == WHITE) ? Result : -Result;
+        Result = -Result;
+
+//        Node->Q += (Node->Parent->Color == WHITE) ? Result : -Result;
+        Node->Q += (I64)Result;
 
 //        printf("Backpropagate: Result = %13f Q = %13f N = %d\n", Result, Node->Q, Node->N);
 
@@ -363,7 +412,7 @@ void MonteCarloTreeSearch(BoardItem* Board, MoveItem* BestMoves, int* BestScore)
 
     int Ply = 0;
 
-    double Result;
+    int Result;
 
 //    printf("NodeItem = %zd\n", sizeof(NodeItem));
 
@@ -407,7 +456,8 @@ void MonteCarloTreeSearch(BoardItem* Board, MoveItem* BestMoves, int* BestScore)
 
         Node = TreePolicy(RootNode, Board, &Ply);
 
-        Result = RolloutRandom(Node, Board, &Ply);
+//        Result = RolloutRandom(Node, Board, &Ply);
+        Result = RolloutSearch(Node, Board, &Ply);
 
         Backpropagate(Node, Board, &Ply, Result);
 
