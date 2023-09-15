@@ -10,14 +10,13 @@
 #include "Game.h"
 #include "Gen.h"
 #include "Move.h"
-#include "QuiescenceSearch.h"
 #include "Search.h"
 #include "Types.h"
 #include "Utils.h"
 
 #ifdef MCTS
 
-#define UCT_C           (1.4 * 10000.0)
+#define UCT_C           1.4
 
 //#define MAX_ITERATIONS  10000 // ~20 Mbyte
 #define MAX_ITERATIONS  50000 // ~100 Mbyte
@@ -42,7 +41,7 @@ typedef struct Node {
     int NextMoveNumber;
 
     int N;
-    I64 Q;
+    double Q;
 } NodeItem; // 2104 bytes (aligned 2104 bytes)
 
 BOOL IsGameOver(BoardItem* Board, const int Ply, int* Result)
@@ -125,7 +124,7 @@ NodeItem* CreateNodeMCTS(NodeItem* Parent, const MoveItem Move, BoardItem* Board
     Node->NextMoveNumber = 0;
 
     Node->N = 0;
-    Node->Q = 0LL;
+    Node->Q = 0.0;
 
     ++Board->Nodes;
 
@@ -170,11 +169,11 @@ NodeItem* BestChild(NodeItem* Node, const double C)
     for (int Index = 0; Index < Node->ChildCount; ++Index) {
         ChildNode = Node->Children[Index];
 
-        UCT = (double)(ChildNode->Q / ChildNode->N) + C * sqrt(log((double)Node->N) / (double)ChildNode->N);
+        UCT = (ChildNode->Q / (double)ChildNode->N) + C * sqrt(log((double)Node->N) / (double)ChildNode->N);
 
         if (C == 0.0) {
 //            printf("Index = %3d Move = %s%s Q = %13f N = %8d Q/N = %13f Exploration = %13f UCT = %13f\n", Index, BoardName[MOVE_FROM(ChildNode->Move.Move)], BoardName[MOVE_TO(ChildNode->Move.Move)], ChildNode->Q, ChildNode->N, ChildNode->Q / (double)ChildNode->N, C * sqrt(log((double)Node->N) / (double)ChildNode->N), UCT);
-            printf("Index = %3d Move = %s%s Q = %lld N = %8d UCT = %13f\n", Index, BoardName[MOVE_FROM(ChildNode->Move.Move)], BoardName[MOVE_TO(ChildNode->Move.Move)], ChildNode->Q, ChildNode->N, UCT);
+            printf("Index = %3d Move = %s%s Q = %13f N = %8d UCT = %13f\n", Index, BoardName[MOVE_FROM(ChildNode->Move.Move)], BoardName[MOVE_TO(ChildNode->Move.Move)], ChildNode->Q, ChildNode->N, UCT);
         }
 
         if (UCT > MaxUCT) {
@@ -330,7 +329,7 @@ double SigmoidMCTS(const int Score)
     return 1.0 / (1.0 + pow(10.0, -(double)Score / 400.0));
 }
 */
-int RolloutSearch(NodeItem* Node, BoardItem* Board, int* Ply)
+double RolloutSearch(NodeItem* Node, BoardItem* Board, int* Ply)
 {
     int GameResult;
 
@@ -342,7 +341,7 @@ int RolloutSearch(NodeItem* Node, BoardItem* Board, int* Ply)
     if (IsGameOver(Board, 0, &GameResult)) {
 //        printf("GameResult = %d\n", GameResult);
 
-        return GameResult;
+        return (double)GameResult / 10000.0;
     }
 
     InCheck = IsInCheck(Board, Board->CurrentColor);
@@ -367,15 +366,12 @@ int RolloutSearch(NodeItem* Node, BoardItem* Board, int* Ply)
         }
     }
 
-//    BestScore = Evaluate(Board);
-//    BestScore = QuiescenceSearch(Board, -INF, INF, 0, *Ply, Board->BestMovesRoot, TRUE, InCheck);
-
 //    printf("BestScore = %d Sigmoid = %f\n", BestScore, SigmoidMCTS(BestScore));
 
-    return BestScore;
+    return (double)BestScore / 10000.0;
 }
 
-void Backpropagate(NodeItem* Node, BoardItem* Board, int* Ply, int Result)
+void Backpropagate(NodeItem* Node, BoardItem* Board, int* Ply, /*const */double Result)
 {
     while (!IsRootNode(Node)) {
         ++Node->N;
@@ -383,7 +379,7 @@ void Backpropagate(NodeItem* Node, BoardItem* Board, int* Ply, int Result)
         Result = -Result;
 
 //        Node->Q += (Node->Parent->Color == WHITE) ? Result : -Result;
-        Node->Q += (I64)Result;
+        Node->Q += Result;
 
 //        printf("Backpropagate: Result = %13f Q = %13f N = %d\n", Result, Node->Q, Node->N);
 
@@ -412,7 +408,7 @@ void MonteCarloTreeSearch(BoardItem* Board, MoveItem* BestMoves, int* BestScore)
 
     int Ply = 0;
 
-    int Result;
+    double Result;
 
 //    printf("NodeItem = %zd\n", sizeof(NodeItem));
 
