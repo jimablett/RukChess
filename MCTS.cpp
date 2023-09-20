@@ -10,6 +10,7 @@
 #include "Game.h"
 #include "Gen.h"
 #include "Move.h"
+#include "QuiescenceSearch.h"
 #include "Search.h"
 #include "Types.h"
 #include "Utils.h"
@@ -162,19 +163,19 @@ NodeItem* BestChild(NodeItem* Node, const double C)
     U64 RandomValue;
     int SelectedMaxIndex;
 
-    if (C == 0.0) {
-        printf("\n");
-    }
+//    if (C == 0.0) {
+//        printf("\n");
+//    }
 
     for (int Index = 0; Index < Node->ChildCount; ++Index) {
         ChildNode = Node->Children[Index];
 
         UCT = (ChildNode->Q / (double)ChildNode->N) + C * sqrt(log((double)Node->N) / (double)ChildNode->N);
 
-        if (C == 0.0) {
+//        if (C == 0.0) {
 //            printf("Index = %3d Move = %s%s Q = %13f N = %8d Q/N = %13f Exploration = %13f UCT = %13f\n", Index, BoardName[MOVE_FROM(ChildNode->Move.Move)], BoardName[MOVE_TO(ChildNode->Move.Move)], ChildNode->Q, ChildNode->N, ChildNode->Q / (double)ChildNode->N, C * sqrt(log((double)Node->N) / (double)ChildNode->N), UCT);
-            printf("Index = %3d Move = %s%s Q = %13f N = %8d UCT = %13f\n", Index, BoardName[MOVE_FROM(ChildNode->Move.Move)], BoardName[MOVE_TO(ChildNode->Move.Move)], ChildNode->Q, ChildNode->N, UCT);
-        }
+//            printf("Index = %3d Move = %s%s Q = %13f N = %8d UCT = %13f\n", Index, BoardName[MOVE_FROM(ChildNode->Move.Move)], BoardName[MOVE_TO(ChildNode->Move.Move)], ChildNode->Q, ChildNode->N, UCT);
+//        }
 
         if (UCT > MaxUCT) {
             MaxUCT = UCT;
@@ -265,7 +266,7 @@ NodeItem* TreePolicy(NodeItem* Node, BoardItem* Board, int* Ply)
 
     return Node;
 }
-/*
+
 double RolloutRandom(NodeItem* Node, BoardItem* Board, int* Ply)
 {
     int GameResult;
@@ -321,31 +322,32 @@ double RolloutRandom(NodeItem* Node, BoardItem* Board, int* Ply)
 //        printf("RolloutRandom (unmake move): Ply = %d Ply2 = %d\n", *Ply, Ply2);
     }
 
-    return (double)GameResult;
+    return (double)GameResult / INF; // [-1.0..1.0]
 }
-*//*
+
 double SigmoidMCTS(const int Score)
 {
-    return 1.0 / (1.0 + pow(10.0, -(double)Score / 400.0));
+    return 1.0 / (1.0 + pow(10.0, -(double)Score / 400.0)); // [0.0..1.0]
 }
-*/
+
 double RolloutSearch(NodeItem* Node, BoardItem* Board, int* Ply)
 {
     int GameResult;
 
-    BOOL InCheck;
+//    BOOL InCheck;
 
-    int Score = 0;
+//    int Score = 0;
     int BestScore = 0;
 
     if (IsGameOver(Board, 0, &GameResult)) {
 //        printf("GameResult = %d\n", GameResult);
 
-        return (double)GameResult / 10000.0;
+        return (double)GameResult / INF; // [-1.0..1.0]
+//        return SigmoidMCTS(GameResult) * 2.0 - 1.0; // [-1.0..1.0]
     }
 
-    InCheck = IsInCheck(Board, Board->CurrentColor);
-
+//    InCheck = IsInCheck(Board, Board->CurrentColor);
+/*
     for (int Depth = 1; Depth <= SEARCH_DEPTH; ++Depth) {
 #if defined(PVS) || defined(QUIESCENCE_PVS)
         Board->FollowPV = TRUE;
@@ -365,20 +367,23 @@ double RolloutSearch(NodeItem* Node, BoardItem* Board, int* Ply)
             break; // for (depth)
         }
     }
+*/
+//    BestScore = QuiescenceSearch(Board, -INF, INF, 0, *Ply, Board->BestMovesRoot, TRUE, InCheck);
+    BestScore = Evaluate(Board);
 
 //    printf("BestScore = %d Sigmoid = %f\n", BestScore, SigmoidMCTS(BestScore));
 
-    return (double)BestScore / 10000.0;
+    return (double)BestScore / INF; // [-1.0..1.0]
+//    return SigmoidMCTS(BestScore) * 2.0 - 1.0; // [-1.0..1.0]
 }
 
-void Backpropagate(NodeItem* Node, BoardItem* Board, int* Ply, /*const */double Result)
+void Backpropagate(NodeItem* Node, BoardItem* Board, int* Ply, double Result)
 {
     while (!IsRootNode(Node)) {
         ++Node->N;
 
         Result = -Result;
 
-//        Node->Q += (Node->Parent->Color == WHITE) ? Result : -Result;
         Node->Q += Result;
 
 //        printf("Backpropagate: Result = %13f Q = %13f N = %d\n", Result, Node->Q, Node->N);
