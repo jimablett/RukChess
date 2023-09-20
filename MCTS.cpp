@@ -20,7 +20,9 @@
 #define UCT_C           1.4
 
 //#define MAX_ITERATIONS  10000 // ~20 Mbyte
-#define MAX_ITERATIONS  50000 // ~100 Mbyte
+//#define MAX_ITERATIONS  50000 // ~100 Mbyte
+#define MAX_ITERATIONS  500000 // ~1 Gbyte
+//#define MAX_ITERATIONS  1000000 // ~2 Gbyte
 
 #define SEARCH_DEPTH    2
 
@@ -342,8 +344,8 @@ double RolloutSearch(NodeItem* Node, BoardItem* Board, int* Ply)
     if (IsGameOver(Board, 0, &GameResult)) {
 //        printf("GameResult = %d\n", GameResult);
 
-        return (double)GameResult / INF; // [-1.0..1.0]
-//        return SigmoidMCTS(GameResult) * 2.0 - 1.0; // [-1.0..1.0]
+//        return (double)GameResult / INF; // [-1.0..1.0]
+        return SigmoidMCTS(GameResult) * 2.0 - 1.0; // [-1.0..1.0]
     }
 
 //    InCheck = IsInCheck(Board, Board->CurrentColor);
@@ -373,8 +375,8 @@ double RolloutSearch(NodeItem* Node, BoardItem* Board, int* Ply)
 
 //    printf("BestScore = %d Sigmoid = %f\n", BestScore, SigmoidMCTS(BestScore));
 
-    return (double)BestScore / INF; // [-1.0..1.0]
-//    return SigmoidMCTS(BestScore) * 2.0 - 1.0; // [-1.0..1.0]
+//    return (double)BestScore / INF; // [-1.0..1.0]
+    return SigmoidMCTS(BestScore) * 2.0 - 1.0; // [-1.0..1.0]
 }
 
 void Backpropagate(NodeItem* Node, BoardItem* Board, int* Ply, double Result)
