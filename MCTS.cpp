@@ -21,7 +21,8 @@
 
 //#define MAX_ITERATIONS  10000 // ~20 Mbyte
 //#define MAX_ITERATIONS  50000 // ~100 Mbyte
-#define MAX_ITERATIONS  500000 // ~1 Gbyte
+#define MAX_ITERATIONS  100000 // ~200 Mbyte
+//#define MAX_ITERATIONS  500000 // ~1 Gbyte
 //#define MAX_ITERATIONS  1000000 // ~2 Gbyte
 
 #define SEARCH_DEPTH    2
@@ -336,9 +337,9 @@ double RolloutSearch(NodeItem* Node, BoardItem* Board, int* Ply)
 {
     int GameResult;
 
-//    BOOL InCheck;
+    BOOL InCheck;
 
-//    int Score = 0;
+    int Score = 0;
     int BestScore = 0;
 
     if (IsGameOver(Board, 0, &GameResult)) {
@@ -348,8 +349,8 @@ double RolloutSearch(NodeItem* Node, BoardItem* Board, int* Ply)
         return SigmoidMCTS(GameResult) * 2.0 - 1.0; // [-1.0..1.0]
     }
 
-//    InCheck = IsInCheck(Board, Board->CurrentColor);
-/*
+    InCheck = IsInCheck(Board, Board->CurrentColor);
+
     for (int Depth = 1; Depth <= SEARCH_DEPTH; ++Depth) {
 #if defined(PVS) || defined(QUIESCENCE_PVS)
         Board->FollowPV = TRUE;
@@ -369,9 +370,9 @@ double RolloutSearch(NodeItem* Node, BoardItem* Board, int* Ply)
             break; // for (depth)
         }
     }
-*/
+
 //    BestScore = QuiescenceSearch(Board, -INF, INF, 0, *Ply, Board->BestMovesRoot, TRUE, InCheck);
-    BestScore = Evaluate(Board);
+//    BestScore = Evaluate(Board);
 
 //    printf("BestScore = %d Sigmoid = %f\n", BestScore, SigmoidMCTS(BestScore));
 
