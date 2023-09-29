@@ -35,8 +35,6 @@ typedef struct Node {
 
     MoveItem Move;
 
-    int Color;
-
     BOOL IsTerminal;
     BOOL IsFullyExpanded; // For terminal node always TRUE
 
@@ -117,8 +115,6 @@ NodeItem* CreateNodeMCTS(NodeItem* Parent, const MoveItem Move, BoardItem* Board
     Node->ChildCount = 0;
 
     Node->Move = Move;
-
-    Node->Color = Board->CurrentColor;
 
     Node->IsTerminal = IsGameOver(Board, Ply, &GameResult);
     Node->IsFullyExpanded = (Node->IsTerminal ? TRUE : FALSE);
@@ -333,6 +329,11 @@ double SigmoidMCTS(const int Score)
     return 1.0 / (1.0 + pow(10.0, -(double)Score / 400.0)); // [0.0..1.0]
 }
 
+double SigmoidMCTS2(const int Score)
+{
+    return SigmoidMCTS(Score) * 2.0 - 1.0; // [-1.0..1.0]
+}
+
 double RolloutSearch(NodeItem* Node, BoardItem* Board, int* Ply)
 {
     int GameResult;
@@ -343,10 +344,8 @@ double RolloutSearch(NodeItem* Node, BoardItem* Board, int* Ply)
     int BestScore = 0;
 
     if (IsGameOver(Board, 0, &GameResult)) {
-//        printf("GameResult = %d\n", GameResult);
-
 //        return (double)GameResult / INF; // [-1.0..1.0]
-        return SigmoidMCTS(GameResult) * 2.0 - 1.0; // [-1.0..1.0]
+        return SigmoidMCTS2(GameResult); // [-1.0..1.0]
     }
 
     InCheck = IsInCheck(Board, Board->CurrentColor);
@@ -374,10 +373,10 @@ double RolloutSearch(NodeItem* Node, BoardItem* Board, int* Ply)
 //    BestScore = QuiescenceSearch(Board, -INF, INF, 0, *Ply, Board->BestMovesRoot, TRUE, InCheck);
 //    BestScore = Evaluate(Board);
 
-//    printf("BestScore = %d Sigmoid = %f\n", BestScore, SigmoidMCTS(BestScore));
+//    printf("BestScore = %d Sigmoid = %f\n", BestScore, SigmoidMCTS2(BestScore));
 
 //    return (double)BestScore / INF; // [-1.0..1.0]
-    return SigmoidMCTS(BestScore) * 2.0 - 1.0; // [-1.0..1.0]
+    return SigmoidMCTS2(BestScore); // [-1.0..1.0]
 }
 
 void Backpropagate(NodeItem* Node, BoardItem* Board, int* Ply, double Result)
@@ -389,7 +388,7 @@ void Backpropagate(NodeItem* Node, BoardItem* Board, int* Ply, double Result)
 
         Node->Q += Result;
 
-//        printf("Backpropagate: Result = %13f Q = %13f N = %d\n", Result, Node->Q, Node->N);
+//        printf("Backpropagate: Result = %13f Q = %13f N = %8d\n", Result, Node->Q, Node->N);
 
         --(*Ply);
 
