@@ -81,7 +81,7 @@
     https://github.com/int8/gomcts
     http://www.tckerrigan.com/Chess/TSCP/Community/tscp_mcts_export.zip
 */
-#define MCTS
+//#define MCTS
 
 // Common
 
