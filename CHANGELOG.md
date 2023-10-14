@@ -1,5 +1,11 @@
 # RukChess Change Log
 
+## RukChess 3.0.16 (14.10.2023)
+
+1. Change QUANTIZATION_PRECISION_IN from 32 to 64
+2. Refactored Monte Carlo tree search (just for experimentation)
+3. Cleaned up the code
+
 ## RukChess 3.0.15 (05.02.2023)
 
 1. Refactored the code
