@@ -203,7 +203,7 @@ void ReadNetwork(void)
     fread(&Value, sizeof(float), 1, File);
 
 #ifdef LAST_LAYER_AS_FLOAT
-    OutputBias = Value;
+    OutputBias = Value * QUANTIZATION_PRECISION_IN;
 #else
     OutputBias = LoadWeight32(Value, QUANTIZATION_PRECISION_OUT * QUANTIZATION_PRECISION_IN);
 #endif // LAST_LAYER_AS_FLOAT
@@ -429,7 +429,7 @@ BOOL UpdateAccumulator(BoardItem* Board)
 #ifdef LAST_LAYER_AS_FLOAT
 I32 OutputLayer(BoardItem* Board)
 {
-    float Result = OutputBias * QUANTIZATION_PRECISION_IN;
+    float Result = OutputBias;
 
 #ifdef USE_NNUE_AVX2
     const __m256i ConstZero = _mm256_setzero_si256();
