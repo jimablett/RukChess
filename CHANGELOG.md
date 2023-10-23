@@ -1,10 +1,14 @@
 # RukChess Change Log
 
-## RukChess 3.0.16 (14.10.2023)
+## RukChess 3.0.16 (23.10.2023)
 
-1. Change QUANTIZATION_PRECISION_IN from 32 to 64
-2. Refactored Monte Carlo tree search (just for experimentation)
-3. Cleaned up the code
+1. Changed QUANTIZATION_PRECISION_IN from 32 to 64
+2. Changed type of OutputBias from I16 to I32
+3. Multipling OutputBias by QUANTIZATION_PRECISION_IN in ReadNetwork
+4. Added search algorithm name to program name
+5. Refactored Monte Carlo tree search (just for experimentation)
+6. Cleaned up the code
+7. New neural net "[Net 110, Epoch 022](https://github.com/Ilya-Ruk/RukChessNets/blob/master/Nets%20110/rukchess_022.nnue)"
 
 ## RukChess 3.0.15 (05.02.2023)
 
