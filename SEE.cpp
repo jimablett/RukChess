@@ -110,7 +110,7 @@ int CaptureSEE(const BoardItem* Board, const int From, const int To, const int P
             break; // while
         }
 
-        for (Piece = 0; Piece < 5; ++Piece) { // PNBRQ
+        for (Piece = 0; Piece < 6; ++Piece) { // PNBRQK
             if (CurrentAttackers & Board->BB_Pieces[Color][Piece]) {
 #ifdef DEBUG_SEE
                 printf("-- SEE: From = %s\n", BoardName[LSB(CurrentAttackers & Board->BB_Pieces[Color][Piece])]);

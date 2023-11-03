@@ -170,7 +170,7 @@
 // Program name, program version, algorithm name, evaluation function name and copyright information
 
 #define PROGRAM_NAME                            "RukChess"
-#define PROGRAM_VERSION                         "3.0.16"
+#define PROGRAM_VERSION                         "3.0.17dev"
 
 #ifdef MCTS
 #define ALGORITHM_NAME                          "MCTS"

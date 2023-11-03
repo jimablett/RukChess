@@ -340,6 +340,10 @@ NextMove0:
 
             Score = Search(Board, SingularBeta - 1, SingularBeta, Depth / 2, Ply, TempBestMoves, FALSE, InCheck, FALSE, MoveList[MoveNumber0].Move);
 
+            if (StopSearch) {
+                return 0;
+            }
+
 #ifdef DEBUG_SINGULAR_EXTENSION
             PrintBoard(Board);
 
@@ -554,6 +558,10 @@ NextMove:
             TempBestMoves[0] = { 0, 0, 0 };
 
             Score = Search(ThreadBoard, SingularBeta - 1, SingularBeta, Depth / 2, Ply, TempBestMoves, FALSE, InCheck, FALSE, MoveList[MoveNumber].Move);
+
+            if (StopSearch) {
+                return 0;
+            }
 
 #ifdef DEBUG_SINGULAR_EXTENSION
             PrintBoard(ThreadBoard);

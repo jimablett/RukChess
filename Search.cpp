@@ -266,6 +266,10 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
 
             Score = QuiescenceSearch(Board, RazoringAlpha, RazoringAlpha + 1, 0, Ply, TempBestMoves, FALSE, FALSE);
 
+            if (StopSearch) {
+                return 0;
+            }
+
             if (Score <= RazoringAlpha) {
                 return Score;
             }
@@ -530,6 +534,10 @@ NextMove:
             TempBestMoves[0] = { 0, 0, 0 };
 
             Score = Search(Board, SingularBeta - 1, SingularBeta, Depth / 2, Ply, TempBestMoves, FALSE, InCheck, FALSE, MoveList[MoveNumber].Move);
+
+            if (StopSearch) {
+                return 0;
+            }
 
 #ifdef DEBUG_SINGULAR_EXTENSION
             PrintBoard(Board);
