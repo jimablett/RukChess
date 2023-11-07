@@ -104,7 +104,7 @@
 #define REVERSE_FUTILITY_PRUNING
 #define RAZORING                                // Required QUIESCENCE
 #define NULL_MOVE_PRUNING
-#define PROBCUT                                 // Not implemented for ABDADA
+#define PROBCUT                                 // Required QUIESCENCE
 #define IID                                     // Required HASH_MOVE
 //#define IIR                                   // Required HASH_MOVE
 //#define PVS                                   // Required MOVES_SORT_...

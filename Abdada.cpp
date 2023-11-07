@@ -312,7 +312,7 @@ int ABDADA_Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Pl
 #endif // HASH_SCORE
     }
 
-#if defined(REVERSE_FUTILITY_PRUNING) || defined(RAZORING) || defined(NULL_MOVE_PRUNING)
+#if defined(REVERSE_FUTILITY_PRUNING) || defined(RAZORING) || defined(NULL_MOVE_PRUNING) || defined(PROBCUT)
     if (UsePruning && !IsPrincipal && !InCheck) {
 #ifdef REVERSE_FUTILITY_PRUNING
         if (NonPawnMaterial && Depth <= 5 && (StaticScore - ReverseFutilityMargin(Depth)) >= Beta) { // Hakkapeliitta
@@ -372,8 +372,57 @@ int ABDADA_Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Pl
             }
         }
 #endif // NULL_MOVE_PRUNING
+
+#ifdef PROBCUT
+        if (Depth >= 5 && Beta < INF - MAX_PLY) { // Xiphos
+            BetaCut = Beta + 100;
+
+            GenMoveCount = 0;
+            GenerateCaptureMoves(Board, MoveList, &GenMoveCount);
+
+            for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
+                if (!(MoveList[MoveNumber].Type & MOVE_CAPTURE)) {
+                    continue; // Next move
+                }
+
+                if (CaptureSEE(Board, MOVE_FROM(MoveList[MoveNumber].Move), MOVE_TO(MoveList[MoveNumber].Move), MOVE_PROMOTE_PIECE(MoveList[MoveNumber].Move), MoveList[MoveNumber].Type) < BetaCut - StaticScore) {
+                    continue; // Next move
+                }
+
+                MakeMove(Board, MoveList[MoveNumber]);
+
+                if (IsInCheck(Board, CHANGE_COLOR(Board->CurrentColor))) { // Illegal move
+                    UnmakeMove(Board);
+
+                    continue; // Next move
+                }
+
+                // Zero window quiescence search
+                TempBestMoves[0] = { 0, 0, 0 };
+
+                Score = -QuiescenceSearch(Board, -BetaCut, -BetaCut + 1, 0, Ply, TempBestMoves, FALSE, FALSE);
+
+                if (Score >= BetaCut) {
+                    // Zero window search for reduced depth
+                    TempBestMoves[0] = { 0, 0, 0 };
+
+                    Score = -ABDADA_Search(Board, -BetaCut, -BetaCut + 1, Depth - 4, Ply + 1, TempBestMoves, FALSE, FALSE, FALSE, 0);
+                }
+
+                UnmakeMove(Board);
+
+                if (StopSearch) {
+                    return 0;
+                }
+
+                if (Score >= BetaCut) {
+                    return Score;
+                }
+            }
+        }
+#endif // PROBCUT
     } // if
-#endif // REVERSE_FUTILITY_PRUNING || RAZORING || NULL_MOVE_PRUNING
+#endif // REVERSE_FUTILITY_PRUNING || RAZORING || NULL_MOVE_PRUNING || PROBCUT
 
 #if defined(HASH_MOVE) && defined(IID)
     if (!SkipMove && !HashMove && (IsPrincipal ? Depth > 4 : Depth > 7)) { // Hakkapeliitta
