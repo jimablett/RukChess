@@ -311,7 +311,7 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
 #endif // NULL_MOVE_PRUNING
 
 #ifdef PROBCUT
-        if (Depth >= 5) { // Xiphos
+        if (Depth >= 5 && Beta < INF - MAX_PLY) { // Xiphos
             BetaCut = Beta + 100;
 
             GenMoveCount = 0;
