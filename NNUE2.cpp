@@ -7,17 +7,14 @@
 #include "BitBoard.h"
 #include "Board.h"
 #include "Def.h"
+#include "Game.h"
 #include "Types.h"
 #include "Utils.h"
 
 #ifdef NNUE_EVALUATION_FUNCTION_2
 
-/*
-    https://github.com/Ilya-Ruk/RukChessNets
-*/
-#define NNUE_FILE_NAME              "rukchess.nnue"
 #define NNUE_FILE_MAGIC             ('B' | 'R' << 8 | 'K' << 16 | 'R' << 24)
-//#define NNUE_FILE_HASH            0x0000755B16A94877
+//#define NNUE_FILE_HASH            0x00006E5001EB7720
 #define NNUE_FILE_SIZE              1579024
 
 #define INPUT_DIMENSION             768
@@ -45,6 +42,8 @@ _declspec(align(64)) I16 OutputWeights[HIDDEN_DIMENSION * 2];               // 5
 I32 OutputBias;                                                             // 1
 #endif // LAST_LAYER_AS_FLOAT
 
+BOOL NnueFileLoaded = FALSE;
+
 I16 LoadWeight16(const float Value, const int Precision)
 {
     return (I16)roundf(Value * (float)Precision);
@@ -55,7 +54,7 @@ I32 LoadWeight32(const float Value, const int Precision)
     return (I32)roundf(Value * (float)Precision);
 }
 
-void ReadNetwork(void)
+BOOL LoadNetwork(const char* NnueFileName)
 {
     FILE* File;
 
@@ -71,18 +70,23 @@ void ReadNetwork(void)
     float MaxValue;
 #endif // PRINT_MIN_MAX_VALUES
 
-    printf("\n");
+    if (PrintMode == PRINT_MODE_NORMAL) {
+        printf("\n");
 
-    printf("Load network...\n");
+        printf("Load network...\n");
+    }
 
-    fopen_s(&File, NNUE_FILE_NAME, "rb");
+    fopen_s(&File, NnueFileName, "rb");
 
     if (File == NULL) { // File open error
-        printf("File '%s' open error!\n", NNUE_FILE_NAME);
+        if (PrintMode == PRINT_MODE_NORMAL) {
+            printf("File '%s' open error!\n", NnueFileName);
+        }
+        else if (PrintMode == PRINT_MODE_UCI) {
+            printf("info string File '%s' open error!\n", NnueFileName);
+        }
 
-        Sleep(3000);
-
-        exit(0);
+        return FALSE;
     }
 
     // File magic
@@ -92,11 +96,14 @@ void ReadNetwork(void)
 //    printf("FileMagic = %d\n", FileMagic);
 
     if (FileMagic != NNUE_FILE_MAGIC) { // File format error
-        printf("File '%s' format error!\n", NNUE_FILE_NAME);
+        if (PrintMode == PRINT_MODE_NORMAL) {
+            printf("File '%s' format error!\n", NnueFileName);
+        }
+        else if (PrintMode == PRINT_MODE_UCI) {
+            printf("info string File '%s' format error!\n", NnueFileName);
+        }
 
-        Sleep(3000);
-
-        exit(0);
+        return FALSE;
     }
 
     // File hash
@@ -106,11 +113,14 @@ void ReadNetwork(void)
 //    printf("FileHash = 0x%016llX\n", FileHash);
 /*
     if (FileHash != NNUE_FILE_HASH) { // File format error
-        printf("File '%s' format error!\n", NNUE_FILE_NAME);
+        if (PrintMode == PRINT_MODE_NORMAL) {
+            printf("File '%s' format error!\n", NnueFileName);
+        }
+        else if (PrintMode == PRINT_MODE_UCI) {
+            printf("info string File '%s' format error!\n", NnueFileName);
+        }
 
-        Sleep(3000);
-
-        exit(0);
+        return FALSE;
     }
 */
     // Feature weights
@@ -217,16 +227,26 @@ void ReadNetwork(void)
 //    printf("File position = %llu\n", FilePos);
 
     if (FilePos != NNUE_FILE_SIZE) { // File format error
-        printf("File '%s' format error!\n", NNUE_FILE_NAME);
+        if (PrintMode == PRINT_MODE_NORMAL) {
+            printf("File '%s' format error!\n", NnueFileName);
+        }
+        else if (PrintMode == PRINT_MODE_UCI) {
+            printf("info string File '%s' format error!\n", NnueFileName);
+        }
 
-        Sleep(3000);
-
-        exit(0);
+        return FALSE;
     }
 
     fclose(File);
 
-    printf("Load network...DONE (%s; hash = 0x%016llX)\n", NNUE_FILE_NAME, FileHash);
+    if (PrintMode == PRINT_MODE_NORMAL) {
+        printf("Load network...DONE (0x%016llX)\n", FileHash);
+    }
+    else if (PrintMode == PRINT_MODE_UCI) {
+        printf("info string Network loaded (0x%016llX)\n", FileHash);
+    }
+
+    return TRUE;
 }
 
 int CalculateWeightIndex(const int Perspective, const int Square, const int PieceWithColor)

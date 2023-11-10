@@ -75,13 +75,18 @@ int main(int, char**)
     SetRandState(0ULL); // For reproducibility
     InitHashBoards();
 
-    // Initialize evaluation function / Network reading
+    // Initialize evaluation function
 
 #if defined(SIMPLIFIED_EVALUATION_FUNCTION) || defined(TOGA_EVALUATION_FUNCTION)
     InitEvaluation();
-#elif defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
-    ReadNetwork();
-#endif // SIMPLIFIED_EVALUATION_FUNCTION || TOGA_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
+#endif // SIMPLIFIED_EVALUATION_FUNCTION || TOGA_EVALUATION_FUNCTION
+
+    // Initialize tuning function and read params (if present)
+
+#if defined(TUNING_LOCAL_SEARCH) || defined(TUNING_ADAM_SGD)
+    InitTuningParams();
+    LoadTuningParams();
+#endif // TUNING_LOCAL_SEARCH || TUNING_ADAM_SGD
 
     // Initialize LMP
 
@@ -109,22 +114,21 @@ int main(int, char**)
     }
 #endif // NEGA_SCOUT && LATE_MOVE_REDUCTION
 
-    // Initialize tuning function and read params (if present)
-
-#if defined(TUNING_LOCAL_SEARCH) || defined(TUNING_ADAM_SGD)
-    InitTuningParams();
-    LoadTuningParams();
-#endif // TUNING_LOCAL_SEARCH || TUNING_ADAM_SGD
-
     // Initialize random generator
 
     SetRandState(Clock());
 
     // Load book
 
-    UseBook = LoadBook();
+    BookFileLoaded = LoadBook(DEFAULT_BOOK_FILE_NAME);
 
-    // UCI
+#if defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
+    // Load network
+
+    NnueFileLoaded = LoadNetwork(DEFAULT_NNUE_FILE_NAME);
+#endif // NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
+
+    // UCI or Console interface?
 
     printf("\n");
 
@@ -133,6 +137,8 @@ int main(int, char**)
     fgets(Buf, sizeof(Buf), stdin);
 
     if (!strncmp(Buf, "uci", 3)) {
+        // UCI
+
         PrintMode = PRINT_MODE_UCI;
 
         UCI();
@@ -142,7 +148,17 @@ int main(int, char**)
 
     // Console interface
 
-    PrintMode = PRINT_MODE_NORMAL;
+//    PrintMode = PRINT_MODE_NORMAL;
+
+#if defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
+    if (!NnueFileLoaded) {
+        printf("Network not loaded!\n");
+
+        Sleep(3000);
+
+        return 0;
+    }
+#endif // NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
 
     while (TRUE) {
         printf("Menu:\n");

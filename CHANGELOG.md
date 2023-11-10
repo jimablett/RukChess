@@ -1,4 +1,11 @@
-# RukChess Change Log
+# RukChess change log
+
+## RukChess 3.0.17dev
+
+1. Corrected and enabled ProbCut
+2. Added ProbCut for ABDADA
+3. Added UCI option BookFile
+4. Added UCI option NnueFile
 
 ## RukChess 3.0.16 (23.10.2023)
 

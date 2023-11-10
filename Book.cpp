@@ -6,6 +6,7 @@
 
 #include "Board.h"
 #include "Def.h"
+#include "Game.h"
 #include "Gen.h"
 #include "Hash.h"
 #include "Move.h"
@@ -51,7 +52,7 @@ struct {
     BookItem* Item;
 } BookStore;
 
-BOOL UseBook;
+BOOL BookFileLoaded = FALSE;
 
 NodeItem* CreateNode(const MoveItem Move)
 {
@@ -166,10 +167,10 @@ void GenerateBook(void)
         exit(0);
     }
 
-    fopen_s(&FileOut, "book.txt", "w");
+    fopen_s(&FileOut, DEFAULT_BOOK_FILE_NAME, "w");
 
     if (FileOut == NULL) { // File create (open) error
-        printf("File 'book.txt' create (open) error!\n");
+        printf("File '%s' create (open) error!\n", DEFAULT_BOOK_FILE_NAME);
 
         Sleep(3000);
 
@@ -520,7 +521,7 @@ int HashCompare(const void* BookItem1, const void* BookItem2)
     return 0;
 }
 
-BOOL LoadBook(void)
+BOOL LoadBook(const char* BookFileName)
 {
     FILE* File;
 
@@ -543,14 +544,21 @@ BOOL LoadBook(void)
 
 //    printf("BookItem = %zd\n", sizeof(BookItem));
 
-    printf("\n");
+    if (PrintMode == PRINT_MODE_NORMAL) {
+        printf("\n");
 
-    printf("Load book...\n");
+        printf("Load book...\n");
+    }
 
-    fopen_s(&File, "book.txt", "r");
+    fopen_s(&File, BookFileName, "r");
 
     if (File == NULL) { // File open error
-        printf("File 'book.txt' open error!\n");
+        if (PrintMode == PRINT_MODE_NORMAL) {
+            printf("File '%s' open error!\n", BookFileName);
+        }
+        else if (PrintMode == PRINT_MODE_UCI) {
+            printf("info string File '%s' open error!\n", BookFileName);
+        }
 
         return FALSE;
     }
@@ -568,11 +576,14 @@ BOOL LoadBook(void)
     BookStore.Item = (BookItem*)malloc(BookStore.Count * sizeof(BookItem));
 
     if (BookStore.Item == NULL) { // Allocate memory error
-        printf("Allocate memory to store book error!\n");
+        if (PrintMode == PRINT_MODE_NORMAL) {
+            printf("Allocate memory to store book error!\n");
+        }
+        else if (PrintMode == PRINT_MODE_UCI) {
+            printf("info string Allocate memory to store book error!\n");
+        }
 
-        Sleep(3000);
-
-        exit(0);
+        return FALSE;
     }
 
     // Set the pointer to the beginning of the file
@@ -654,7 +665,12 @@ BOOL LoadBook(void)
 */
     fclose(File);
 
-    printf("Load book...DONE (%d)\n", BookStore.Count);
+    if (PrintMode == PRINT_MODE_NORMAL) {
+        printf("Load book...DONE (%d)\n", BookStore.Count);
+    }
+    else if (PrintMode == PRINT_MODE_UCI) {
+        printf("info string Book loaded (%d)\n", BookStore.Count);
+    }
 
     return TRUE;
 }

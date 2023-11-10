@@ -9,11 +9,11 @@
 #include "Def.h"
 #include "Types.h"
 
-extern BOOL UseBook;
+extern BOOL BookFileLoaded;
 
 void GenerateBook(void);
 
-BOOL LoadBook(void);
+BOOL LoadBook(const char* BookFileName);
 
 BOOL GetBookMove(const BoardItem* Board, MoveItem* BestMoves);
 

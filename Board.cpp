@@ -624,10 +624,6 @@ int SetFen(BoardItem* Board, char* Fen)
         ++Part;
     }
 
-    if (*Part == ' ') {
-        ++Part; // Space
-    }
-
     InitHash(Board);
 
     memset(Board->MoveTable, 0, sizeof(Board->MoveTable));

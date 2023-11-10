@@ -5,11 +5,14 @@
 #include "UCI.h"
 
 #include "Board.h"
+#include "Book.h"
 #include "Def.h"
 #include "Game.h"
 #include "Gen.h"
 #include "Hash.h"
 #include "Move.h"
+#include "NNUE.h"
+#include "NNUE2.h"
 #include "Types.h"
 #include "Utils.h"
 
@@ -36,6 +39,12 @@ void UCI(void)
     int HashSize;
     int Threads;
 
+    char BookFileNameString[255];
+    char* BookFileName;
+
+    char NnueFileNameString[255];
+    char* NnueFileName;
+
     U64 WTime;
     U64 BTime;
 
@@ -58,6 +67,11 @@ void UCI(void)
 
     printf("option name Hash type spin default %d min %d max %d\n", DEFAULT_HASH_TABLE_SIZE, 1, MAX_HASH_TABLE_SIZE);
     printf("option name Threads type spin default %d min %d max %d\n", DEFAULT_THREADS, 1, MaxThreads);
+    printf("option name BookFile type string default %s\n", DEFAULT_BOOK_FILE_NAME);
+
+#if defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
+    printf("option name NnueFile type string default %s\n", DEFAULT_NNUE_FILE_NAME);
+#endif // NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
 
     printf("uciok\n");
 
@@ -74,7 +88,7 @@ void UCI(void)
 
             ClearHash();
         }
-        else if (!strncmp(Part, "setoption name Hash value", 25)) {
+        else if (!strncmp(Part, "setoption name Hash value ", 26)) {
             Part += 26;
 
             HashSize = atoi(Part);
@@ -84,7 +98,7 @@ void UCI(void)
             InitHashTable(HashSize);
             ClearHash();
         }
-        else if (!strncmp(Part, "setoption name Threads value", 28)) {
+        else if (!strncmp(Part, "setoption name Threads value ", 29)) {
             Part += 29;
 
             Threads = atoi(Part);
@@ -93,21 +107,53 @@ void UCI(void)
 
             omp_set_num_threads(Threads);
         }
-        else if (!strncmp(Part, "position", 8)) {
+        else if (!strncmp(Part, "setoption name BookFile value ", 30)) {
+            Part += 30;
+
+            BookFileName = BookFileNameString;
+
+            while (*Part != '\r' && *Part != '\n' && *Part != '\0') {
+                *BookFileName++ = *Part++; // Copy file name
+            }
+
+            *BookFileName = '\0'; // Nul
+
+            BookFileLoaded = LoadBook(BookFileNameString);
+        }
+#if defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
+        else if (!strncmp(Part, "setoption name NnueFile value ", 30)) {
+            Part += 30;
+
+            NnueFileName = NnueFileNameString;
+
+            while (*Part != '\r' && *Part != '\n' && *Part != '\0') {
+                *NnueFileName++ = *Part++; // Copy file name
+            }
+
+            *NnueFileName = '\0'; // Nul
+
+            NnueFileLoaded = LoadNetwork(NnueFileNameString);
+        }
+#endif // NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
+        else if (!strncmp(Part, "position ", 9)) {
             Part += 9;
 
             if (!strncmp(Part, "startpos", 8)) {
-                Part += 9;
+                Part += 8;
 
                 SetFen(&CurrentBoard, StartFen);
             }
-            else if (!strncmp(Part, "fen", 3)) {
+            else if (!strncmp(Part, "fen ", 4)) {
                 Part += 4;
 
                 Part += SetFen(&CurrentBoard, Part);
             }
 
-            if (!strncmp(Part, "moves", 5)) {
+            if (*Part == ' ') {
+                ++Part; // Space
+            }
+
+            if (!strncmp(Part, "moves ", 6)) {
                 Part += 6;
 
                 while (*Part != '\r' && *Part != '\n' && *Part != '\0') {
@@ -174,7 +220,7 @@ void UCI(void)
                     }
 
                     if (!MoveFound || MoveInCheck) { // Move not found or illegal move
-                        printf("info string illegal move\n");
+                        printf("info string Illegal move!\n");
 
                         // TODO: print illegal move
 
@@ -187,7 +233,7 @@ void UCI(void)
                 } // while
             } // if
         }
-        else if (!strncmp(Part, "go", 2)) {
+        else if (!strncmp(Part, "go ", 3)) {
             Part += 3;
 
             WTime = 0ULL;
@@ -207,44 +253,44 @@ void UCI(void)
             memset(TargetTime, 0, sizeof(TargetTime));
 
             while (*Part != '\r' && *Part != '\n' && *Part != '\0') {
-                if (!strncmp(Part, "wtime", 5)) {
+                if (!strncmp(Part, "wtime ", 6)) {
                     Part += 6;
 
                     WTime = (U64)atoi(Part);
                 }
-                else if (!strncmp(Part, "btime", 5)) {
+                else if (!strncmp(Part, "btime ", 6)) {
                     Part += 6;
 
                     BTime = (U64)atoi(Part);
                 }
-                else if (!strncmp(Part, "winc", 4)) {
+                else if (!strncmp(Part, "winc ", 5)) {
                     Part += 5;
 
                     WInc = (U64)atoi(Part);
                 }
-                else if (!strncmp(Part, "binc", 4)) {
+                else if (!strncmp(Part, "binc ", 5)) {
                     Part += 5;
 
                     BInc = (U64)atoi(Part);
                 }
-                else if (!strncmp(Part, "movestogo", 9)) {
+                else if (!strncmp(Part, "movestogo ", 10)) {
                     Part += 10;
 
                     MovesToGo = atoi(Part);
                 }
-                else if (!strncmp(Part, "depth", 5)) {
+                else if (!strncmp(Part, "depth ", 6)) {
                     Part += 6;
 
                     MaxDepth = atoi(Part);
                 }
-                else if (!strncmp(Part, "mate", 4)) {
+                else if (!strncmp(Part, "mate ", 5)) {
                     Part += 5;
 
                     Mate = atoi(Part);
 
                     MaxDepth = Mate * 2 - 1;
                 }
-                else if (!strncmp(Part, "movetime", 8)) {
+                else if (!strncmp(Part, "movetime ", 9)) {
                     Part += 9;
 
                     MaxTime = (U64)atoi(Part);
@@ -315,6 +361,14 @@ void UCI(void)
                 TimeForMove = 0ULL;
             }
 
+#if defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
+            if (!NnueFileLoaded) {
+                printf("info string Network not loaded!\n");
+
+                continue; // Next command
+            }
+#endif // NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
+
             _beginthread(ComputerMoveThread, 0, NULL);
         }
         else if (!strncmp(Part, "stop", 4)) {
@@ -324,7 +378,7 @@ void UCI(void)
             return;
         }
         else {
-            printf("info string unknown command\n");
+            printf("info string Unknown command!\n");
         }
     } // while
 }

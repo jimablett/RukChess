@@ -36,7 +36,7 @@ int CompletedDepth;
 
 volatile BOOL StopSearch;
 
-int PrintMode;
+int PrintMode = PRINT_MODE_NORMAL;
 
 void PrintBestMoves(const BoardItem* Board, const int Depth, const MoveItem* BestMoves, const int BestScore)
 {
@@ -299,7 +299,7 @@ BOOL ComputerMove(void)
 
     AddHashStoreIteration();
 
-    if (UseBook && GetBookMove(&CurrentBoard, CurrentBoard.BestMovesRoot)) {
+    if (BookFileLoaded && GetBookMove(&CurrentBoard, CurrentBoard.BestMovesRoot)) {
         BestMove = CurrentBoard.BestMovesRoot[0];
         PonderMove = CurrentBoard.BestMovesRoot[1];
     }
@@ -375,7 +375,7 @@ BOOL ComputerMove(void)
 
     AddHashStoreIteration();
 
-    if (UseBook && GetBookMove(&CurrentBoard, CurrentBoard.BestMovesRoot)) {
+    if (BookFileLoaded && GetBookMove(&CurrentBoard, CurrentBoard.BestMovesRoot)) {
         BestMove = CurrentBoard.BestMovesRoot[0];
         PonderMove = CurrentBoard.BestMovesRoot[1];
 
@@ -535,7 +535,7 @@ BOOL ComputerMove(void)
 
     AddHashStoreIteration();
 
-    if (UseBook && GetBookMove(&CurrentBoard, CurrentBoard.BestMovesRoot)) {
+    if (BookFileLoaded && GetBookMove(&CurrentBoard, CurrentBoard.BestMovesRoot)) {
         BestMove = CurrentBoard.BestMovesRoot[0];
         PonderMove = CurrentBoard.BestMovesRoot[1];
 
@@ -739,7 +739,7 @@ BOOL ComputerMove(void)
 
     AddHashStoreIteration();
 
-    if (UseBook && GetBookMove(&CurrentBoard, CurrentBoard.BestMovesRoot)) {
+    if (BookFileLoaded && GetBookMove(&CurrentBoard, CurrentBoard.BestMovesRoot)) {
         BestMove = CurrentBoard.BestMovesRoot[0];
         PonderMove = CurrentBoard.BestMovesRoot[1];
 

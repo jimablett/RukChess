@@ -208,6 +208,24 @@
 #define DEFAULT_THREADS                         1
 #define MAX_THREADS                             128
 
+#define DEFAULT_BOOK_FILE_NAME                  "book.txt"
+
+#ifdef NNUE_EVALUATION_FUNCTION
+
+/*
+    https://tests.stockfishchess.org/nns
+*/
+#define DEFAULT_NNUE_FILE_NAME                  "nn-62ef826d1a6d.nnue" // 28.11.2020
+
+#elif defined(NNUE_EVALUATION_FUNCTION_2)
+
+/*
+    https://github.com/Ilya-Ruk/RukChessNets
+*/
+#define DEFAULT_NNUE_FILE_NAME                  "rukchess.nnue" // 18.10.2023
+
+#endif // NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
+
 // Time management (Xiphos)
 
 #define MAX_TIME                                86400   // Maximum time per move, seconds
