@@ -7,15 +7,11 @@
 #include "BitBoard.h"
 #include "Board.h"
 #include "Def.h"
+#include "Game.h"
 #include "Types.h"
 #include "Utils.h"
 
 #ifdef NNUE_EVALUATION_FUNCTION
-
-/*
-    https://tests.stockfishchess.org/nns
-*/
-#define NNUE_FILE                       "nn-62ef826d1a6d.nnue" // 28.11.2020
 
 #define NNUE_VERSION                    0x7AF32F16U
 #define NNUE_HASH                       0x3E5AA6EEU
@@ -76,7 +72,9 @@ _declspec(align(64)) I8 Hidden_2_Weights[HIDDEN_1_DIMENSION * HIDDEN_2_DIMENSION
 I32 OutputBiases[OUTPUT_DIMENSION]; // 1
 _declspec(align(64)) I8 OutputWeights[HIDDEN_2_DIMENSION * OUTPUT_DIMENSION]; // 32 x 1 = 32
 
-I32 ReadInt32(FILE* File)
+BOOL NnueFileLoaded = FALSE;
+
+I32 ReadInt32(FILE* File, const char* NnueFileName)
 {
     char Buf[sizeof(I32) + 1]; // 4 bytes + 1
     char* Part = Buf;
@@ -86,7 +84,12 @@ I32 ReadInt32(FILE* File)
     I32 Result = 0;
 
     if (fread_s(Buf, sizeof(Buf), sizeof(char), sizeof(I32), File) != sizeof(I32)) {
-        printf("File '%s' read error!\n", NNUE_FILE);
+        if (PrintMode == PRINT_MODE_NORMAL) {
+            printf("File '%s' read error!\n", NnueFileName);
+        }
+        else if (PrintMode == PRINT_MODE_UCI) {
+            printf("info string File '%s' read error!\n", NnueFileName);
+        }
 
         Sleep(3000);
 
@@ -104,7 +107,7 @@ I32 ReadInt32(FILE* File)
     return Result;
 }
 
-I16 ReadInt16(FILE* File)
+I16 ReadInt16(FILE* File, const char* NnueFileName)
 {
     char Buf[sizeof(I16) + 1]; // 2 bytes + 1
     char* Part = Buf;
@@ -114,7 +117,12 @@ I16 ReadInt16(FILE* File)
     I16 Result = 0;
 
     if (fread_s(Buf, sizeof(Buf), sizeof(char), sizeof(I16), File) != sizeof(I16)) {
-        printf("File '%s' read error!\n", NNUE_FILE);
+        if (PrintMode == PRINT_MODE_NORMAL) {
+            printf("File '%s' read error!\n", NnueFileName);
+        }
+        else if (PrintMode == PRINT_MODE_UCI) {
+            printf("info string File '%s' read error!\n", NnueFileName);
+        }
 
         Sleep(3000);
 
@@ -132,7 +140,7 @@ I16 ReadInt16(FILE* File)
     return Result;
 }
 
-I8 ReadInt8(FILE* File)
+I8 ReadInt8(FILE* File, const char* NnueFileName)
 {
     char Buf[sizeof(I8) + 1]; // 1 byte + 1
     char* Part = Buf;
@@ -142,7 +150,12 @@ I8 ReadInt8(FILE* File)
     I8 Result = 0;
 
     if (fread_s(Buf, sizeof(Buf), sizeof(char), sizeof(I8), File) != sizeof(I8)) {
-        printf("File '%s' read error!\n", NNUE_FILE);
+        if (PrintMode == PRINT_MODE_NORMAL) {
+            printf("File '%s' read error!\n", NnueFileName);
+        }
+        else if (PrintMode == PRINT_MODE_UCI) {
+            printf("info string File '%s' read error!\n", NnueFileName);
+        }
 
         Sleep(3000);
 
@@ -195,7 +208,7 @@ void PermuteBiases(I32* Biases)
 }
 #endif // USE_NNUE_AVX2
 
-void ReadNetwork(void)
+BOOL LoadNetwork(const char* NnueFileName)
 {
     FILE* File;
 
@@ -210,92 +223,112 @@ void ReadNetwork(void)
 
     fpos_t FilePos;
 
-    printf("\n");
+    if (PrintMode == PRINT_MODE_NORMAL) {
+        printf("\n");
 
-    printf("Load network...\n");
+        printf("Load network...\n");
+    }
 
-    fopen_s(&File, NNUE_FILE, "rb");
+    fopen_s(&File, NnueFileName, "rb");
 
     if (File == NULL) { // File open error
-        printf("File '%s' open error!\n", NNUE_FILE);
+        if (PrintMode == PRINT_MODE_NORMAL) {
+            printf("File '%s' open error!\n", NnueFileName);
+        }
+        else if (PrintMode == PRINT_MODE_UCI) {
+            printf("info string File '%s' open error!\n", NnueFileName);
+        }
 
-        Sleep(3000);
-
-        exit(0);
+        return FALSE;
     }
 
     // Version
 
-    Version = ReadInt32(File);
+    Version = ReadInt32(File, NnueFileName);
 
 //    printf("Version = 0x%8X\n", Version);
 
     if (Version != NNUE_VERSION) { // File format error
-        printf("File '%s' format error!\n", NNUE_FILE);
+        if (PrintMode == PRINT_MODE_NORMAL) {
+            printf("File '%s' format error!\n", NnueFileName);
+        }
+        else if (PrintMode == PRINT_MODE_UCI) {
+            printf("info string File '%s' format error!\n", NnueFileName);
+        }
 
-        Sleep(3000);
-
-        exit(0);
+        return FALSE;
     }
 
     // Hash
 
-    Hash = ReadInt32(File);
+    Hash = ReadInt32(File, NnueFileName);
 
 //    printf("Hash = 0x%8X\n", Hash);
 
     if (Hash != NNUE_HASH) { // File format error
-        printf("File '%s' format error!\n", NNUE_FILE);
+        if (PrintMode == PRINT_MODE_NORMAL) {
+            printf("File '%s' format error!\n", NnueFileName);
+        }
+        else if (PrintMode == PRINT_MODE_UCI) {
+            printf("info string File '%s' format error!\n", NnueFileName);
+        }
 
-        Sleep(3000);
-
-        exit(0);
+        return FALSE;
     }
 
     // Architecture length
 
-    ArcLength = ReadInt32(File);
+    ArcLength = ReadInt32(File, NnueFileName);
 
 //    printf("Architecture length = %d\n", ArcLength);
 
     if (ArcLength != NNUE_ARC_LENGTH) { // File format error
-        printf("File '%s' format error!\n", NNUE_FILE);
+        if (PrintMode == PRINT_MODE_NORMAL) {
+            printf("File '%s' format error!\n", NnueFileName);
+        }
+        else if (PrintMode == PRINT_MODE_UCI) {
+            printf("info string File '%s' format error!\n", NnueFileName);
+        }
 
-        Sleep(3000);
-
-        exit(0);
+        return FALSE;
     }
 
     // Architecture
 
     if (fgets(Architecture, NNUE_ARC_LENGTH + 1, File) == NULL) { // File read error
-        printf("File '%s' read error!\n", NNUE_FILE);
+        if (PrintMode == PRINT_MODE_NORMAL) {
+            printf("File '%s' read error!\n", NnueFileName);
+        }
+        else if (PrintMode == PRINT_MODE_UCI) {
+            printf("info string File '%s' read error!\n", NnueFileName);
+        }
 
-        Sleep(3000);
-
-        exit(0);
+        return FALSE;
     }
 
 //    printf("Architecture = %s\n", Architecture);
 
     // Header 1
 
-    Header1 = ReadInt32(File);
+    Header1 = ReadInt32(File, NnueFileName);
 
 //    printf("Header 1 = 0x%8X\n", Header1);
 
     if (Header1 != NNUE_HEADER_1) { // File format error
-        printf("File '%s' format error!\n", NNUE_FILE);
+        if (PrintMode == PRINT_MODE_NORMAL) {
+            printf("File '%s' format error!\n", NnueFileName);
+        }
+        else if (PrintMode == PRINT_MODE_UCI) {
+            printf("info string File '%s' format error!\n", NnueFileName);
+        }
 
-        Sleep(3000);
-
-        exit(0);
+        return FALSE;
     }
 
     // Input biases
 
     for (int Index = 0; Index < HALF_FEATURE_OUTPUT_DIMENSION; ++Index) { // 256
-        InputBiases[Index] = ReadInt16(File);
+        InputBiases[Index] = ReadInt16(File, NnueFileName);
 
 //        printf("InputBiases[%d] = %d\n", Index, InputBiases[Index]);
     }
@@ -303,29 +336,32 @@ void ReadNetwork(void)
     // Input weights
 
     for (int Index = 0; Index < HALF_FEATURE_INPUT_DIMENSION * HALF_FEATURE_OUTPUT_DIMENSION; ++Index) { // 41024 x 256 = 10502144
-        InputWeights[Index] = ReadInt16(File);
+        InputWeights[Index] = ReadInt16(File, NnueFileName);
 
 //        printf("InputWeights[%d] = %d\n", Index, InputWeights[Index]);
     }
 
     // Header 2
 
-    Header2 = ReadInt32(File);
+    Header2 = ReadInt32(File, NnueFileName);
 
 //    printf("Header 2 = 0x%8X\n", Header2);
 
     if (Header2 != NNUE_HEADER_2) { // File format error
-        printf("File '%s' format error!\n", NNUE_FILE);
+        if (PrintMode == PRINT_MODE_NORMAL) {
+            printf("File '%s' format error!\n", NnueFileName);
+        }
+        else if (PrintMode == PRINT_MODE_UCI) {
+            printf("info string File '%s' format error!\n", NnueFileName);
+        }
 
-        Sleep(3000);
-
-        exit(0);
+        return FALSE;
     }
 
     // Hidden 1 biases
 
     for (int Index = 0; Index < HIDDEN_1_DIMENSION; ++Index) { // 32
-        Hidden_1_Biases[Index] = ReadInt32(File);
+        Hidden_1_Biases[Index] = ReadInt32(File, NnueFileName);
 
 //        printf("Hidden_1_Biases[%d] = %d\n", Index, Hidden_1_Biases[Index]);
     }
@@ -340,7 +376,7 @@ void ReadNetwork(void)
         for (int Col = 0; Col < INPUT_DIMENSION; ++Col) { // 512
             int Index = WeightIndex(Row, Col, INPUT_DIMENSION);
 
-            Hidden_1_Weights[Index] = ReadInt8(File);
+            Hidden_1_Weights[Index] = ReadInt8(File, NnueFileName);
 
 //            printf("Hidden_1_Weights[%d] = %d\n", Index, Hidden_1_Weights[Index]);
         }
@@ -349,7 +385,7 @@ void ReadNetwork(void)
     // Hidden 2 biases
 
     for (int Index = 0; Index < HIDDEN_2_DIMENSION; ++Index) { // 32
-        Hidden_2_Biases[Index] = ReadInt32(File);
+        Hidden_2_Biases[Index] = ReadInt32(File, NnueFileName);
 
 //        printf("Hidden_2_Biases[%d] = %d\n", Index, Hidden_2_Biases[Index]);
     }
@@ -364,7 +400,7 @@ void ReadNetwork(void)
         for (int Col = 0; Col < HIDDEN_1_DIMENSION; ++Col) { // 32
             int Index = WeightIndex(Row, Col, HIDDEN_1_DIMENSION);
 
-            Hidden_2_Weights[Index] = ReadInt8(File);
+            Hidden_2_Weights[Index] = ReadInt8(File, NnueFileName);
 
 //            printf("Hidden_2_Weights[%d] = %d\n", Index, Hidden_2_Weights[Index]);
         }
@@ -373,7 +409,7 @@ void ReadNetwork(void)
     // Output biases
 
     for (int Index = 0; Index < OUTPUT_DIMENSION; ++Index) { // 1
-        OutputBiases[Index] = ReadInt32(File);
+        OutputBiases[Index] = ReadInt32(File, NnueFileName);
 
 //        printf("OutputBiases[%d] = %d\n", Index, OutputBiases[Index]);
     }
@@ -381,7 +417,7 @@ void ReadNetwork(void)
     // Output weights
 
     for (int Index = 0; Index < HIDDEN_2_DIMENSION * OUTPUT_DIMENSION; ++Index) { // 32 x 1 = 32
-        OutputWeights[Index] = ReadInt8(File);
+        OutputWeights[Index] = ReadInt8(File, NnueFileName);
 
 //        printf("OutputWeights[%d] = %d\n", Index, OutputWeights[Index]);
     }
@@ -391,16 +427,26 @@ void ReadNetwork(void)
 //    printf("File position = %llu\n", FilePos);
 
     if (FilePos != NNUE_FILE_SIZE) { // File format error
-        printf("File '%s' format error!\n", NNUE_FILE);
+        if (PrintMode == PRINT_MODE_NORMAL) {
+            printf("File '%s' format error!\n", NnueFileName);
+        }
+        else if (PrintMode == PRINT_MODE_UCI) {
+            printf("info string File '%s' format error!\n", NnueFileName);
+        }
 
-        Sleep(3000);
-
-        exit(0);
+        return FALSE;
     }
 
     fclose(File);
 
-    printf("Load network...DONE (%s)\n", NNUE_FILE);
+    if (PrintMode == PRINT_MODE_NORMAL) {
+        printf("Load network...DONE (%s)\n", NnueFileName);
+    }
+    else if (PrintMode == PRINT_MODE_UCI) {
+        printf("info string Network loaded (%s)\n", NnueFileName);
+    }
+
+    return TRUE;
 }
 
 int Orient(const int Perspective, const int Square)

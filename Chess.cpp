@@ -148,8 +148,6 @@ int main(int, char**)
 
     // Console interface
 
-//    PrintMode = PRINT_MODE_NORMAL;
-
 #if defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
     if (!NnueFileLoaded) {
         printf("Network not loaded!\n");

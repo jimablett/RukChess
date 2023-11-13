@@ -42,8 +42,10 @@ void UCI(void)
     char BookFileNameString[255];
     char* BookFileName;
 
+#if defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
     char NnueFileNameString[255];
     char* NnueFileName;
+#endif // NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
 
     U64 WTime;
     U64 BTime;

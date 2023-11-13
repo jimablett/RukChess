@@ -9,7 +9,9 @@
 #include "Def.h"
 
 #ifdef NNUE_EVALUATION_FUNCTION
-void ReadNetwork(void);
+extern BOOL NnueFileLoaded;
+
+BOOL LoadNetwork(const char* NnueFileName);
 
 int NetworkEvaluate(BoardItem* Board);
 #endif // NNUE_EVALUATION_FUNCTION
