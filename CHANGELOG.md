@@ -1,6 +1,6 @@
 # RukChess change log
 
-## RukChess 3.0.17dev
+## RukChess 3.0.17 (17.11.2023)
 
 1. Corrected and enabled ProbCut
 2. Added ProbCut for ABDADA
