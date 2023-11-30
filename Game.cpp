@@ -47,11 +47,11 @@ void PrintBestMoves(const BoardItem* Board, const int Depth, const MoveItem* Bes
     if (PrintMode == PRINT_MODE_UCI) {
         printf("info depth %d seldepth %d nodes %llu time %llu", Depth, Board->SelDepth, Board->Nodes, TotalTime);
 
-        if (BestScore >= INF - MAX_PLY) {
-            printf(" score mate %d", (INF - BestScore + 1) / 2);
-        }
-        else if (BestScore <= -INF + MAX_PLY) {
+        if (BestScore <= -INF + MAX_PLY) {
             printf(" score mate %d", (-INF - BestScore) / 2);
+        }
+        else if (BestScore >= INF - MAX_PLY) {
+            printf(" score mate %d", (INF - BestScore + 1) / 2);
         }
         else {
             printf(" score cp %d", BestScore);
@@ -203,7 +203,7 @@ BOOL PrintResult(const BOOL InCheck, const MoveItem BestMove, const MoveItem Pon
         printf("Hash count %llu Evaluate count %llu Cutoff count %llu Quiescence count %llu\n", CurrentBoard.HashCount, CurrentBoard.EvaluateCount, CurrentBoard.CutoffCount, CurrentBoard.QuiescenceCount);
 #endif // DEBUG_STATISTIC
 
-        if (BestScore >= INF - 1 || BestScore <= -INF + 1) { // Checkmate // TODO: INF - 1, -INF
+        if (BestScore <= -INF + 1 || BestScore >= INF - 1) { // Checkmate
             printf("\n");
 
             printf("Checkmate!\n");
@@ -458,6 +458,10 @@ BOOL ComputerMove(void)
             break; // for (depth)
         }
 
+        if (BestScore <= -INF + Depth || BestScore >= INF - Depth) { // Checkmate
+            break; // for (depth)
+        }
+
         if (TargetTimeLocal > 0ULL && CompletedDepth >= MIN_SEARCH_DEPTH && (Clock() - TimeStart) >= TargetTimeLocal) {
             break; // for (depth)
         }
@@ -655,6 +659,10 @@ BOOL ComputerMove(void)
         BestScore = Score;
 
         if (!BestMove.Move) { // No legal moves
+            break; // for (depth)
+        }
+
+        if (BestScore <= -INF + Depth || BestScore >= INF - Depth) { // Checkmate
             break; // for (depth)
         }
 
@@ -882,6 +890,10 @@ BOOL ComputerMove(void)
                     }
 
                     if (!BestMove.Move) { // No legal moves
+                        StopSearch = TRUE;
+                    }
+
+                    if (BestScore <= -INF + Depth || BestScore >= INF - Depth) { // Checkmate
                         StopSearch = TRUE;
                     }
 
