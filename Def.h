@@ -170,7 +170,7 @@
 // Program name, program version, algorithm name, evaluation function name and copyright information
 
 #define PROGRAM_NAME                            "RukChess"
-#define PROGRAM_VERSION                         "3.0.17"
+#define PROGRAM_VERSION                         "3.0.18dev"
 
 #ifdef MCTS
 #define ALGORITHM_NAME                          "MCTS"
@@ -222,7 +222,7 @@
 /*
     https://github.com/Ilya-Ruk/RukChessNets
 */
-#define DEFAULT_NNUE_FILE_NAME                  "rukchess.nnue" // 18.10.2023
+#define DEFAULT_NNUE_FILE_NAME                  "net-6e5001eb7720.nnue" // 18.10.2023
 
 #endif // NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
 
