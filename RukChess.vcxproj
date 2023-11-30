@@ -102,6 +102,7 @@
     <ClCompile>
       <OpenMPSupport>true</OpenMPSupport>
       <WarningLevel>Level4</WarningLevel>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <StackReserveSize>10485760</StackReserveSize>
