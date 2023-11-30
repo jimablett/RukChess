@@ -1555,18 +1555,7 @@ SCORE Evaluate(BoardItem* Board)
     return Score;
 }
 
-#elif defined(NNUE_EVALUATION_FUNCTION)
-
-int Evaluate(BoardItem* Board)
-{
-#ifdef DEBUG_STATISTIC
-    ++Board->EvaluateCount;
-#endif // DEBUG_STATISTIC
-
-    return NetworkEvaluate(Board);
-}
-
-#elif defined(NNUE_EVALUATION_FUNCTION_2)
+#elif defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
 
 int Evaluate(BoardItem* Board)
 {
