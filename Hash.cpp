@@ -153,11 +153,11 @@ void SaveHash(const U64 Hash, const int Depth, const int Ply, const int Score, c
         // Replace record
 
         // Adjust the score
-        if (Score > INF - MAX_PLY) {
-            DataU.Data.Score = (I16)(Score + Ply);
-        }
-        else if (Score < -INF + MAX_PLY) {
+        if (Score < -INF + MAX_PLY) {
             DataU.Data.Score = (I16)(Score - Ply);
+        }
+        else if (Score > INF - MAX_PLY) {
+            DataU.Data.Score = (I16)(Score + Ply);
         }
         else {
             DataU.Data.Score = (I16)Score;
@@ -186,11 +186,11 @@ void LoadHash(const U64 Hash, int* Depth, const int Ply, int* Score, int* Static
     }
 
     // Adjust the score
-    if (DataU.Data.Score > INF - MAX_PLY) {
-        *Score = DataU.Data.Score - Ply;
-    }
-    else if (DataU.Data.Score < -INF + MAX_PLY) {
+    if (DataU.Data.Score < -INF + MAX_PLY) {
         *Score = DataU.Data.Score + Ply;
+    }
+    else if (DataU.Data.Score > INF - MAX_PLY) {
+        *Score = DataU.Data.Score - Ply;
     }
     else {
         *Score = DataU.Data.Score;
