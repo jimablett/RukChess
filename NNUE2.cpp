@@ -240,10 +240,10 @@ BOOL LoadNetwork(const char* NnueFileName)
     fclose(File);
 
     if (PrintMode == PRINT_MODE_NORMAL) {
-        printf("Load network...DONE (0x%016llX)\n", FileHash);
+        printf("Load network...DONE (%s)\n", NnueFileName);
     }
     else if (PrintMode == PRINT_MODE_UCI) {
-        printf("info string Network loaded (0x%016llX)\n", FileHash);
+        printf("info string Network loaded (%s)\n", NnueFileName);
     }
 
     return TRUE;
