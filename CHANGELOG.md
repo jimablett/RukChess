@@ -1,5 +1,11 @@
 # RukChess change log
 
+## RukChess 3.0.18dev
+
+1. Changed default NNUE file name
+2. Added optimization for speed
+3. Corrected the code
+
 ## RukChess 3.0.17 (17.11.2023)
 
 1. Corrected and enabled ProbCut
