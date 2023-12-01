@@ -171,18 +171,8 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
             Alpha = BestScore;
         }
 
-#ifdef QUIESCENCE_CHECK_EXTENSION_EXTENDED
-        if (Depth == 0) {
-            GenMoveCount = 0;
-            GenerateAllMoves(Board, MoveList, &GenMoveCount);
-        }
-        else {
-#endif // QUIESCENCE_CHECK_EXTENSION_EXTENDED
-            GenMoveCount = 0;
-            GenerateCaptureMoves(Board, MoveList, &GenMoveCount);
-#ifdef QUIESCENCE_CHECK_EXTENSION_EXTENDED
-        }
-#endif // QUIESCENCE_CHECK_EXTENSION_EXTENDED
+        GenMoveCount = 0;
+        GenerateCaptureMoves(Board, MoveList, &GenMoveCount);
 #ifdef QUIESCENCE_CHECK_EXTENSION
     }
 #endif // QUIESCENCE_CHECK_EXTENSION
@@ -249,18 +239,6 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
         ++Board->Nodes;
 
         GiveCheck = IsInCheck(Board, Board->CurrentColor);
-
-#ifdef QUIESCENCE_CHECK_EXTENSION_EXTENDED
-        if (
-            !InCheck
-            && !GiveCheck
-            && !(MoveList[MoveNumber].Type & (MOVE_CAPTURE | MOVE_PAWN_PROMOTE)) // Not capture/promote move
-        ) {
-            UnmakeMove(Board);
-
-            continue; // Next move
-        }
-#endif // QUIESCENCE_CHECK_EXTENSION_EXTENDED
 
         TempBestMoves[0] = { 0, 0, 0 };
 

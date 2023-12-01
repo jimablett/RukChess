@@ -5,6 +5,7 @@
 1. Changed default NNUE file name
 2. Added optimization for speed
 3. Corrected the code
+4. Deleted QUIESCENCE_CHECK_EXTENSION_EXTENDED (not used)
 
 ## RukChess 3.0.17 (17.11.2023)
 
