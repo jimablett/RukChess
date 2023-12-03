@@ -130,7 +130,7 @@ void GenerateBook(void)
 
     int Ply;
 
-    NodeItem* RootNode = CreateNode({ 0, 0, 0 });
+    NodeItem* RootNode = CreateNode((MoveItem){ 0, 0, 0 });
     NodeItem* Node;
     NodeItem* ChildNode;
 
@@ -395,7 +395,7 @@ void GenerateBook(void)
 
                             MoveFound = TRUE;
 
-                            ChildNode = nullptr;
+                            ChildNode = NULL;
 
                             for (int Index = 0; Index < MAX_CHILDREN; ++Index) {
                                 if (Node->Children[Index]) {
@@ -414,7 +414,7 @@ void GenerateBook(void)
                                 }
                             }
 
-                            if (ChildNode == nullptr) {
+                            if (ChildNode == NULL) {
                                 Error = TRUE;
 
                                 printf("\n");
@@ -742,7 +742,7 @@ BOOL GetBookMove(const BoardItem* Board, MoveItem* BestMoves)
 //                    printf("0x%016llx %s %s %d\n", BookItemPointer->Hash, BoardName[BookItemPointer->From], BoardName[BookItemPointer->To], BookItemPointer->Total);
 
                     BestMoves[0] = MoveList[MoveNumber];
-                    BestMoves[1] = { 0, 0, 0 };
+                    BestMoves[1] = (MoveItem){ 0, 0, 0 };
 
                     return TRUE;
                 }

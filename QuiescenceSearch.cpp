@@ -24,7 +24,7 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
 
     int LegalMoveCount = 0;
 
-    MoveItem BestMove = { 0, 0, 0 };
+    MoveItem BestMove = (MoveItem){ 0, 0, 0 };
 
     MoveItem TempBestMoves[MAX_PLY];
 
@@ -240,7 +240,7 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
 
         GiveCheck = IsInCheck(Board, Board->CurrentColor);
 
-        TempBestMoves[0] = { 0, 0, 0 };
+        TempBestMoves[0] = (MoveItem){ 0, 0, 0 };
 
         Score = -QuiescenceSearch(Board, -Beta, -Alpha, Depth - 1, Ply + 1, TempBestMoves, IsPrincipal, GiveCheck);
 

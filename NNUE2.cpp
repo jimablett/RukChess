@@ -215,7 +215,7 @@ BOOL LoadNetwork(const char* NnueFileName)
 #ifdef LAST_LAYER_AS_FLOAT
     OutputBias = Value * QUANTIZATION_PRECISION_IN;
 #else
-    OutputBias = LoadWeight32(Value, QUANTIZATION_PRECISION_OUT * QUANTIZATION_PRECISION_IN);
+    OutputBias = LoadWeight32(Value, QUANTIZATION_PRECISION_IN * QUANTIZATION_PRECISION_OUT);
 #endif // LAST_LAYER_AS_FLOAT
 
 #ifdef PRINT_MIN_MAX_VALUES

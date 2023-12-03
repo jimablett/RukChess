@@ -17,7 +17,7 @@
 #include "UCI.h"
 #include "Utils.h"
 
-int main(int, char**)
+int main(void)
 {
     char Buf[10];
 

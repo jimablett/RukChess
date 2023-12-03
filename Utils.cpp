@@ -61,7 +61,7 @@ void InitThreadNode(void)
     SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX* Ptr;
 
     // First call to get ReturnLength. We expect it to fail due to null buffer
-    if (GetLogicalProcessorInformationEx(RelationAll, nullptr, &ReturnedLength)) {
+    if (GetLogicalProcessorInformationEx(RelationAll, NULL, &ReturnedLength)) {
         return;
     }
 
@@ -136,7 +136,7 @@ void BindThread(const int ThreadNumber)
     if (GetNumaNodeProcessorMaskEx(Node, &GroupAffinity)) {
 //        printf("ThreadNumber = %d Node = %d Mask = 0x%016llx\n", ThreadNumber, Node, GroupAffinity.Mask);
 
-        SetThreadGroupAffinity(GetCurrentThread(), &GroupAffinity, nullptr);
+        SetThreadGroupAffinity(GetCurrentThread(), &GroupAffinity, NULL);
     }
 }
 #endif // BIND_THREAD

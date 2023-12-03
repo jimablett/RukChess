@@ -86,7 +86,7 @@ BOOL IsSquareAttacked(const BoardItem* Board, const int Square, const int Color)
     // Kings
     Attackers |= KingAttacks(Square) & Board->BB_Pieces[EnemyColor][KING];
 
-    return (bool)Attackers;
+    return !!Attackers;
 }
 
 BOOL IsInCheck(const BoardItem* Board, const int Color)

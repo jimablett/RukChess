@@ -30,7 +30,7 @@ int PVSplitting_Search(BoardItem* Board, int Alpha, int Beta, int Depth, const i
 
     volatile int LegalMoveCount = 0;
 
-    MoveItem BestMove = { 0, 0, 0 };
+    MoveItem BestMove = (MoveItem){ 0, 0, 0 };
 
     MoveItem TempBestMoves[MAX_PLY];
 
@@ -178,7 +178,7 @@ int PVSplitting_Search(BoardItem* Board, int Alpha, int Beta, int Depth, const i
 #endif // DEBUG_IID
 
         // Search with full window for reduced depth
-        TempBestMoves[0] = { 0, 0, 0 };
+        TempBestMoves[0] = (MoveItem){ 0, 0, 0 };
 
         Search(Board, Alpha, Beta, Depth - 2, Ply, TempBestMoves, TRUE, InCheck, FALSE, 0);
 
@@ -336,7 +336,7 @@ NextMove0:
             SingularBeta = HashScore - Depth;
 
             // Zero window search for reduced depth
-            TempBestMoves[0] = { 0, 0, 0 };
+            TempBestMoves[0] = (MoveItem){ 0, 0, 0 };
 
             Score = Search(Board, SingularBeta - 1, SingularBeta, Depth / 2, Ply, TempBestMoves, FALSE, InCheck, FALSE, MoveList[MoveNumber0].Move);
 
@@ -365,7 +365,7 @@ NextMove0:
         NewDepth = Depth - 1 + Extension;
 
         // Search with full window
-        TempBestMoves[0] = { 0, 0, 0 };
+        TempBestMoves[0] = (MoveItem){ 0, 0, 0 };
 
         Score = -PVSplitting_Search(Board, -Beta, -Alpha, NewDepth, Ply + 1, TempBestMoves, GiveCheck, 0);
 
@@ -555,7 +555,7 @@ NextMove:
             SingularBeta = HashScore - Depth;
 
             // Zero window search for reduced depth
-            TempBestMoves[0] = { 0, 0, 0 };
+            TempBestMoves[0] = (MoveItem){ 0, 0, 0 };
 
             Score = Search(ThreadBoard, SingularBeta - 1, SingularBeta, Depth / 2, Ply, TempBestMoves, FALSE, InCheck, FALSE, MoveList[MoveNumber].Move);
 
@@ -606,26 +606,26 @@ NextMove:
         }
 
         // Zero window search for reduced depth
-        TempBestMoves[0] = { 0, 0, 0 };
+        TempBestMoves[0] = (MoveItem){ 0, 0, 0 };
 
         Score = -Search(ThreadBoard, -Alpha - 1, -Alpha, NewDepth - LateMoveReduction, Ply + 1, TempBestMoves, FALSE, GiveCheck, TRUE, 0);
 
         if (LateMoveReduction > 0 && Score > Alpha) {
             // Zero window search
-            TempBestMoves[0] = { 0, 0, 0 };
+            TempBestMoves[0] = (MoveItem){ 0, 0, 0 };
 
             Score = -Search(ThreadBoard, -Alpha - 1, -Alpha, NewDepth, Ply + 1, TempBestMoves, FALSE, GiveCheck, TRUE, 0);
         }
 #else
         // Zero window search
-        TempBestMoves[0] = { 0, 0, 0 };
+        TempBestMoves[0] = (MoveItem){ 0, 0, 0 };
 
         Score = -Search(ThreadBoard, -Alpha - 1, -Alpha, NewDepth, Ply + 1, TempBestMoves, FALSE, GiveCheck, TRUE, 0);
 #endif // LATE_MOVE_REDUCTION
 
         if (Score > Alpha && (Ply == 0 || Score < Beta)) {
             // Search with full window
-            TempBestMoves[0] = { 0, 0, 0 };
+            TempBestMoves[0] = (MoveItem){ 0, 0, 0 };
 
             Score = -Search(ThreadBoard, -Beta, -Alpha, NewDepth, Ply + 1, TempBestMoves, TRUE, GiveCheck, TRUE, 0);
         }

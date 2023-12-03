@@ -258,8 +258,8 @@ BOOL ComputerMove(void)
 
     int BestScore = 0;
 
-    MoveItem BestMove = { 0, 0, 0 };
-    MoveItem PonderMove = { 0, 0, 0 };
+    MoveItem BestMove = (MoveItem){ 0, 0, 0 };
+    MoveItem PonderMove = (MoveItem){ 0, 0, 0 };
 
     TimeStart = Clock();
     TimeStop = TimeStart + (TimeForMove > 0ULL ? TimeForMove : MaxTime);
@@ -283,7 +283,7 @@ BOOL ComputerMove(void)
 
     CurrentBoard.SelDepth = 0;
 
-    CurrentBoard.BestMovesRoot[0] = { 0, 0, 0 };
+    CurrentBoard.BestMovesRoot[0] = (MoveItem){ 0, 0, 0 };
 
 #ifdef MOVES_SORT_HEURISTIC
     ClearHeuristic(&CurrentBoard);
@@ -327,8 +327,8 @@ BOOL ComputerMove(void)
     int Score = 0;
     int BestScore = 0;
 
-    MoveItem BestMove = { 0, 0, 0 };
-    MoveItem PonderMove = { 0, 0, 0 };
+    MoveItem BestMove = (MoveItem){ 0, 0, 0 };
+    MoveItem PonderMove = (MoveItem){ 0, 0, 0 };
 
 #ifdef ASPIRATION_WINDOW
     int Delta;
@@ -359,7 +359,7 @@ BOOL ComputerMove(void)
     CurrentBoard.QuiescenceCount = 0ULL;
 #endif // DEBUG_STATISTIC
 
-    CurrentBoard.BestMovesRoot[0] = { 0, 0, 0 };
+    CurrentBoard.BestMovesRoot[0] = (MoveItem){ 0, 0, 0 };
 
 #ifdef MOVES_SORT_HEURISTIC
     ClearHeuristic(&CurrentBoard);
@@ -485,8 +485,8 @@ BOOL ComputerMove(void)
     BoardItem ThreadBoard;
     int ThreadScore;
 
-    MoveItem BestMove = { 0, 0, 0 };
-    MoveItem PonderMove = { 0, 0, 0 };
+    MoveItem BestMove = (MoveItem){ 0, 0, 0 };
+    MoveItem PonderMove = (MoveItem){ 0, 0, 0 };
 
 #ifdef ASPIRATION_WINDOW
     int Delta;
@@ -523,7 +523,7 @@ BOOL ComputerMove(void)
 
     CurrentBoard.SelDepth = 0;
 
-    CurrentBoard.BestMovesRoot[0] = { 0, 0, 0 };
+    CurrentBoard.BestMovesRoot[0] = (MoveItem){ 0, 0, 0 };
 
 #ifdef MOVES_SORT_HEURISTIC
     ClearHeuristic(&CurrentBoard);
@@ -693,8 +693,8 @@ BOOL ComputerMove(void)
 
     int SearchDepthCount;
 
-    MoveItem BestMove = { 0, 0, 0 };
-    MoveItem PonderMove = { 0, 0, 0 };
+    MoveItem BestMove = (MoveItem){ 0, 0, 0 };
+    MoveItem PonderMove = (MoveItem){ 0, 0, 0 };
 
 #ifdef ASPIRATION_WINDOW
     int Delta;
@@ -731,7 +731,7 @@ BOOL ComputerMove(void)
 
     CurrentBoard.SelDepth = 0;
 
-    CurrentBoard.BestMovesRoot[0] = { 0, 0, 0 };
+    CurrentBoard.BestMovesRoot[0] = (MoveItem){ 0, 0, 0 };
 
 #ifdef MOVES_SORT_HEURISTIC
     ClearHeuristic(&CurrentBoard);
@@ -918,7 +918,7 @@ Done:
 }
 #endif // MCTS || ROOT_SPLITTING || PV_SPLITTING || ABDADA || LAZY_SMP
 
-void ComputerMoveThread(void*)
+void ComputerMoveThread(void* ignored)
 {
     ComputerMove();
 

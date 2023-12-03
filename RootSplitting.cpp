@@ -30,7 +30,7 @@ int RootSplitting_Search(BoardItem* Board, int Alpha, int Beta, int Depth, const
 
     volatile int LegalMoveCount = 0;
 
-    MoveItem BestMove = { 0, 0, 0 };
+    MoveItem BestMove = (MoveItem){ 0, 0, 0 };
 
     MoveItem TempBestMoves[MAX_PLY];
 
@@ -117,7 +117,7 @@ int RootSplitting_Search(BoardItem* Board, int Alpha, int Beta, int Depth, const
 #endif // DEBUG_IID
 
         // Search with full window for reduced depth
-        TempBestMoves[0] = { 0, 0, 0 };
+        TempBestMoves[0] = (MoveItem){ 0, 0, 0 };
 
         Search(Board, Alpha, Beta, Depth - 2, Ply, TempBestMoves, TRUE, InCheck, FALSE, 0);
 
@@ -259,7 +259,7 @@ NextMove0:
         NewDepth = Depth - 1 + Extension;
 
         // Search with full window
-        TempBestMoves[0] = { 0, 0, 0 };
+        TempBestMoves[0] = (MoveItem){ 0, 0, 0 };
 
         Score = -Search(Board, -Beta, -Alpha, NewDepth, Ply + 1, TempBestMoves, TRUE, GiveCheck, TRUE, 0);
 
@@ -453,26 +453,26 @@ NextMove:
         }
 
         // Zero window search for reduced depth
-        TempBestMoves[0] = { 0, 0, 0 };
+        TempBestMoves[0] = (MoveItem){ 0, 0, 0 };
 
         Score = -Search(ThreadBoard, -Alpha - 1, -Alpha, NewDepth - LateMoveReduction, Ply + 1, TempBestMoves, FALSE, GiveCheck, TRUE, 0);
 
         if (LateMoveReduction > 0 && Score > Alpha) {
             // Zero window search
-            TempBestMoves[0] = { 0, 0, 0 };
+            TempBestMoves[0] = (MoveItem){ 0, 0, 0 };
 
             Score = -Search(ThreadBoard, -Alpha - 1, -Alpha, NewDepth, Ply + 1, TempBestMoves, FALSE, GiveCheck, TRUE, 0);
         }
 #else
         // Zero window search
-        TempBestMoves[0] = { 0, 0, 0 };
+        TempBestMoves[0] = (MoveItem){ 0, 0, 0 };
 
         Score = -Search(ThreadBoard, -Alpha - 1, -Alpha, NewDepth, Ply + 1, TempBestMoves, FALSE, GiveCheck, TRUE, 0);
 #endif // LATE_MOVE_REDUCTION
 
         if (Score > Alpha) {
             // Search with full window
-            TempBestMoves[0] = { 0, 0, 0 };
+            TempBestMoves[0] = (MoveItem){ 0, 0, 0 };
 
             Score = -Search(ThreadBoard, -Beta, -Alpha, NewDepth, Ply + 1, TempBestMoves, TRUE, GiveCheck, TRUE, 0);
         }

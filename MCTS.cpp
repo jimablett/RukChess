@@ -146,7 +146,7 @@ void FreeNodeMCTS(NodeItem* Node)
 
 BOOL IsRootNode(NodeItem* Node)
 {
-    return Node->Parent == nullptr;
+    return Node->Parent == NULL;
 }
 
 NodeItem* BestChild(NodeItem* Node, const double C)
@@ -238,7 +238,7 @@ NodeItem* Expand(NodeItem* Node, BoardItem* Board, int* Ply)
 
     Node->IsFullyExpanded = TRUE;
 
-    return nullptr;
+    return NULL;
 }
 
 NodeItem* TreePolicy(NodeItem* Node, BoardItem* Board, int* Ply)
@@ -249,7 +249,7 @@ NodeItem* TreePolicy(NodeItem* Node, BoardItem* Board, int* Ply)
         if (!Node->IsFullyExpanded) {
             ChildNode = Expand(Node, Board, Ply);
 
-            if (ChildNode != nullptr) {
+            if (ChildNode != NULL) {
                 return ChildNode;
             }
         }
@@ -420,8 +420,8 @@ void MonteCarloTreeSearch(BoardItem* Board, MoveItem* BestMoves, int* BestScore)
 //    printf("NodeItem = %zd\n", sizeof(NodeItem));
 
     if (IsGameOver(Board, 0, &GameResult)) {
-        BestMoves[0] = { 0, 0, 0 };
-        BestMoves[1] = { 0, 0, 0 };
+        BestMoves[0] = (MoveItem){ 0, 0, 0 };
+        BestMoves[1] = (MoveItem){ 0, 0, 0 };
 
         if (GameResult == 0) { // Draw
             *BestScore = 0;
@@ -433,7 +433,7 @@ void MonteCarloTreeSearch(BoardItem* Board, MoveItem* BestMoves, int* BestScore)
         return;
     }
 
-    RootNode = CreateNodeMCTS(nullptr, { 0, 0, 0 }, Board, 0);
+    RootNode = CreateNodeMCTS(NULL, (MoveItem){ 0, 0, 0 }, Board, 0);
 
     while (TRUE) {
         if (Iterations >= MAX_ITERATIONS) {
@@ -480,7 +480,7 @@ void MonteCarloTreeSearch(BoardItem* Board, MoveItem* BestMoves, int* BestScore)
 
         if (Node->IsTerminal || !Node->IsFullyExpanded) {
             if (Ply2 < MAX_PLY - 1) {
-                BestMoves[Ply2 + 1] = { 0, 0, 0 };
+                BestMoves[Ply2 + 1] = (MoveItem){ 0, 0, 0 };
             }
 
             break;
