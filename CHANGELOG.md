@@ -6,6 +6,8 @@
 2. Added optimization for speed
 3. Corrected the code
 4. Deleted QUIESCENCE_CHECK_EXTENSION_EXTENDED (not used)
+5. Convert some C++ code to C
+6. Project updated to Microsoft VS 2022
 
 ## RukChess 3.0.17 (17.11.2023)
 
