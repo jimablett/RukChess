@@ -36,7 +36,7 @@ void PrintBestMoves(const BoardItem* Board, const int Depth, const MoveItem* Bes
 void SaveBestMoves(MoveItem* BestMoves, const MoveItem BestMove, const MoveItem* TempBestMoves);
 
 BOOL ComputerMove(void);
-void ComputerMoveThread(void*);
+void ComputerMoveThread(void* ignored);
 
 BOOL HumanMove(void);
 
