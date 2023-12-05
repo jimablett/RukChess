@@ -629,6 +629,8 @@ double Sigmoid(const SCORE Score)
 
 double CalculateError(const int Offset, const int BatchSize)
 {
+    int PositionNumber;
+
     PositionItem* PositionItemPointer;
 
     BoardItem ThreadBoard;
@@ -646,7 +648,7 @@ double CalculateError(const int Offset, const int BatchSize)
 //    printf("\n");
 
 #pragma omp parallel for private(PositionItemPointer, ThreadBoard, InCheck, Score)
-    for (int PositionNumber = Offset; PositionNumber < Offset + BatchSize; ++PositionNumber) {
+    for (PositionNumber = Offset; PositionNumber < Offset + BatchSize; ++PositionNumber) {
         PositionItemPointer = PositionStore.Positions[PositionNumber];
 
         ThreadBoard = CurrentBoard;
@@ -670,7 +672,7 @@ double CalculateError(const int Offset, const int BatchSize)
 
     // Kahan summation algorithm (https://en.wikipedia.org/wiki/Kahan_summation_algorithm)
 
-    for (int PositionNumber = 0; PositionNumber < PositionStore.Count; ++PositionNumber) {
+    for (PositionNumber = Offset; PositionNumber < Offset + BatchSize; ++PositionNumber) {
         PositionItemPointer = PositionStore.Positions[PositionNumber];
 
         Y = PositionItemPointer->Error - C;
