@@ -75,6 +75,8 @@ void UCI(void)
     printf("option name NnueFile type string default %s\n", DEFAULT_NNUE_FILE_NAME);
 #endif // NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
 
+    SetFen(&CurrentBoard, StartFen);
+
     printf("uciok\n");
 
     while (TRUE) {
