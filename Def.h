@@ -106,7 +106,6 @@
 #define NULL_MOVE_PRUNING
 #define PROBCUT                                 // Required QUIESCENCE
 #define IID                                     // Required HASH_MOVE
-//#define IIR                                   // Required HASH_MOVE
 //#define PVS                                   // Required MOVES_SORT_...
 #define HASH_MOVE                               // Required MOVES_SORT_...
 #define KILLER_MOVE                             // Required MOVES_SORT_... and HASH_MOVE

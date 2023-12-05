@@ -135,12 +135,6 @@ int RootSplitting_Search(BoardItem* Board, int Alpha, int Beta, int Depth, const
     }
 #endif // HASH_MOVE && IID
 
-#if defined(HASH_MOVE) && defined(IIR)
-    if (!HashMove && Depth > 4) {
-        --Depth;
-    }
-#endif // HASH_MOVE && IIR
-
     BestScore = -INF + Ply;
 
     GenMoveCount = 0;
