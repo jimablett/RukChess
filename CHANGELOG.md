@@ -9,6 +9,7 @@
 5. Converted some C++ code to C
 6. Project updated to Microsoft VS 2022
 7. Deleted IIR (not used)
+8. Added the ability to specify the name of the NNUE file in a parameter to the program
 
 ## RukChess 3.0.17 (17.11.2023)
 
