@@ -17,7 +17,7 @@
 #include "UCI.h"
 #include "Utils.h"
 
-int main(void)
+int main(int argc, char** argv)
 {
     char Buf[10];
 
@@ -125,7 +125,12 @@ int main(void)
 #if defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
     // Load network
 
-    NnueFileLoaded = LoadNetwork(DEFAULT_NNUE_FILE_NAME);
+    if (argc > 1) {
+        NnueFileLoaded = LoadNetwork(argv[1]);
+    }
+    else {
+        NnueFileLoaded = LoadNetwork(DEFAULT_NNUE_FILE_NAME);
+    }
 #endif // NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
 
     // UCI or Console interface?
