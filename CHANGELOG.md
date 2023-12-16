@@ -1,6 +1,6 @@
 # RukChess change log
 
-## RukChess 3.0.18dev
+## RukChess 3.0.18 (16.12.2023)
 
 1. Changed default NNUE file name
 2. Added optimization for speed
@@ -10,6 +10,8 @@
 6. Project updated to Microsoft VS 2022
 7. Deleted IIR (not used)
 8. Added the ability to specify the name of the NNUE file in a parameter to the program
+9. New neural net "[Net 122, Epoch 081](https://github.com/Ilya-Ruk/RukChessNets/blob/master/Nets%20122/rukchess_081.nnue)"
+10. New book file (378640 positions)
 
 ## RukChess 3.0.17 (17.11.2023)
 
