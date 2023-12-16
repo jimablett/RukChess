@@ -14,7 +14,7 @@
 #ifdef NNUE_EVALUATION_FUNCTION_2
 
 #define NNUE_FILE_MAGIC             ('B' | 'R' << 8 | 'K' << 16 | 'R' << 24)
-//#define NNUE_FILE_HASH            0x00006E5001EB7720
+//#define NNUE_FILE_HASH            0x00007CF57D4DC994
 #define NNUE_FILE_SIZE              1579024
 
 #define INPUT_DIMENSION             768
@@ -240,10 +240,10 @@ BOOL LoadNetwork(const char* NnueFileName)
     fclose(File);
 
     if (PrintMode == PRINT_MODE_NORMAL) {
-        printf("Load network...DONE (%s)\n", NnueFileName);
+        printf("Load network...DONE (%s; 0x%012llx)\n", NnueFileName, FileHash);
     }
     else if (PrintMode == PRINT_MODE_UCI) {
-        printf("info string Network loaded (%s)\n", NnueFileName);
+        printf("info string Network loaded (%s; 0x%012llx)\n", NnueFileName, FileHash);
     }
 
     return TRUE;
