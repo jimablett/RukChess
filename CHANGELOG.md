@@ -10,7 +10,7 @@
 6. Project updated to Microsoft VS 2022
 7. Deleted IIR (not used)
 8. Added the ability to specify the name of the NNUE file in a parameter to the program
-9. New neural net "[Net 122, Epoch 081](https://github.com/Ilya-Ruk/RukChessNets/blob/master/Nets%20122/rukchess_081.nnue)"
+9. New neural net "[Net 122, Epoch 081, Hash 0x7cf57d4dc994](https://github.com/Ilya-Ruk/RukChessNets/blob/master/Nets%20122/rukchess_081.nnue)"
 10. New book file (378640 positions)
 
 ## RukChess 3.0.17 (17.11.2023)
@@ -28,14 +28,14 @@
 4. Added search algorithm name to program name
 5. Refactored Monte Carlo tree search (just for experimentation)
 6. Cleaned up the code
-7. New neural net "[Net 110, Epoch 022](https://github.com/Ilya-Ruk/RukChessNets/blob/master/Nets%20110/rukchess_022.nnue)"
+7. New neural net "[Net 110, Epoch 022, Hash 0x6e5001eb7720](https://github.com/Ilya-Ruk/RukChessNets/blob/master/Nets%20110/rukchess_022.nnue)"
 
 ## RukChess 3.0.15 (05.02.2023)
 
 1. Refactored the code
 2. Corrected the code
 3. Cleaned up the code
-4. New neural net "[Net 070, Epoch 120](https://github.com/Ilya-Ruk/RukChessNets/blob/master/Nets%20070/rukchess_120.nnue)"
+4. New neural net "[Net 070, Epoch 120, Hash 0x755b16a94877](https://github.com/Ilya-Ruk/RukChessNets/blob/master/Nets%20070/rukchess_120.nnue)"
 
 ## RukChess 3.0.14 (16.01.2023)
 
@@ -110,4 +110,4 @@ Optimized NNUE2
 ## RukChess 3.0 (05.09.2022)
 
 1. Initial commit
-2. Neural net "[Net 001, Epoch 040](https://github.com/Ilya-Ruk/RukChessNets/blob/master/Nets%20001/rukchess_040.nnue)"
+2. Neural net "[Net 001, Epoch 040, Hash 0x71eb63511cb1](https://github.com/Ilya-Ruk/RukChessNets/blob/master/Nets%20001/rukchess_040.nnue)"
