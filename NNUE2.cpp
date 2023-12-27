@@ -44,12 +44,12 @@ I32 OutputBias;                                                             // 1
 
 BOOL NnueFileLoaded = FALSE;
 
-I16 LoadWeight16(const float Value, const int Precision)
+I16 LoadInt16(const float Value, const int Precision)
 {
     return (I16)roundf(Value * (float)Precision);
 }
 
-I32 LoadWeight32(const float Value, const int Precision)
+I32 LoadInt32(const float Value, const int Precision)
 {
     return (I32)roundf(Value * (float)Precision);
 }
@@ -143,7 +143,7 @@ BOOL LoadNetwork(const char* NnueFileName)
         }
 #endif // PRINT_MIN_MAX_VALUES
 
-        InputWeights[Index] = LoadWeight16(Value, QUANTIZATION_PRECISION_IN);
+        InputWeights[Index] = LoadInt16(Value, QUANTIZATION_PRECISION_IN);
     }
 
 #ifdef PRINT_MIN_MAX_VALUES
@@ -170,7 +170,7 @@ BOOL LoadNetwork(const char* NnueFileName)
         }
 #endif // PRINT_MIN_MAX_VALUES
 
-        InputBiases[Index] = LoadWeight16(Value, QUANTIZATION_PRECISION_IN);
+        InputBiases[Index] = LoadInt16(Value, QUANTIZATION_PRECISION_IN);
     }
 
 #ifdef PRINT_MIN_MAX_VALUES
@@ -200,7 +200,7 @@ BOOL LoadNetwork(const char* NnueFileName)
 #ifdef LAST_LAYER_AS_FLOAT
         OutputWeights[Index] = Value;
 #else
-        OutputWeights[Index] = LoadWeight16(Value, QUANTIZATION_PRECISION_OUT);
+        OutputWeights[Index] = LoadInt16(Value, QUANTIZATION_PRECISION_OUT);
 #endif // LAST_LAYER_AS_FLOAT
     }
 
@@ -215,7 +215,7 @@ BOOL LoadNetwork(const char* NnueFileName)
 #ifdef LAST_LAYER_AS_FLOAT
     OutputBias = Value * QUANTIZATION_PRECISION_IN;
 #else
-    OutputBias = LoadWeight32(Value, QUANTIZATION_PRECISION_IN * QUANTIZATION_PRECISION_OUT);
+    OutputBias = LoadInt32(Value, QUANTIZATION_PRECISION_IN * QUANTIZATION_PRECISION_OUT);
 #endif // LAST_LAYER_AS_FLOAT
 
 #ifdef PRINT_MIN_MAX_VALUES
@@ -546,7 +546,7 @@ I32 OutputLayer(BoardItem* Board)
     }
 #endif // USE_NNUE_AVX2
 
-    return Result / QUANTIZATION_PRECISION_IN / QUANTIZATION_PRECISION_OUT;
+    return Result / (QUANTIZATION_PRECISION_IN * QUANTIZATION_PRECISION_OUT);
 }
 #endif // LAST_LAYER_AS_FLOAT
 
