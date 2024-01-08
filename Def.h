@@ -95,6 +95,8 @@
 #define MOVES_SORT_HEURISTIC
 //#define MOVES_SORT_SQUARE_SCORE               // Required SIMPLIFIED_EVALUATION_FUNCTION
 
+#define COUNTER_MOVE_HISTORY                    // Required MOVES_SORT_HEURISTIC
+
 #define HASH_PREFETCH
 
 // Search
@@ -147,6 +149,7 @@
 #ifndef LAZY_SMP
 
 #define COMMON_HEURISTIC_TABLE                  // Required MOVES_SORT_HEURISTIC
+#define COMMON_COUNTER_MOVE_HISTORY_TABLE       // Required COUNTER_MOVE_HISTORY
 #define COMMON_KILLER_MOVE_TABLE                // Required KILLER_MOVE
 #define COMMON_COUNTER_MOVE_TABLE               // Required COUNTER_MOVE
 
@@ -186,7 +189,7 @@
 #define EVALUATION_NAME                         "NNUE2"
 #endif // SIMPLIFIED_EVALUATION_FUNCTION || TOGA_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
 
-#define YEARS                                   "1999-2023"
+#define YEARS                                   "1999-2024"
 #define AUTHOR                                  "Ilya Rukavishnikov"
 
 // Max. limits and default values

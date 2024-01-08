@@ -206,7 +206,7 @@ NodeItem* Expand(NodeItem* Node, BoardItem* Board, int* Ply)
     NodeItem* ChildNode;
 
     GenMoveCount = 0;
-    GenerateAllMoves(Board, MoveList, &GenMoveCount);
+    GenerateAllMoves(Board, NULL, MoveList, &GenMoveCount);
 
     for (int MoveNumber = Node->NextMoveNumber; MoveNumber < GenMoveCount; ++MoveNumber) {
         Node->NextMoveNumber = MoveNumber + 1;
@@ -299,7 +299,8 @@ double RolloutRandom(NodeItem* Node, BoardItem* Board, int* Ply)
             break;
         }
 
-        LegalMoveCount = GenerateAllLegalMoves(Board, LegalMoveList);
+        LegalMoveCount = 0;
+        GenerateAllLegalMoves(Board, NULL, LegalMoveList, &LegalMoveCount);
 
         RandomValue = Rand64();
         SelectedMoveNumber = (int)(RandomValue & 0x7FFFFFFF) % LegalMoveCount;

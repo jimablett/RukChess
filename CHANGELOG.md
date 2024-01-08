@@ -1,5 +1,9 @@
 # RukChess change log
 
+## RukChess 3.0.19dev
+
+1. Added COUNTER_MOVE_HISTORY
+
 ## RukChess 3.0.18 (16.12.2023)
 
 1. Changed default NNUE file name

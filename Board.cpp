@@ -102,7 +102,7 @@ BOOL HasLegalMoves(BoardItem* Board)
     MoveItem MoveList[MAX_GEN_MOVES];
 
     GenMoveCount = 0;
-    GenerateAllMoves(Board, MoveList, &GenMoveCount);
+    GenerateAllMoves(Board, NULL, MoveList, &GenMoveCount);
 
     for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
         MakeMove(Board, MoveList[MoveNumber]);
@@ -150,7 +150,7 @@ void NotateMove(BoardItem* Board, const MoveItem Move, char* Result)
     }
 
     GenMoveCount = 0;
-    GenerateAllMoves(Board, MoveList, &GenMoveCount);
+    GenerateAllMoves(Board, NULL, MoveList, &GenMoveCount);
 
     for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
         if (MOVE_TO(MoveList[MoveNumber].Move) != To) {
@@ -750,7 +750,7 @@ U64 CountLegalMoves(const int Depth)
     }
 
     GenMoveCount = 0;
-    GenerateAllMoves(&CurrentBoard, MoveList, &GenMoveCount);
+    GenerateAllMoves(&CurrentBoard, NULL, MoveList, &GenMoveCount);
 
     for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
         MakeMove(&CurrentBoard, MoveList[MoveNumber]);

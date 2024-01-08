@@ -8,9 +8,9 @@
 #include "Board.h"
 #include "Def.h"
 
-void GenerateAllMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMoveCount);
-void GenerateCaptureMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMoveCount);
+void GenerateAllMoves(const BoardItem* Board, int** CMH_Pointer, MoveItem* MoveList, int* GenMoveCount);
+void GenerateCaptureMoves(const BoardItem* Board, int** CMH_Pointer, MoveItem* MoveList, int* GenMoveCount);
 
-int GenerateAllLegalMoves(BoardItem* Board, MoveItem* LegalMoveList);
+void GenerateAllLegalMoves(BoardItem* Board, int** CMH_Pointer, MoveItem* LegalMoveList, int* LegalMoveCount);
 
 #endif // !GEN_H

@@ -101,6 +101,8 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
     int SingularBeta;
 #endif // SINGULAR_EXTENSION && HASH_SCORE && HASH_MOVE
 
+    int* CMH_Pointer[2];
+
 #ifdef QUIESCENCE
     if (Depth <= 0) {
         return QuiescenceSearch(Board, Alpha, Beta, 0, Ply, BestMoves, IsPrincipal, InCheck);
@@ -170,6 +172,12 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
         Board->SelDepth = Ply + 1;
     }
 
+#if defined(MOVES_SORT_HEURISTIC) && defined(COUNTER_MOVE_HISTORY)
+    SetCounterMoveHistoryPointer(Board, CMH_Pointer);
+#else
+    CMH_Pointer[0] = CMH_Pointer[1] = NULL;
+#endif // MOVES_SORT_HEURISTIC && COUNTER_MOVE_HISTORY
+
 #if defined(HASH_SCORE) || defined(HASH_MOVE)
     if (!SkipMove) {
         LoadHash(Board->Hash, &HashDepth, Ply, &HashScore, &HashStaticScore, &HashMove, &HashFlag);
@@ -201,7 +209,7 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
                         ) { // Not capture/promote move
                             if (HashFlag == HASH_BETA) {
 #ifdef MOVES_SORT_HEURISTIC
-                                UpdateHeuristic(Board, HashMove, BONUS(Depth));
+                                UpdateHeuristic(Board, CMH_Pointer, HashMove, BONUS(Depth));
 #endif // MOVES_SORT_HEURISTIC
 
 #ifdef KILLER_MOVE
@@ -214,7 +222,7 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
                             }
 #ifdef MOVES_SORT_HEURISTIC
                             else if (HashFlag == HASH_ALPHA) {
-                                UpdateHeuristic(Board, HashMove, -BONUS(Depth));
+                                UpdateHeuristic(Board, CMH_Pointer, HashMove, -BONUS(Depth));
                             }
 #endif // MOVES_SORT_HEURISTIC
                         }
@@ -315,7 +323,7 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
             BetaCut = Beta + 100;
 
             GenMoveCount = 0;
-            GenerateCaptureMoves(Board, MoveList, &GenMoveCount);
+            GenerateCaptureMoves(Board, CMH_Pointer, MoveList, &GenMoveCount);
 
             for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
                 if (!(MoveList[MoveNumber].Type & MOVE_CAPTURE)) {
@@ -389,7 +397,7 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
     BestScore = -INF + Ply;
 
     GenMoveCount = 0;
-    GenerateAllMoves(Board, MoveList, &GenMoveCount);
+    GenerateAllMoves(Board, CMH_Pointer, MoveList, &GenMoveCount);
 
 #ifdef PVS
     SetPvsMoveSortValue(Board, Ply, MoveList, GenMoveCount);
@@ -713,10 +721,10 @@ NextMove:
 #if defined(MOVES_SORT_HEURISTIC) || defined(KILLER_MOVE) || defined(COUNTER_MOVE)
                     if (!(BestMove.Type & (MOVE_CAPTURE | MOVE_PAWN_PROMOTE))) { // Not capture/promote move
 #ifdef MOVES_SORT_HEURISTIC
-                        UpdateHeuristic(Board, BestMove.Move, BONUS(Depth));
+                        UpdateHeuristic(Board, CMH_Pointer, BestMove.Move, BONUS(Depth));
 
                         for (int QuietMoveNumber = 0; QuietMoveNumber < QuietMoveCount; ++QuietMoveNumber) {
-                            UpdateHeuristic(Board, QuietMoveList[QuietMoveNumber], -BONUS(Depth));
+                            UpdateHeuristic(Board, CMH_Pointer, QuietMoveList[QuietMoveNumber], -BONUS(Depth));
                         }
 #endif // MOVES_SORT_HEURISTIC
 

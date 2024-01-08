@@ -205,7 +205,7 @@ void UCI(void)
                     MoveInCheck = FALSE;
 
                     GenMoveCount = 0;
-                    GenerateAllMoves(&CurrentBoard, MoveList, &GenMoveCount);
+                    GenerateAllMoves(&CurrentBoard, NULL, MoveList, &GenMoveCount);
 
                     for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
                         if (MoveList[MoveNumber].Move == Move) {

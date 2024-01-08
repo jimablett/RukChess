@@ -9,7 +9,13 @@
 #include "Utils.h"
 
 #ifdef COMMON_HEURISTIC_TABLE
+
 volatile int HeuristicTable[2][6][64]; // [Color][Piece][Square]
+
+#ifdef COMMON_COUNTER_MOVE_HISTORY_TABLE
+volatile int CounterMoveHistoryTable[6][64][6 * 64]; // [Piece][Square][Piece * Square]
+#endif // COMMON_COUNTER_MOVE_HISTORY_TABLE
+
 #endif // COMMON_HEURISTIC_TABLE
 
 #ifdef COMMON_KILLER_MOVE_TABLE
@@ -22,13 +28,25 @@ volatile int CounterMoveTable[2][6][64]; // [Color][Piece][Square]
 
 #ifdef MOVES_SORT_HEURISTIC
 
-void UpdateHeuristic(BoardItem* Board, const int Move, const int Bonus)
+void UpdateHeuristic(BoardItem* Board, int** CMH_Pointer, const int Move, const int Bonus)
 {
 #ifdef COMMON_HEURISTIC_TABLE
     HeuristicTable[Board->CurrentColor][PIECE(Board->Pieces[MOVE_FROM(Move)])][MOVE_TO(Move)] += Bonus - HeuristicTable[Board->CurrentColor][PIECE(Board->Pieces[MOVE_FROM(Move)])][MOVE_TO(Move)] * ABS(Bonus) / MAX_HEURISTIC_SCORE;
 #else
     Board->HeuristicTable[Board->CurrentColor][PIECE(Board->Pieces[MOVE_FROM(Move)])][MOVE_TO(Move)] += Bonus - Board->HeuristicTable[Board->CurrentColor][PIECE(Board->Pieces[MOVE_FROM(Move)])][MOVE_TO(Move)] * ABS(Bonus) / MAX_HEURISTIC_SCORE;
 #endif // COMMON_HEURISTIC_TABLE
+
+#ifdef COUNTER_MOVE_HISTORY
+    if (CMH_Pointer) {
+        if (CMH_Pointer[0]) {
+            CMH_Pointer[0][(PIECE(Board->Pieces[MOVE_FROM(Move)]) << 6) + MOVE_TO(Move)] += Bonus - CMH_Pointer[0][(PIECE(Board->Pieces[MOVE_FROM(Move)]) << 6) + MOVE_TO(Move)] * ABS(Bonus) / MAX_HEURISTIC_SCORE;
+        }
+
+        if (CMH_Pointer[1]) {
+            CMH_Pointer[1][(PIECE(Board->Pieces[MOVE_FROM(Move)]) << 6) + MOVE_TO(Move)] += Bonus - CMH_Pointer[1][(PIECE(Board->Pieces[MOVE_FROM(Move)]) << 6) + MOVE_TO(Move)] * ABS(Bonus) / MAX_HEURISTIC_SCORE;
+        }
+    }
+#endif // COUNTER_MOVE_HISTORY
 }
 
 void ClearHeuristic(BoardItem* Board)
@@ -44,7 +62,70 @@ void ClearHeuristic(BoardItem* Board)
 #else
     memset(Board->HeuristicTable, 0, sizeof(Board->HeuristicTable));
 #endif // COMMON_HEURISTIC_TABLE
+
+#ifdef COUNTER_MOVE_HISTORY
+
+#ifdef COMMON_COUNTER_MOVE_HISTORY_TABLE
+    for (int Piece = 0; Piece < 6; ++Piece) {
+        for (int Square = 0; Square < 64; ++Square) {
+            for (int PieceSquare = 0; PieceSquare < 6 * 64; ++PieceSquare) {
+                CounterMoveHistoryTable[Piece][Square][PieceSquare] = 0;
+            }
+        }
+    }
+#else
+    memset(Board->CounterMoveHistoryTable, 0, sizeof(Board->CounterMoveHistoryTable));
+#endif // COMMON_COUNTER_MOVE_HISTORY_TABLE
+
+#endif // COUNTER_MOVE_HISTORY
 }
+
+#ifdef COUNTER_MOVE_HISTORY
+void SetCounterMoveHistoryPointer(BoardItem* Board, int** CMH_Pointer)
+{
+    HistoryItem* Info;
+
+    if (Board->HalfMoveNumber == 0) {
+        CMH_Pointer[0] = CMH_Pointer[1] = NULL;
+
+        return;
+    }
+
+    Info = &Board->MoveTable[Board->HalfMoveNumber - 1]; // Prev. move info
+
+    if (Info->Type == MOVE_NULL) {
+        CMH_Pointer[0] = CMH_Pointer[1] = NULL;
+
+        return;
+    }
+
+#ifdef COMMON_COUNTER_MOVE_HISTORY_TABLE
+    CMH_Pointer[0] = CounterMoveHistoryTable[Info->PieceFrom][Info->To];
+#else
+    CMH_Pointer[0] = Board->CounterMoveHistoryTable[Info->PieceFrom][Info->To];
+#endif // COMMON_COUNTER_MOVE_HISTORY_TABLE
+
+    if (Board->HalfMoveNumber == 1) {
+        CMH_Pointer[1] = NULL;
+
+        return;
+    }
+
+    Info = &Board->MoveTable[Board->HalfMoveNumber - 2]; // Prev. prev. move info
+
+    if (Info->Type == MOVE_NULL) {
+        CMH_Pointer[1] = NULL;
+
+        return;
+    }
+
+#ifdef COMMON_COUNTER_MOVE_HISTORY_TABLE
+    CMH_Pointer[1] = CounterMoveHistoryTable[Info->PieceFrom][Info->To];
+#else
+    CMH_Pointer[1] = Board->CounterMoveHistoryTable[Info->PieceFrom][Info->To];
+#endif // COMMON_COUNTER_MOVE_HISTORY_TABLE
+}
+#endif // COUNTER_MOVE_HISTORY
 
 #endif // MOVES_SORT_HEURISTIC
 

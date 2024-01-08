@@ -121,7 +121,7 @@ SCORE TuningSearch(BoardItem* Board, SCORE Alpha, SCORE Beta, const int Ply, con
         BestScore = -INF + Ply;
 
         GenMoveCount = 0;
-        GenerateAllMoves(Board, MoveList, &GenMoveCount);
+        GenerateAllMoves(Board, NULL, MoveList, &GenMoveCount);
     }
     else {
 #endif // QUIESCENCE_CHECK_EXTENSION
@@ -136,7 +136,7 @@ SCORE TuningSearch(BoardItem* Board, SCORE Alpha, SCORE Beta, const int Ply, con
         }
 
         GenMoveCount = 0;
-        GenerateCaptureMoves(Board, MoveList, &GenMoveCount);
+        GenerateCaptureMoves(Board, NULL, MoveList, &GenMoveCount);
 #ifdef QUIESCENCE_CHECK_EXTENSION
     }
 #endif // QUIESCENCE_CHECK_EXTENSION
@@ -412,7 +412,7 @@ void Pgn2Fen(void)
 //                    printf("Move = %s\n", MoveString);
 
                     GenMoveCount = 0;
-                    GenerateAllMoves(&CurrentBoard, MoveList, &GenMoveCount);
+                    GenerateAllMoves(&CurrentBoard, NULL, MoveList, &GenMoveCount);
 
                     MoveFound = FALSE;
 

@@ -946,7 +946,7 @@ BOOL HumanMove(void)
     BOOL InCheck = IsInCheck(&CurrentBoard, CurrentBoard.CurrentColor);
 
     GenMoveCount = 0;
-    GenerateAllMoves(&CurrentBoard, MoveList, &GenMoveCount);
+    GenerateAllMoves(&CurrentBoard, NULL, MoveList, &GenMoveCount);
 
     while (TRUE) {
         ReadStr[0] = '\0'; // Nul
@@ -970,7 +970,7 @@ BOOL HumanMove(void)
             InCheck = IsInCheck(&CurrentBoard, CurrentBoard.CurrentColor);
 
             GenMoveCount = 0;
-            GenerateAllMoves(&CurrentBoard, MoveList, &GenMoveCount);
+            GenerateAllMoves(&CurrentBoard, NULL, MoveList, &GenMoveCount);
 
             continue; // Next string
         }

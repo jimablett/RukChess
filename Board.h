@@ -116,7 +116,7 @@ typedef struct {
     _declspec(align(64)) I16 Accumulation[2][256]; // [Perspective][Half feature output dimension]
 
     BOOL AccumulationComputed;
-} AccumulatorItem; // 1028 bytes (aligned 1088 bytes)
+} AccumulatorItem; // 1028 (aligned 1088) bytes
 #endif // NNUE_EVALUATION_FUNCTION
 
 #ifdef NNUE_EVALUATION_FUNCTION_2
@@ -124,7 +124,7 @@ typedef struct {
     _declspec(align(64)) I16 Accumulation[2][512]; // [Perspective][Hidden dimension]
 
     BOOL AccumulationComputed;
-} AccumulatorItem; // 2052 bytes (aligned 2080 bytes)
+} AccumulatorItem; // 2052 (aligned 2112) bytes
 #endif // NNUE_EVALUATION_FUNCTION_2
 
 typedef struct {
@@ -155,7 +155,7 @@ typedef struct {
 #if defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
     AccumulatorItem Accumulator;
 #endif // NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
-} HistoryItem; // 48 bytes/1152 bytes (NNUE)/2144 (NNUE2)
+} HistoryItem; // 48 bytes/1152 bytes (NNUE)/2176 bytes (NNUE2)
 
 typedef struct {
     int Pieces[64]; // (Color << 3) | Piece
@@ -171,7 +171,7 @@ typedef struct {
 
     U64 Hash;
 
-    HistoryItem MoveTable[MAX_GAME_MOVES]; // 1024 moves x 48 bytes/1152 bytes (NNUE)/2144 (NNUE2) = 49152 bytes/1179648 bytes (NNUE)/2195456 (NNUE2)
+    HistoryItem MoveTable[MAX_GAME_MOVES]; // 49152 bytes/1179648 bytes (NNUE)/2228224 bytes (NNUE2)
 
 #if defined(PVS) || defined(QUIESCENCE_PVS)
     BOOL FollowPV;
@@ -188,24 +188,30 @@ typedef struct {
 
     int SelDepth;
 
-    MoveItem BestMovesRoot[MAX_PLY]; // 128 plys x 12 bytes = 1536 bytes
+    MoveItem BestMovesRoot[MAX_PLY]; // 1536 bytes
 
 #ifndef COMMON_HEURISTIC_TABLE
-    int HeuristicTable[2][6][64]; // [Color][Piece][Square] // 2 colors x 6 pieces x 64 squares x 4 bytes = 3072 bytes
+
+    int HeuristicTable[2][6][64]; // [Color][Piece][Square] // 3072 bytes
+
+#ifndef COMMON_COUNTER_MOVE_HISTORY_TABLE
+    int CounterMoveHistoryTable[6][64][6 * 64]; // [Piece][Square][Piece * Square] // 589824 bytes
+#endif // !COMMON_COUNTER_MOVE_HISTORY_TABLE
+
 #endif // !COMMON_HEURISTIC_TABLE
 
 #ifndef COMMON_KILLER_MOVE_TABLE
-    int KillerMoveTable[MAX_PLY + 1][2]; // [Max. ply + 1][Two killer moves] // (128 + 1) plys x 2 moves x 4 bytes = 1032 bytes
+    int KillerMoveTable[MAX_PLY + 1][2]; // [Max. ply + 1][Two killer moves] // 1032 bytes
 #endif // !COMMON_KILLER_MOVE_TABLE
 
 #ifndef COMMON_COUNTER_MOVE_TABLE
-    int CounterMoveTable[2][6][64]; // [Color][Piece][Square] // 2 colors x 6 pieces x 64 squares x 4 bytes = 3072 bytes
+    int CounterMoveTable[2][6][64]; // [Color][Piece][Square] // 3072 bytes
 #endif // !COMMON_COUNTER_MOVE_TABLE
 
 #if defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
-    AccumulatorItem Accumulator; // 1028 bytes (aligned 1088 bytes)/2052 bytes (aligned 2080 bytes)
+    AccumulatorItem Accumulator;
 #endif // NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
-} BoardItem; // 58280 bytes/1189920 bytes (NNUE)/2206688 (NNUE2)
+} BoardItem; // 648104 bytes/1779776 bytes (NNUE)/2829376 bytes (NNUE2)
 
 extern const char* BoardName[64];
 

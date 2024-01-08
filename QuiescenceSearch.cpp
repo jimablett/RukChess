@@ -134,7 +134,7 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
         BestScore = StaticScore = -INF + Ply;
 
         GenMoveCount = 0;
-        GenerateAllMoves(Board, MoveList, &GenMoveCount);
+        GenerateAllMoves(Board, NULL, MoveList, &GenMoveCount);
     }
     else {
 #endif // QUIESCENCE_CHECK_EXTENSION
@@ -172,7 +172,7 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
         }
 
         GenMoveCount = 0;
-        GenerateCaptureMoves(Board, MoveList, &GenMoveCount);
+        GenerateCaptureMoves(Board, NULL, MoveList, &GenMoveCount);
 #ifdef QUIESCENCE_CHECK_EXTENSION
     }
 #endif // QUIESCENCE_CHECK_EXTENSION

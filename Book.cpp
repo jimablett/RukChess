@@ -361,7 +361,7 @@ void GenerateBook(void)
 //                    printf("Ply = %d Result = %d Move = %s\n", Ply, Result, MoveString);
 
                     GenMoveCount = 0;
-                    GenerateAllMoves(&CurrentBoard, MoveList, &GenMoveCount);
+                    GenerateAllMoves(&CurrentBoard, NULL, MoveList, &GenMoveCount);
 
                     MoveFound = FALSE;
 
@@ -732,7 +732,7 @@ BOOL GetBookMove(const BoardItem* Board, MoveItem* BestMoves)
 
         if (Selected < Offset) {
             GenMoveCount = 0;
-            GenerateAllMoves(Board, MoveList, &GenMoveCount);
+            GenerateAllMoves(Board, NULL, MoveList, &GenMoveCount);
 
             for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
                 if (

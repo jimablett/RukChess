@@ -14,7 +14,7 @@
 #include "Sort.h"
 #include "Types.h"
 
-void AddMove(const BoardItem* Board, MoveItem* MoveList, int* GenMoveCount, const int From, const int To, const int MoveType)
+void AddMove(const BoardItem* Board, int** CMH_Pointer, MoveItem* MoveList, int* GenMoveCount, const int From, const int To, const int MoveType)
 {
 #ifdef MOVES_SORT_SEE
     int SEE_Value;
@@ -104,6 +104,18 @@ void AddMove(const BoardItem* Board, MoveItem* MoveList, int* GenMoveCount, cons
             MoveList[*GenMoveCount].SortValue = Board->HeuristicTable[Board->CurrentColor][PIECE(Board->Pieces[From])][To];
 #endif // COMMON_HEURISTIC_TABLE
 
+#ifdef COUNTER_MOVE_HISTORY
+            if (CMH_Pointer) {
+                if (CMH_Pointer[0]) {
+                    MoveList[*GenMoveCount].SortValue += CMH_Pointer[0][(PIECE(Board->Pieces[From]) << 6) + To];
+                }
+
+                if (CMH_Pointer[1]) {
+                    MoveList[*GenMoveCount].SortValue += CMH_Pointer[1][(PIECE(Board->Pieces[From]) << 6) + To];
+                }
+            }
+#endif // COUNTER_MOVE_HISTORY
+
 #elif defined(MOVES_SORT_SQUARE_SCORE) && defined(SIMPLIFIED_EVALUATION_FUNCTION)
             if (PIECE(Board->Pieces[From]) == PAWN) {
                 if (Board->CurrentColor == WHITE) {
@@ -173,7 +185,7 @@ void AddMove(const BoardItem* Board, MoveItem* MoveList, int* GenMoveCount, cons
     }
 }
 
-void GenerateAllMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMoveCount)
+void GenerateAllMoves(const BoardItem* Board, int** CMH_Pointer, MoveItem* MoveList, int* GenMoveCount)
 {
     U64 Pieces;
     U64 Attacks;
@@ -192,11 +204,11 @@ void GenerateAllMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMoveCo
             To = LSB(Attacks);
 
             if (((BB_SQUARE(To) << 7) & ~BB_FILE_H) & Board->BB_Pieces[WHITE][PAWN]) {
-                AddMove(Board, MoveList, GenMoveCount, To + 7, To, (MOVE_PAWN | MOVE_CAPTURE));
+                AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, To + 7, To, (MOVE_PAWN | MOVE_CAPTURE));
             }
 
             if (((BB_SQUARE(To) << 9) & ~BB_FILE_A) & Board->BB_Pieces[WHITE][PAWN]) {
-                AddMove(Board, MoveList, GenMoveCount, To + 9, To, (MOVE_PAWN | MOVE_CAPTURE));
+                AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, To + 9, To, (MOVE_PAWN | MOVE_CAPTURE));
             }
 
             Attacks &= Attacks - 1;
@@ -209,11 +221,11 @@ void GenerateAllMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMoveCo
             To = LSB(Attacks);
 
             if (((BB_SQUARE(To) >> 7) & ~BB_FILE_A)& Board->BB_Pieces[BLACK][PAWN]) {
-                AddMove(Board, MoveList, GenMoveCount, To - 7, To, (MOVE_PAWN | MOVE_CAPTURE));
+                AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, To - 7, To, (MOVE_PAWN | MOVE_CAPTURE));
             }
 
             if (((BB_SQUARE(To) >> 9) & ~BB_FILE_H)& Board->BB_Pieces[BLACK][PAWN]) {
-                AddMove(Board, MoveList, GenMoveCount, To - 9, To, (MOVE_PAWN | MOVE_CAPTURE));
+                AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, To - 9, To, (MOVE_PAWN | MOVE_CAPTURE));
             }
 
             Attacks &= Attacks - 1;
@@ -226,20 +238,20 @@ void GenerateAllMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMoveCo
 
         if (Board->CurrentColor == WHITE) {
             if (((BB_SQUARE(To) << 7) & ~BB_FILE_H) & Board->BB_Pieces[WHITE][PAWN]) {
-                AddMove(Board, MoveList, GenMoveCount, To + 7, To, (MOVE_PAWN_PASSANT | MOVE_CAPTURE));
+                AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, To + 7, To, (MOVE_PAWN_PASSANT | MOVE_CAPTURE));
             }
 
             if (((BB_SQUARE(To) << 9) & ~BB_FILE_A) & Board->BB_Pieces[WHITE][PAWN]) {
-                AddMove(Board, MoveList, GenMoveCount, To + 9, To, (MOVE_PAWN_PASSANT | MOVE_CAPTURE));
+                AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, To + 9, To, (MOVE_PAWN_PASSANT | MOVE_CAPTURE));
             }
         }
         else { // BLACK
             if (((BB_SQUARE(To) >> 7) & ~BB_FILE_A)& Board->BB_Pieces[BLACK][PAWN]) {
-                AddMove(Board, MoveList, GenMoveCount, To - 7, To, (MOVE_PAWN_PASSANT | MOVE_CAPTURE));
+                AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, To - 7, To, (MOVE_PAWN_PASSANT | MOVE_CAPTURE));
             }
 
             if (((BB_SQUARE(To) >> 9) & ~BB_FILE_H)& Board->BB_Pieces[BLACK][PAWN]) {
-                AddMove(Board, MoveList, GenMoveCount, To - 9, To, (MOVE_PAWN_PASSANT | MOVE_CAPTURE));
+                AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, To - 9, To, (MOVE_PAWN_PASSANT | MOVE_CAPTURE));
             }
         }
     }
@@ -251,7 +263,7 @@ void GenerateAllMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMoveCo
         while (QuietMoves) {
             To = LSB(QuietMoves);
 
-            AddMove(Board, MoveList, GenMoveCount, To + 8, To, MOVE_PAWN);
+            AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, To + 8, To, MOVE_PAWN);
 
             QuietMoves &= QuietMoves - 1;
         }
@@ -262,7 +274,7 @@ void GenerateAllMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMoveCo
         while (QuietMoves) {
             To = LSB(QuietMoves);
 
-            AddMove(Board, MoveList, GenMoveCount, To - 8, To, MOVE_PAWN);
+            AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, To - 8, To, MOVE_PAWN);
 
             QuietMoves &= QuietMoves - 1;
         }
@@ -275,7 +287,7 @@ void GenerateAllMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMoveCo
         while (QuietMoves) {
             To = LSB(QuietMoves);
 
-            AddMove(Board, MoveList, GenMoveCount, To + 16, To, MOVE_PAWN_2);
+            AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, To + 16, To, MOVE_PAWN_2);
 
             QuietMoves &= QuietMoves - 1;
         }
@@ -286,7 +298,7 @@ void GenerateAllMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMoveCo
         while (QuietMoves) {
             To = LSB(QuietMoves);
 
-            AddMove(Board, MoveList, GenMoveCount, To - 16, To, MOVE_PAWN_2);
+            AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, To - 16, To, MOVE_PAWN_2);
 
             QuietMoves &= QuietMoves - 1;
         }
@@ -310,7 +322,7 @@ void GenerateAllMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMoveCo
         while (CaptureMoves) {
             To = LSB(CaptureMoves);
 
-            AddMove(Board, MoveList, GenMoveCount, From, To, MOVE_CAPTURE);
+            AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, From, To, MOVE_CAPTURE);
 
             CaptureMoves &= CaptureMoves - 1;
         }
@@ -320,7 +332,7 @@ void GenerateAllMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMoveCo
         while (QuietMoves) {
             To = LSB(QuietMoves);
 
-            AddMove(Board, MoveList, GenMoveCount, From, To, MOVE_QUIET);
+            AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, From, To, MOVE_QUIET);
 
             QuietMoves &= QuietMoves - 1;
         }
@@ -347,7 +359,7 @@ void GenerateAllMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMoveCo
         while (CaptureMoves) {
             To = LSB(CaptureMoves);
 
-            AddMove(Board, MoveList, GenMoveCount, From, To, MOVE_CAPTURE);
+            AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, From, To, MOVE_CAPTURE);
 
             CaptureMoves &= CaptureMoves - 1;
         }
@@ -357,7 +369,7 @@ void GenerateAllMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMoveCo
         while (QuietMoves) {
             To = LSB(QuietMoves);
 
-            AddMove(Board, MoveList, GenMoveCount, From, To, MOVE_QUIET);
+            AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, From, To, MOVE_QUIET);
 
             QuietMoves &= QuietMoves - 1;
         }
@@ -384,7 +396,7 @@ void GenerateAllMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMoveCo
         while (CaptureMoves) {
             To = LSB(CaptureMoves);
 
-            AddMove(Board, MoveList, GenMoveCount, From, To, MOVE_CAPTURE);
+            AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, From, To, MOVE_CAPTURE);
 
             CaptureMoves &= CaptureMoves - 1;
         }
@@ -394,7 +406,7 @@ void GenerateAllMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMoveCo
         while (QuietMoves) {
             To = LSB(QuietMoves);
 
-            AddMove(Board, MoveList, GenMoveCount, From, To, MOVE_QUIET);
+            AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, From, To, MOVE_QUIET);
 
             QuietMoves &= QuietMoves - 1;
         }
@@ -417,7 +429,7 @@ void GenerateAllMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMoveCo
     while (CaptureMoves) {
         To = LSB(CaptureMoves);
 
-        AddMove(Board, MoveList, GenMoveCount, From, To, MOVE_CAPTURE);
+        AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, From, To, MOVE_CAPTURE);
 
         CaptureMoves &= CaptureMoves - 1;
     }
@@ -427,7 +439,7 @@ void GenerateAllMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMoveCo
     while (QuietMoves) {
         To = LSB(QuietMoves);
 
-        AddMove(Board, MoveList, GenMoveCount, From, To, MOVE_QUIET);
+        AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, From, To, MOVE_QUIET);
 
         QuietMoves &= QuietMoves - 1;
     }
@@ -439,7 +451,7 @@ void GenerateAllMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMoveCo
             && Board->Pieces[61] == EMPTY && Board->Pieces[62] == EMPTY // f1/g1
             && !IsSquareAttacked(Board, 60, Board->CurrentColor) && !IsSquareAttacked(Board, 61, Board->CurrentColor) && !IsSquareAttacked(Board, 62, Board->CurrentColor) // e1/f1/g1
         ) { // White O-O
-            AddMove(Board, MoveList, GenMoveCount, 60, 62, MOVE_CASTLE_KING); // e1 -> g1
+            AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, 60, 62, MOVE_CASTLE_KING); // e1 -> g1
         }
 
         if (
@@ -447,7 +459,7 @@ void GenerateAllMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMoveCo
             && Board->Pieces[59] == EMPTY && Board->Pieces[58] == EMPTY && Board->Pieces[57] == EMPTY // d1/c1/b1
             && !IsSquareAttacked(Board, 60, Board->CurrentColor) && !IsSquareAttacked(Board, 59, Board->CurrentColor) && !IsSquareAttacked(Board, 58, Board->CurrentColor) // e1/d1/c1
         ) { // White O-O-O
-            AddMove(Board, MoveList, GenMoveCount, 60, 58, MOVE_CASTLE_QUEEN); // e1 -> c1
+            AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, 60, 58, MOVE_CASTLE_QUEEN); // e1 -> c1
         }
     }
     else { // BLACK
@@ -456,7 +468,7 @@ void GenerateAllMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMoveCo
             && Board->Pieces[5] == EMPTY && Board->Pieces[6] == EMPTY // f8/g8
             && !IsSquareAttacked(Board, 4, Board->CurrentColor) && !IsSquareAttacked(Board, 5, Board->CurrentColor) && !IsSquareAttacked(Board, 6, Board->CurrentColor) // e8/f8/g8
         ) { // Black O-O
-            AddMove(Board, MoveList, GenMoveCount, 4, 6, MOVE_CASTLE_KING); // e8 -> g8
+            AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, 4, 6, MOVE_CASTLE_KING); // e8 -> g8
         }
 
         if (
@@ -464,12 +476,12 @@ void GenerateAllMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMoveCo
             && Board->Pieces[3] == EMPTY && Board->Pieces[2] == EMPTY && Board->Pieces[1] == EMPTY // d8/c8/b8
             && !IsSquareAttacked(Board, 4, Board->CurrentColor) && !IsSquareAttacked(Board, 3, Board->CurrentColor) && !IsSquareAttacked(Board, 2, Board->CurrentColor) // e8/d8/c8
         ) { // Black O-O-O
-            AddMove(Board, MoveList, GenMoveCount, 4, 2, MOVE_CASTLE_QUEEN); // e8 -> c8
+            AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, 4, 2, MOVE_CASTLE_QUEEN); // e8 -> c8
         }
     }
 }
 
-void GenerateCaptureMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMoveCount)
+void GenerateCaptureMoves(const BoardItem* Board, int** CMH_Pointer, MoveItem* MoveList, int* GenMoveCount)
 {
     U64 Pieces;
     U64 Attacks;
@@ -488,11 +500,11 @@ void GenerateCaptureMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMo
             To = LSB(Attacks);
 
             if (((BB_SQUARE(To) << 7) & ~BB_FILE_H) & Board->BB_Pieces[WHITE][PAWN]) {
-                AddMove(Board, MoveList, GenMoveCount, To + 7, To, (MOVE_PAWN | MOVE_CAPTURE));
+                AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, To + 7, To, (MOVE_PAWN | MOVE_CAPTURE));
             }
 
             if (((BB_SQUARE(To) << 9) & ~BB_FILE_A) & Board->BB_Pieces[WHITE][PAWN]) {
-                AddMove(Board, MoveList, GenMoveCount, To + 9, To, (MOVE_PAWN | MOVE_CAPTURE));
+                AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, To + 9, To, (MOVE_PAWN | MOVE_CAPTURE));
             }
 
             Attacks &= Attacks - 1;
@@ -505,11 +517,11 @@ void GenerateCaptureMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMo
             To = LSB(Attacks);
 
             if (((BB_SQUARE(To) >> 7) & ~BB_FILE_A)& Board->BB_Pieces[BLACK][PAWN]) {
-                AddMove(Board, MoveList, GenMoveCount, To - 7, To, (MOVE_PAWN | MOVE_CAPTURE));
+                AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, To - 7, To, (MOVE_PAWN | MOVE_CAPTURE));
             }
 
             if (((BB_SQUARE(To) >> 9) & ~BB_FILE_H)& Board->BB_Pieces[BLACK][PAWN]) {
-                AddMove(Board, MoveList, GenMoveCount, To - 9, To, (MOVE_PAWN | MOVE_CAPTURE));
+                AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, To - 9, To, (MOVE_PAWN | MOVE_CAPTURE));
             }
 
             Attacks &= Attacks - 1;
@@ -522,20 +534,20 @@ void GenerateCaptureMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMo
 
         if (Board->CurrentColor == WHITE) {
             if (((BB_SQUARE(To) << 7) & ~BB_FILE_H) & Board->BB_Pieces[WHITE][PAWN]) {
-                AddMove(Board, MoveList, GenMoveCount, To + 7, To, (MOVE_PAWN_PASSANT | MOVE_CAPTURE));
+                AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, To + 7, To, (MOVE_PAWN_PASSANT | MOVE_CAPTURE));
             }
 
             if (((BB_SQUARE(To) << 9) & ~BB_FILE_A) & Board->BB_Pieces[WHITE][PAWN]) {
-                AddMove(Board, MoveList, GenMoveCount, To + 9, To, (MOVE_PAWN_PASSANT | MOVE_CAPTURE));
+                AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, To + 9, To, (MOVE_PAWN_PASSANT | MOVE_CAPTURE));
             }
         }
         else { // BLACK
             if (((BB_SQUARE(To) >> 7) & ~BB_FILE_A)& Board->BB_Pieces[BLACK][PAWN]) {
-                AddMove(Board, MoveList, GenMoveCount, To - 7, To, (MOVE_PAWN_PASSANT | MOVE_CAPTURE));
+                AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, To - 7, To, (MOVE_PAWN_PASSANT | MOVE_CAPTURE));
             }
 
             if (((BB_SQUARE(To) >> 9) & ~BB_FILE_H)& Board->BB_Pieces[BLACK][PAWN]) {
-                AddMove(Board, MoveList, GenMoveCount, To - 9, To, (MOVE_PAWN_PASSANT | MOVE_CAPTURE));
+                AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, To - 9, To, (MOVE_PAWN_PASSANT | MOVE_CAPTURE));
             }
         }
     }
@@ -547,7 +559,7 @@ void GenerateCaptureMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMo
         while (QuietMoves) {
             To = LSB(QuietMoves);
 
-            AddMove(Board, MoveList, GenMoveCount, To + 8, To, MOVE_PAWN);
+            AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, To + 8, To, MOVE_PAWN);
 
             QuietMoves &= QuietMoves - 1;
         }
@@ -558,7 +570,7 @@ void GenerateCaptureMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMo
         while (QuietMoves) {
             To = LSB(QuietMoves);
 
-            AddMove(Board, MoveList, GenMoveCount, To - 8, To, MOVE_PAWN);
+            AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, To - 8, To, MOVE_PAWN);
 
             QuietMoves &= QuietMoves - 1;
         }
@@ -582,7 +594,7 @@ void GenerateCaptureMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMo
         while (CaptureMoves) {
             To = LSB(CaptureMoves);
 
-            AddMove(Board, MoveList, GenMoveCount, From, To, MOVE_CAPTURE);
+            AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, From, To, MOVE_CAPTURE);
 
             CaptureMoves &= CaptureMoves - 1;
         }
@@ -609,7 +621,7 @@ void GenerateCaptureMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMo
         while (CaptureMoves) {
             To = LSB(CaptureMoves);
 
-            AddMove(Board, MoveList, GenMoveCount, From, To, MOVE_CAPTURE);
+            AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, From, To, MOVE_CAPTURE);
 
             CaptureMoves &= CaptureMoves - 1;
         }
@@ -636,7 +648,7 @@ void GenerateCaptureMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMo
         while (CaptureMoves) {
             To = LSB(CaptureMoves);
 
-            AddMove(Board, MoveList, GenMoveCount, From, To, MOVE_CAPTURE);
+            AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, From, To, MOVE_CAPTURE);
 
             CaptureMoves &= CaptureMoves - 1;
         }
@@ -659,31 +671,27 @@ void GenerateCaptureMoves(const BoardItem* Board, MoveItem* MoveList, int* GenMo
     while (CaptureMoves) {
         To = LSB(CaptureMoves);
 
-        AddMove(Board, MoveList, GenMoveCount, From, To, MOVE_CAPTURE);
+        AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, From, To, MOVE_CAPTURE);
 
         CaptureMoves &= CaptureMoves - 1;
     }
 }
 
-int GenerateAllLegalMoves(BoardItem* Board, MoveItem* LegalMoveList)
+void GenerateAllLegalMoves(BoardItem* Board, int** CMH_Pointer, MoveItem* LegalMoveList, int* LegalMoveCount)
 {
     int GenMoveCount;
     MoveItem MoveList[MAX_GEN_MOVES];
 
-    int LegalMoveCount = 0;
-
     GenMoveCount = 0;
-    GenerateAllMoves(Board, MoveList, &GenMoveCount);
+    GenerateAllMoves(Board, CMH_Pointer, MoveList, &GenMoveCount);
 
     for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
         MakeMove(Board, MoveList[MoveNumber]);
 
         if (!IsInCheck(Board, CHANGE_COLOR(Board->CurrentColor))) { // Legal move
-            LegalMoveList[LegalMoveCount++] = MoveList[MoveNumber];
+            LegalMoveList[(*LegalMoveCount)++] = MoveList[MoveNumber];
         }
 
         UnmakeMove(Board);
     }
-
-    return LegalMoveCount;
 }

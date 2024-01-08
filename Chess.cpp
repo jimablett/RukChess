@@ -35,6 +35,15 @@ int main(int argc, char** argv)
 //    printf("HistoryItem = %zd\n", sizeof(HistoryItem));
 //    printf("BoardItem = %zd\n", sizeof(BoardItem));
 
+//    BoardItem Board;
+
+//    printf("BoardItem.MoveTable = %zd\n", sizeof(Board.MoveTable));
+//    printf("BoardItem.BestMovesRoot = %zd\n", sizeof(Board.BestMovesRoot));
+//    printf("BoardItem.HeuristicTable = %zd\n", sizeof(Board.HeuristicTable));
+//    printf("BoardItem.CounterMoveHistoryTable = %zd\n", sizeof(Board.CounterMoveHistoryTable));
+//    printf("BoardItem.KillerMoveTable = %zd\n", sizeof(Board.KillerMoveTable));
+//    printf("BoardItem.CounterMoveTable = %zd\n", sizeof(Board.CounterMoveTable));
+
     // Initialize threads
 
     omp_set_dynamic(0); // Disable dynamic thread control
@@ -105,7 +114,7 @@ int main(int argc, char** argv)
 //        printf("LateMoveReductionTable[%2d] = ", Depth);
 
         for (int MoveNumber = 0; MoveNumber < 64; ++MoveNumber) {
-            LateMoveReductionTable[Depth][MoveNumber] = MAX((int)(log(Depth + 1) * log(MoveNumber + 1) / 1.70), 1); // Hakkapeliitta
+            LateMoveReductionTable[Depth][MoveNumber] = (int)MAX(log(Depth + 1) * log(MoveNumber + 1) / 1.70, 1.0); // Hakkapeliitta
 
 //            printf("%d", LateMoveReductionTable[Depth][MoveNumber]);
         }
