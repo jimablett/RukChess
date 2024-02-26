@@ -81,11 +81,11 @@ void ClearHeuristic(BoardItem* Board)
 }
 
 #ifdef COUNTER_MOVE_HISTORY
-void SetCounterMoveHistoryPointer(BoardItem* Board, int** CMH_Pointer)
+void SetCounterMoveHistoryPointer(BoardItem* Board, int** CMH_Pointer, const int Ply)
 {
     HistoryItem* Info;
 
-    if (Board->HalfMoveNumber == 0) {
+    if (Ply == 0) {
         CMH_Pointer[0] = CMH_Pointer[1] = NULL;
 
         return;
@@ -100,12 +100,12 @@ void SetCounterMoveHistoryPointer(BoardItem* Board, int** CMH_Pointer)
     }
 
 #ifdef COMMON_COUNTER_MOVE_HISTORY_TABLE
-    CMH_Pointer[0] = CounterMoveHistoryTable[Info->PieceFrom][Info->To];
+        CMH_Pointer[0] = CounterMoveHistoryTable[Info->PieceFrom][Info->To];
 #else
-    CMH_Pointer[0] = Board->CounterMoveHistoryTable[Info->PieceFrom][Info->To];
+        CMH_Pointer[0] = Board->CounterMoveHistoryTable[Info->PieceFrom][Info->To];
 #endif // COMMON_COUNTER_MOVE_HISTORY_TABLE
 
-    if (Board->HalfMoveNumber == 1) {
+    if (Ply == 1) {
         CMH_Pointer[1] = NULL;
 
         return;
@@ -120,9 +120,9 @@ void SetCounterMoveHistoryPointer(BoardItem* Board, int** CMH_Pointer)
     }
 
 #ifdef COMMON_COUNTER_MOVE_HISTORY_TABLE
-    CMH_Pointer[1] = CounterMoveHistoryTable[Info->PieceFrom][Info->To];
+        CMH_Pointer[1] = CounterMoveHistoryTable[Info->PieceFrom][Info->To];
 #else
-    CMH_Pointer[1] = Board->CounterMoveHistoryTable[Info->PieceFrom][Info->To];
+        CMH_Pointer[1] = Board->CounterMoveHistoryTable[Info->PieceFrom][Info->To];
 #endif // COMMON_COUNTER_MOVE_HISTORY_TABLE
 }
 #endif // COUNTER_MOVE_HISTORY
@@ -180,9 +180,9 @@ void ClearKillerMove(BoardItem* Board)
 
 #ifdef COUNTER_MOVE
 
-void UpdateCounterMove(BoardItem* Board, const int Move)
+void UpdateCounterMove(BoardItem* Board, const int Move, const int Ply)
 {
-    if (Board->HalfMoveNumber == 0) {
+    if (Ply == 0) {
         return;
     }
 

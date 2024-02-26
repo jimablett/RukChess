@@ -173,7 +173,7 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
     }
 
 #if defined(MOVES_SORT_HEURISTIC) && defined(COUNTER_MOVE_HISTORY)
-    SetCounterMoveHistoryPointer(Board, CMH_Pointer);
+    SetCounterMoveHistoryPointer(Board, CMH_Pointer, Ply);
 #else
     CMH_Pointer[0] = CMH_Pointer[1] = NULL;
 #endif // MOVES_SORT_HEURISTIC && COUNTER_MOVE_HISTORY
@@ -217,7 +217,7 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
 #endif // KILLER_MOVE
 
 #ifdef COUNTER_MOVE
-                                UpdateCounterMove(Board, HashMove);
+                                UpdateCounterMove(Board, HashMove, Ply);
 #endif // COUNTER_MOVE
                             }
 #ifdef MOVES_SORT_HEURISTIC
@@ -733,7 +733,7 @@ NextMove:
 #endif // KILLER_MOVE
 
 #ifdef COUNTER_MOVE
-                        UpdateCounterMove(Board, BestMove.Move);
+                        UpdateCounterMove(Board, BestMove.Move, Ply);
 #endif // COUNTER_MOVE
                     }
 #endif // MOVES_SORT_HEURISTIC || KILLER_MOVE || COUNTER_MOVE
