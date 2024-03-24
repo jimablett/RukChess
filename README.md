@@ -8,7 +8,7 @@ original code (vern.orig.c, line 175)
 
     s{ } ?"!":">"
 
-current implementation (Game.cpp, line 871)
+current implementation (Game.cpp, line 956)
 
     InCheck ? '!' : '>'
 
@@ -27,10 +27,10 @@ current implementation (Game.cpp, line 871)
 1. [RukChessWeb](https://github.com/Ilya-Ruk/RukChessWeb)
 
 # Strength
-For RukChess 3.0 NNUE2 with the rukchess.nnue (in release) the strength is approximately 3169 ELO.
+For RukChess 3.0.18 PVS NNUE2 with the net-7cf57d4dc994.nnue (in release) the strength is approximately 3237 ELO.
 
 # Rating
-https://www.computerchess.org.uk/ccrl/4040/cgi/engine_details.cgi?print=Details&each_game=1&eng=RukChess%203.0%2064-bit#RukChess_3_0_64-bit
+https://computerchess.org.uk/ccrl/4040/cgi/compare_engines.cgi?family=RukChess&print=Rating+list&print=Results+table&print=LOS+table&print=Ponder+hit+table&print=Eval+difference+table&print=Comopp+gamenum+table&print=Overlap+table&print=Score+with+common+opponents
 
 # Chess programs (source codes)
 1. https://www.ioccc.org/years.html#1992_vern
@@ -76,4 +76,4 @@ https://www.computerchess.org.uk/ccrl/4040/cgi/engine_details.cgi?print=Details&
 6. https://prng.di.unimi.it/splitmix64.c
 
 # Rating lists of chess engines
-1. http://www.computerchess.org.uk/ccrl/
+https://computerchess.org.uk/ccrl/
