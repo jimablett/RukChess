@@ -1,6 +1,6 @@
 # RukChess change log
 
-## RukChess 3.0.19dev
+## RukChess 3.0.19 (08.05.2024)
 
 1. Added COUNTER_MOVE_HISTORY
 2. Corrected COUNTER_MOVE
