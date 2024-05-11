@@ -442,8 +442,10 @@ NextMove0:
 
     // Other moves (sorting)
 
+    int MoveNumber;
+
 #if defined(MOVES_SORT_SEE) || defined(MOVES_SORT_MVV_LVA) || defined(MOVES_SORT_HEURISTIC) || defined(MOVES_SORT_SQUARE_SCORE)
-    for (int MoveNumber = MoveNumber0; MoveNumber < GenMoveCount; ++MoveNumber) {
+    for (MoveNumber = MoveNumber0; MoveNumber < GenMoveCount; ++MoveNumber) {
 #if defined(MOVES_SORT_MVV_LVA) && defined(BAD_CAPTURE_LAST)
 NextMove:
 #endif // MOVES_SORT_MVV_LVA && BAD_CAPTURE_LAST
@@ -481,7 +483,7 @@ NextMove:
     // Other moves (processing)
 
 #pragma omp parallel for private(BoardCopy, ThreadBoard, GiveCheck, Extension, NewDepth, TempBestMoves, Score) schedule(dynamic, 1)
-    for (int MoveNumber = MoveNumber0; MoveNumber < GenMoveCount; ++MoveNumber) {
+    for (MoveNumber = MoveNumber0; MoveNumber < GenMoveCount; ++MoveNumber) {
         if (StopSearch || Cutoff || MoveList[MoveNumber].Move == SkipMove) {
             continue; // Next move
         }
