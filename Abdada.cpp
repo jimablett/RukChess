@@ -152,6 +152,10 @@ int ABDADA_Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Pl
     int NullMoveReduction;
 #endif // NULL_MOVE_PRUNING
 
+#ifdef PROBCUT
+    int BetaCut;
+#endif // PROBCUT
+
 #if defined(MOVES_SORT_MVV_LVA) && defined(BAD_CAPTURE_LAST)
     int SEE_Value;
 #endif // MOVES_SORT_MVV_LVA && BAD_CAPTURE_LAST
