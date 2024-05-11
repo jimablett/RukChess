@@ -63,8 +63,9 @@ int RootSplitting_Search(BoardItem* Board, int Alpha, int Beta, int Depth, const
     int* CMH_Pointer[2];
 
     int MoveNumber0;
+    int MoveNumber;
 
-    BOOL Cutoff = FALSE;
+    volatile BOOL Cutoff = FALSE;
 
     BoardItem BoardCopy;
     BoardItem* ThreadBoard;
@@ -333,8 +334,6 @@ NextMove0:
     } // for
 
     // Other moves (sorting)
-
-    int MoveNumber;
 
 #if defined(MOVES_SORT_SEE) || defined(MOVES_SORT_MVV_LVA) || defined(MOVES_SORT_HEURISTIC) || defined(MOVES_SORT_SQUARE_SCORE)
     for (MoveNumber = MoveNumber0; MoveNumber < GenMoveCount; ++MoveNumber) {
