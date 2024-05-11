@@ -37,7 +37,7 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
 
     int QuiescenceHashDepth;
 
-    int OldAlpha = Alpha;
+    int OriginalAlpha = Alpha;
 #endif // QUIESCENCE_HASH_SCORE || QUIESCENCE_HASH_MOVE
 
     int Score;
@@ -287,10 +287,10 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
 #endif // QUIESCENCE_CHECK_EXTENSION
 
 #if defined(QUIESCENCE_HASH_SCORE) || defined(QUIESCENCE_HASH_MOVE)
-    if (IsPrincipal && BestScore > OldAlpha) {
+    if (IsPrincipal && BestScore > OriginalAlpha) {
         HashFlag = HASH_EXACT;
     }
-    else { // !IsPrincipal || BestScore <= OldAlpha
+    else { // !IsPrincipal || BestScore <= OriginalAlpha
         HashFlag = HASH_ALPHA;
     }
 
