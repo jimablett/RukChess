@@ -568,7 +568,7 @@ int ABDADA_Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Pl
 #endif // HASH_SCORE
 
 #if defined(MOVES_SORT_MVV_LVA) && defined(BAD_CAPTURE_LAST)
-        NextMove:
+NextMove:
 #endif // MOVES_SORT_MVV_LVA && BAD_CAPTURE_LAST
 
 #if defined(MOVES_SORT_SEE) || defined(MOVES_SORT_MVV_LVA) || defined(MOVES_SORT_HEURISTIC) || defined(MOVES_SORT_SQUARE_SCORE)
