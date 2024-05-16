@@ -13,7 +13,6 @@
 #include "Heuristic.h"
 #include "MCTS.h"
 #include "Move.h"
-#include "RootSplitting.h"
 #include "Search.h"
 #include "Types.h"
 #include "Utils.h"
@@ -396,11 +395,7 @@ BOOL ComputerMove(void)
             Beta = MIN((Score + Delta), INF);
 
             while (TRUE) {
-#ifdef ROOT_SPLITTING
-                Score = RootSplitting_Search(&CurrentBoard, Alpha, Beta, Depth, 0, CurrentBoard.BestMovesRoot, InCheck);
-#else
                 Score = Search(&CurrentBoard, Alpha, Beta, Depth, 0, CurrentBoard.BestMovesRoot, TRUE, InCheck, FALSE, 0);
-#endif // ROOT_SPLITTING
 
                 if (StopSearch) {
                     break; // while
@@ -421,11 +416,7 @@ BOOL ComputerMove(void)
         }
         else {
 #endif // ASPIRATION_WINDOW
-#ifdef ROOT_SPLITTING
-            Score = RootSplitting_Search(&CurrentBoard, -INF, INF, Depth, 0, CurrentBoard.BestMovesRoot, InCheck);
-#else
             Score = Search(&CurrentBoard, -INF, INF, Depth, 0, CurrentBoard.BestMovesRoot, TRUE, InCheck, FALSE, 0);
-#endif // ROOT_SPLITTING
 #ifdef ASPIRATION_WINDOW
         }
 #endif // ASPIRATION_WINDOW
@@ -911,7 +902,7 @@ Done:
 
     return PrintResult(InCheck, BestMove, PonderMove, BestScore);
 }
-#endif // MCTS || ROOT_SPLITTING || ABDADA || LAZY_SMP
+#endif // MCTS || ABDADA || LAZY_SMP
 
 void ComputerMoveThread(void* ignored)
 {

@@ -57,9 +57,6 @@
     <ClCompile Include="QuiescenceSearch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="RootSplitting.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Search.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -129,9 +126,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="QuiescenceSearch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RootSplitting.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Search.h">

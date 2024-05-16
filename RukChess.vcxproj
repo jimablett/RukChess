@@ -138,7 +138,6 @@
     <ClCompile Include="NNUE.cpp" />
     <ClCompile Include="NNUE2.cpp" />
     <ClCompile Include="QuiescenceSearch.cpp" />
-    <ClCompile Include="RootSplitting.cpp" />
     <ClCompile Include="Search.cpp" />
     <ClCompile Include="SEE.cpp" />
     <ClCompile Include="Sort.cpp" />
@@ -164,7 +163,6 @@
     <ClInclude Include="NNUE.h" />
     <ClInclude Include="NNUE2.h" />
     <ClInclude Include="QuiescenceSearch.h" />
-    <ClInclude Include="RootSplitting.h" />
     <ClInclude Include="Search.h" />
     <ClInclude Include="SEE.h" />
     <ClInclude Include="Sort.h" />
