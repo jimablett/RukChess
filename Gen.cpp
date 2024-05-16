@@ -97,12 +97,7 @@ void AddMove(const BoardItem* Board, int** CMH_Pointer, MoveItem* MoveList, int*
         }
         else {
 #ifdef MOVES_SORT_HEURISTIC
-
-#ifdef COMMON_HEURISTIC_TABLE
-            MoveList[*GenMoveCount].SortValue = HeuristicTable[Board->CurrentColor][PIECE(Board->Pieces[From])][To];
-#else
             MoveList[*GenMoveCount].SortValue = Board->HeuristicTable[Board->CurrentColor][PIECE(Board->Pieces[From])][To];
-#endif // COMMON_HEURISTIC_TABLE
 
 #ifdef COUNTER_MOVE_HISTORY
             if (CMH_Pointer) {

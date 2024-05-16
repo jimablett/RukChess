@@ -12,24 +12,6 @@
 
 #define BONUS(Depth)            ((Depth) * (Depth))
 
-#ifdef COMMON_HEURISTIC_TABLE
-
-extern volatile int HeuristicTable[2][6][64]; // [Color][Piece][Square]
-
-#ifdef COMMON_COUNTER_MOVE_HISTORY_TABLE
-extern volatile int CounterMoveHistoryTable[6][64][6 * 64]; // [Piece][Square][Piece * Square]
-#endif // COMMON_COUNTER_MOVE_HISTORY_TABLE
-
-#endif // COMMON_HEURISTIC_TABLE
-
-#ifdef COMMON_KILLER_MOVE_TABLE
-extern volatile int KillerMoveTable[MAX_PLY + 1][2]; // [Max. ply + 1][Two killer moves]
-#endif // COMMON_KILLER_MOVE_TABLE
-
-#ifdef COMMON_COUNTER_MOVE_TABLE
-extern volatile int CounterMoveTable[2][6][64]; // [Color][Piece][Square]
-#endif // COMMON_COUNTER_MOVE_TABLE
-
 #ifdef MOVES_SORT_HEURISTIC
 
 void UpdateHeuristic(BoardItem* Board, int** CMH_Pointer, const int Move, const int Bonus);

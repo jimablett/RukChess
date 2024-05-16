@@ -52,11 +52,7 @@ void SetHashMoveSortValue(MoveItem* GenMoveList, const int GenMoveCount, const i
 
 void SetKillerMove1SortValue(const BoardItem* Board, const int Ply, MoveItem* GenMoveList, const int GenMoveCount, const int HashMove)
 {
-#ifdef COMMON_KILLER_MOVE_TABLE
-    int KillerMove1 = KillerMoveTable[Ply][0];
-#else
     int KillerMove1 = Board->KillerMoveTable[Ply][0];
-#endif // COMMON_KILLER_MOVE_TABLE
 
     if (KillerMove1 && KillerMove1 != HashMove) {
         for (int Index = 0; Index < GenMoveCount; ++Index) {
@@ -74,11 +70,7 @@ void SetKillerMove1SortValue(const BoardItem* Board, const int Ply, MoveItem* Ge
 #ifdef KILLER_MOVE_2
 void SetKillerMove2SortValue(const BoardItem* Board, const int Ply, MoveItem* GenMoveList, const int GenMoveCount, const int HashMove)
 {
-#ifdef COMMON_KILLER_MOVE_TABLE
-    int KillerMove2 = KillerMoveTable[Ply][1];
-#else
     int KillerMove2 = Board->KillerMoveTable[Ply][1];
-#endif // COMMON_KILLER_MOVE_TABLE
 
     if (KillerMove2 && KillerMove2 != HashMove) {
         for (int Index = 0; Index < GenMoveCount; ++Index) {
@@ -109,23 +101,10 @@ void SetCounterMoveSortValue(const BoardItem* Board, const int Ply, MoveItem* Ge
         return;
     }
 
-#ifdef COMMON_COUNTER_MOVE_TABLE
-    int CounterMove = CounterMoveTable[CHANGE_COLOR(Board->CurrentColor)][Info->PieceFrom][Info->To];
-#else
     int CounterMove = Board->CounterMoveTable[CHANGE_COLOR(Board->CurrentColor)][Info->PieceFrom][Info->To];
-#endif // COMMON_COUNTER_MOVE_TABLE
 
-#ifdef COMMON_KILLER_MOVE_TABLE
-    int KillerMove1 = KillerMoveTable[Ply][0];
-#else
     int KillerMove1 = Board->KillerMoveTable[Ply][0];
-#endif // COMMON_KILLER_MOVE_TABLE
-
-#ifdef COMMON_KILLER_MOVE_TABLE
-    int KillerMove2 = KillerMoveTable[Ply][1];
-#else
     int KillerMove2 = Board->KillerMoveTable[Ply][1];
-#endif // COMMON_KILLER_MOVE_TABLE
 
     if (CounterMove && CounterMove != HashMove && CounterMove != KillerMove1 && CounterMove != KillerMove2) {
         for (int Index = 0; Index < GenMoveCount; ++Index) {

@@ -141,17 +141,6 @@
 //#define BIND_THREAD                           // Required LAZY_SMP
 //#define BIND_THREAD_V2                        // Required LAZY_SMP (Max. 64 CPUs)
 
-// Heuristic/Killer move/Counter move tables
-
-#ifndef LAZY_SMP
-
-#define COMMON_HEURISTIC_TABLE                  // Required MOVES_SORT_HEURISTIC
-#define COMMON_COUNTER_MOVE_HISTORY_TABLE       // Required COUNTER_MOVE_HISTORY
-#define COMMON_KILLER_MOVE_TABLE                // Required KILLER_MOVE
-#define COMMON_COUNTER_MOVE_TABLE               // Required COUNTER_MOVE
-
-#endif // !LAZY_SMP
-
 // Tuning
 
 #ifdef TOGA_EVALUATION_FUNCTION

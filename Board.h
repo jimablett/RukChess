@@ -190,23 +190,13 @@ typedef struct {
 
     MoveItem BestMovesRoot[MAX_PLY]; // 1536 bytes
 
-#ifndef COMMON_HEURISTIC_TABLE
-
     int HeuristicTable[2][6][64]; // [Color][Piece][Square] // 3072 bytes
 
-#ifndef COMMON_COUNTER_MOVE_HISTORY_TABLE
     int CounterMoveHistoryTable[6][64][6 * 64]; // [Piece][Square][Piece * Square] // 589824 bytes
-#endif // !COMMON_COUNTER_MOVE_HISTORY_TABLE
 
-#endif // !COMMON_HEURISTIC_TABLE
-
-#ifndef COMMON_KILLER_MOVE_TABLE
     int KillerMoveTable[MAX_PLY + 1][2]; // [Max. ply + 1][Two killer moves] // 1032 bytes
-#endif // !COMMON_KILLER_MOVE_TABLE
 
-#ifndef COMMON_COUNTER_MOVE_TABLE
     int CounterMoveTable[2][6][64]; // [Color][Piece][Square] // 3072 bytes
-#endif // !COMMON_COUNTER_MOVE_TABLE
 
 #if defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
     AccumulatorItem Accumulator;
