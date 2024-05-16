@@ -134,12 +134,8 @@
 #define QUIESCENCE_HASH_MOVE                    // Required MOVES_SORT_...
 #define QUIESCENCE_SEE_MOVE_PRUNING             // Required MOVES_SORT_SEE or MOVES_SORT_MVV_LVA
 
-// Parallel search
-
-#define LAZY_SMP
-
-//#define BIND_THREAD                           // Required LAZY_SMP
-//#define BIND_THREAD_V2                        // Required LAZY_SMP (Max. 64 CPUs)
+//#define BIND_THREAD
+//#define BIND_THREAD_V2                        // Max. 64 CPUs
 
 // Tuning
 
