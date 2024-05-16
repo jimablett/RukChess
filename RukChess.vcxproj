@@ -137,7 +137,6 @@
     <ClCompile Include="Move.cpp" />
     <ClCompile Include="NNUE.cpp" />
     <ClCompile Include="NNUE2.cpp" />
-    <ClCompile Include="PV_Splitting.cpp" />
     <ClCompile Include="QuiescenceSearch.cpp" />
     <ClCompile Include="RootSplitting.cpp" />
     <ClCompile Include="Search.cpp" />
@@ -164,7 +163,6 @@
     <ClInclude Include="Move.h" />
     <ClInclude Include="NNUE.h" />
     <ClInclude Include="NNUE2.h" />
-    <ClInclude Include="PV_Splitting.h" />
     <ClInclude Include="QuiescenceSearch.h" />
     <ClInclude Include="RootSplitting.h" />
     <ClInclude Include="Search.h" />

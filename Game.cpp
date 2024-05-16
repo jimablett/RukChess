@@ -13,7 +13,6 @@
 #include "Heuristic.h"
 #include "MCTS.h"
 #include "Move.h"
-#include "PV_Splitting.h"
 #include "RootSplitting.h"
 #include "Search.h"
 #include "Types.h"
@@ -399,11 +398,9 @@ BOOL ComputerMove(void)
             while (TRUE) {
 #ifdef ROOT_SPLITTING
                 Score = RootSplitting_Search(&CurrentBoard, Alpha, Beta, Depth, 0, CurrentBoard.BestMovesRoot, InCheck);
-#elif defined(PV_SPLITTING)
-                Score = PVSplitting_Search(&CurrentBoard, Alpha, Beta, Depth, 0, CurrentBoard.BestMovesRoot, InCheck, 0);
 #else
                 Score = Search(&CurrentBoard, Alpha, Beta, Depth, 0, CurrentBoard.BestMovesRoot, TRUE, InCheck, FALSE, 0);
-#endif // ROOT_SPLITTING || PV_SPLITTING
+#endif // ROOT_SPLITTING
 
                 if (StopSearch) {
                     break; // while
@@ -426,11 +423,9 @@ BOOL ComputerMove(void)
 #endif // ASPIRATION_WINDOW
 #ifdef ROOT_SPLITTING
             Score = RootSplitting_Search(&CurrentBoard, -INF, INF, Depth, 0, CurrentBoard.BestMovesRoot, InCheck);
-#elif defined(PV_SPLITTING)
-            Score = PVSplitting_Search(&CurrentBoard, -INF, INF, Depth, 0, CurrentBoard.BestMovesRoot, InCheck, 0);
 #else
             Score = Search(&CurrentBoard, -INF, INF, Depth, 0, CurrentBoard.BestMovesRoot, TRUE, InCheck, FALSE, 0);
-#endif // ROOT_SPLITTING || PV_SPLITTING
+#endif // ROOT_SPLITTING
 #ifdef ASPIRATION_WINDOW
         }
 #endif // ASPIRATION_WINDOW
@@ -916,7 +911,7 @@ Done:
 
     return PrintResult(InCheck, BestMove, PonderMove, BestScore);
 }
-#endif // MCTS || ROOT_SPLITTING || PV_SPLITTING || ABDADA || LAZY_SMP
+#endif // MCTS || ROOT_SPLITTING || ABDADA || LAZY_SMP
 
 void ComputerMoveThread(void* ignored)
 {

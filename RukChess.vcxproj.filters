@@ -54,9 +54,6 @@
     <ClCompile Include="NNUE2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PV_Splitting.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="QuiescenceSearch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -129,9 +126,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="NNUE2.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PV_Splitting.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="QuiescenceSearch.h">

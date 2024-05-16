@@ -491,7 +491,7 @@ NextMove:
 
         ++Board->Nodes;
 /*
-#if !defined(ROOT_SPLITTING) && !defined(PV_SPLITTING)
+#if !defined(ROOT_SPLITTING)
         if (omp_get_thread_num() == 0) { // Master thread
             if (Ply == 0 && PrintMode == PRINT_MODE_UCI && (Clock() - TimeStart) >= 3000ULL) {
 #pragma omp critical
@@ -506,7 +506,7 @@ NextMove:
                 }
             }
         }
-#endif // !ROOT_SPLITTING && !PV_SPLITTING
+#endif // !ROOT_SPLITTING
 */
         GiveCheck = IsInCheck(Board, Board->CurrentColor);
 

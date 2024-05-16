@@ -137,7 +137,6 @@
 // Parallel search
 
 //#define ROOT_SPLITTING
-//#define PV_SPLITTING
 //#define ABDADA
 #define LAZY_SMP
 
