@@ -119,6 +119,7 @@
       <WarningLevel>Level4</WarningLevel>
       <OpenMPSupport>true</OpenMPSupport>
       <CompileAs>CompileAsC</CompileAs>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
