@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Abdada.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="BitBoard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -86,9 +83,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Abdada.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="BitBoard.h">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -123,7 +123,6 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Abdada.cpp" />
     <ClCompile Include="BitBoard.cpp" />
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="Book.cpp" />
@@ -148,7 +147,6 @@
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Abdada.h" />
     <ClInclude Include="BitBoard.h" />
     <ClInclude Include="Board.h" />
     <ClInclude Include="Book.h" />

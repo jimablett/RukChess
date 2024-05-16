@@ -18,8 +18,6 @@
 #include "Types.h"
 #include "Utils.h"
 
-#ifndef ABDADA
-
 #ifdef FUTILITY_PRUNING
 int FutilityMargin(const int Depth) // Hakkapeliitta
 {
@@ -777,5 +775,3 @@ NextMove:
 
     return BestScore;
 }
-
-#endif // !ABDADA

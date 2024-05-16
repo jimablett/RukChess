@@ -136,11 +136,10 @@
 
 // Parallel search
 
-//#define ABDADA
 #define LAZY_SMP
 
-//#define BIND_THREAD                           // Required LAZY_SMP or ABDADA
-//#define BIND_THREAD_V2                        // Required LAZY_SMP or ABDADA (Max. 64 CPUs)
+//#define BIND_THREAD                           // Required LAZY_SMP
+//#define BIND_THREAD_V2                        // Required LAZY_SMP (Max. 64 CPUs)
 
 // Heuristic/Killer move/Counter move tables
 

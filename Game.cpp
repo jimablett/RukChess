@@ -4,7 +4,6 @@
 
 #include "Game.h"
 
-#include "Abdada.h"
 #include "Board.h"
 #include "Book.h"
 #include "Def.h"
@@ -317,7 +316,7 @@ BOOL ComputerMove(void)
 
     return PrintResult(InCheck, BestMove, PonderMove, BestScore);
 }
-#elif !defined(ABDADA) && !defined(LAZY_SMP)
+#elif !defined(LAZY_SMP)
 BOOL ComputerMove(void)
 {
     BOOL InCheck;
@@ -420,210 +419,6 @@ BOOL ComputerMove(void)
 #ifdef ASPIRATION_WINDOW
         }
 #endif // ASPIRATION_WINDOW
-
-        if (StopSearch) {
-            break; // for (depth)
-        }
-
-        CompletedDepth = Depth;
-
-        PrintBestMoves(&CurrentBoard, CompletedDepth, CurrentBoard.BestMovesRoot, Score);
-
-        BestMove = CurrentBoard.BestMovesRoot[0];
-        PonderMove = CurrentBoard.BestMovesRoot[1];
-
-        TargetTimeLocal = TargetTime[TimeStep];
-
-        if (TargetTimeLocal > 0ULL && BestScore > Score) {
-            TargetTimeLocal = (U64)((double)TargetTimeLocal * MIN((1.0 + (double)(BestScore - Score) / 80.0), 2.0));
-        }
-
-        BestScore = Score;
-
-        if (!BestMove.Move) { // No legal moves
-            break; // for (depth)
-        }
-
-        if (BestScore <= -INF + Depth || BestScore >= INF - Depth) { // Checkmate
-            break; // for (depth)
-        }
-
-        if (TargetTimeLocal > 0ULL && CompletedDepth >= MIN_SEARCH_DEPTH && (Clock() - TimeStart) >= TargetTimeLocal) {
-            break; // for (depth)
-        }
-    } // for
-
-Done:
-
-    TimeStop = Clock();
-    TotalTime = TimeStop - TimeStart;
-
-    return PrintResult(InCheck, BestMove, PonderMove, BestScore);
-}
-#elif defined(ABDADA)
-BOOL ComputerMove(void)
-{
-    BOOL InCheck;
-
-    int Score = 0;
-    int BestScore = 0;
-
-    BoardItem ThreadBoard;
-    int ThreadScore;
-
-    MoveItem BestMove = (MoveItem){ 0, 0, 0 };
-    MoveItem PonderMove = (MoveItem){ 0, 0, 0 };
-
-#ifdef ASPIRATION_WINDOW
-    int Delta;
-
-    int Alpha;
-    int Beta;
-#endif // ASPIRATION_WINDOW
-
-    U64 TargetTimeLocal;
-
-    TimeStart = Clock();
-    TimeStop = TimeStart + MaxTime;
-
-    TimeStep = 0;
-
-    CompletedDepth = 0;
-
-    StopSearch = FALSE;
-
-    InCheck = IsInCheck(&CurrentBoard, CurrentBoard.CurrentColor);
-
-#if defined(PVS) || defined(QUIESCENCE_PVS)
-    CurrentBoard.FollowPV = TRUE;
-#endif // PVS || QUIESCENCE_PVS
-
-    CurrentBoard.Nodes = 0ULL;
-
-#ifdef DEBUG_STATISTIC
-    CurrentBoard.HashCount = 0ULL;
-    CurrentBoard.EvaluateCount = 0ULL;
-    CurrentBoard.CutoffCount = 0ULL;
-    CurrentBoard.QuiescenceCount = 0ULL;
-#endif // DEBUG_STATISTIC
-
-    CurrentBoard.SelDepth = 0;
-
-    CurrentBoard.BestMovesRoot[0] = (MoveItem){ 0, 0, 0 };
-
-#ifdef MOVES_SORT_HEURISTIC
-    ClearHeuristic(&CurrentBoard);
-#endif // MOVES_SORT_HEURISTIC
-
-#ifdef KILLER_MOVE
-    ClearKillerMove(&CurrentBoard);
-#endif // KILLER_MOVE
-
-#ifdef COUNTER_MOVE
-    ClearCounterMove(&CurrentBoard);
-#endif // COUNTER_MOVE
-
-    AddHashStoreIteration();
-
-    if (BookFileLoaded && GetBookMove(&CurrentBoard, CurrentBoard.BestMovesRoot)) {
-        BestMove = CurrentBoard.BestMovesRoot[0];
-        PonderMove = CurrentBoard.BestMovesRoot[1];
-
-        goto Done;
-    }
-
-    for (int Depth = 1; Depth <= MaxDepth; ++Depth) {
-#ifdef ASPIRATION_WINDOW
-#pragma omp parallel private(Alpha, Beta, Delta, ThreadBoard, ThreadScore)
-#else
-#pragma omp parallel private(ThreadBoard, ThreadScore)
-#endif // ASPIRATION_WINDOW
-        {
-#if defined(BIND_THREAD) || defined(BIND_THREAD_V2)
-            BindThread(omp_get_thread_num());
-#endif // BIND_THREAD || BIND_THREAD_V2
-/*
-#pragma omp critical
-            {
-                printf("-- Start: Depth = %d Thread number = %d\n", Depth, omp_get_thread_num());
-            }
-*/
-            ThreadBoard = CurrentBoard;
-            ThreadScore = Score;
-
-            ThreadBoard.Nodes = 0ULL;
-
-#ifdef DEBUG_STATISTIC
-            ThreadBoard.HashCount = 0ULL;
-            ThreadBoard.EvaluateCount = 0ULL;
-            ThreadBoard.CutoffCount = 0ULL;
-            ThreadBoard.QuiescenceCount = 0ULL;
-#endif // DEBUG_STATISTIC
-
-            ThreadBoard.SelDepth = 0;
-
-#ifdef ASPIRATION_WINDOW
-            if (Depth >= 4) {
-                Delta = ASPIRATION_WINDOW_INIT_DELTA;
-
-                Alpha = MAX((ThreadScore - Delta), -INF);
-                Beta = MIN((ThreadScore + Delta), INF);
-
-                while (TRUE) {
-                    ThreadScore = ABDADA_Search(&ThreadBoard, Alpha, Beta, Depth, 0, ThreadBoard.BestMovesRoot, TRUE, InCheck, FALSE, 0);
-
-                    if (StopSearch) {
-                        break; // while
-                    }
-
-                    if (ThreadScore <= Alpha) {
-                        Alpha = MAX((ThreadScore - Delta), -INF);
-                    }
-                    else if (ThreadScore >= Beta) {
-                        Beta = MIN((ThreadScore + Delta), INF);
-                    }
-                    else {
-                        break; // while
-                    }
-
-                    Delta += Delta / 4 + 5;
-                }
-            }
-            else {
-#endif // ASPIRATION_WINDOW
-                ThreadScore = ABDADA_Search(&ThreadBoard, -INF, INF, Depth, 0, ThreadBoard.BestMovesRoot, TRUE, InCheck, FALSE, 0);
-#ifdef ASPIRATION_WINDOW
-            }
-#endif // ASPIRATION_WINDOW
-
-#pragma omp critical
-            {
-//                printf("-- End: Depth = %d Thread number = %d\n", Depth, omp_get_thread_num());
-
-                CurrentBoard.Nodes += ThreadBoard.Nodes;
-
-#ifdef DEBUG_STATISTIC
-                CurrentBoard.HashCount += ThreadBoard.HashCount;
-                CurrentBoard.EvaluateCount += ThreadBoard.EvaluateCount;
-                CurrentBoard.CutoffCount += ThreadBoard.CutoffCount;
-                CurrentBoard.QuiescenceCount += ThreadBoard.QuiescenceCount;
-#endif // DEBUG_STATISTIC
-
-                CurrentBoard.SelDepth = MAX(CurrentBoard.SelDepth, ThreadBoard.SelDepth);
-
-                if (!StopSearch) {
-                    Score = ThreadScore;
-
-                    for (int Ply = 0; Ply < MAX_PLY; ++Ply) {
-                        CurrentBoard.BestMovesRoot[Ply] = ThreadBoard.BestMovesRoot[Ply];
-
-                        if (!CurrentBoard.BestMovesRoot[Ply].Move) {
-                            break; // for (ply)
-                        }
-                    }
-                }
-            }
-        } // pragma omp parallel
 
         if (StopSearch) {
             break; // for (depth)
@@ -902,7 +697,7 @@ Done:
 
     return PrintResult(InCheck, BestMove, PonderMove, BestScore);
 }
-#endif // MCTS || ABDADA || LAZY_SMP
+#endif // MCTS || LAZY_SMP
 
 void ComputerMoveThread(void* ignored)
 {
