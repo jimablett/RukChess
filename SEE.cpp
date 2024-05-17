@@ -10,7 +10,7 @@
 #include "Types.h"
 #include "Utils.h"
 
-#if (defined(MOVES_SORT_MVV_LVA) && defined(BAD_CAPTURE_LAST)) || defined(SEE_QUIET_MOVE_PRUNING) || defined(QUIESCENCE_SEE_MOVE_PRUNING)
+#if defined(BAD_CAPTURE_LAST) || defined(SEE_QUIET_MOVE_PRUNING) || defined(QUIESCENCE_SEE_MOVE_PRUNING)
 
 const int PiecesScoreSEE[6] = { 100, 300, 300, 500, 900, INF }; // PNBRQK
 
@@ -155,4 +155,4 @@ int CaptureSEE(const BoardItem* Board, const int From, const int To, const int P
     return Gain[0];
 }
 
-#endif // (MOVES_SORT_MVV_LVA && BAD_CAPTURE_LAST) || SEE_QUIET_MOVE_PRUNING || QUIESCENCE_SEE_MOVE_PRUNING
+#endif // BAD_CAPTURE_LAST || SEE_QUIET_MOVE_PRUNING || QUIESCENCE_SEE_MOVE_PRUNING

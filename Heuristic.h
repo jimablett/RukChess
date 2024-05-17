@@ -12,16 +12,12 @@
 
 #define BONUS(Depth)            ((Depth) * (Depth))
 
-#ifdef MOVES_SORT_HEURISTIC
-
 void UpdateHeuristic(BoardItem* Board, int** CMH_Pointer, const int Move, const int Bonus);
 void ClearHeuristic(BoardItem* Board);
 
 #ifdef COUNTER_MOVE_HISTORY
 void SetCounterMoveHistoryPointer(BoardItem* Board, volatile int** CMH_Pointer, const int Ply);
 #endif // COUNTER_MOVE_HISTORY
-
-#endif // MOVES_SORT_HEURISTIC
 
 #ifdef KILLER_MOVE
 void UpdateKillerMove(BoardItem* Board, const int Move, const int Ply);

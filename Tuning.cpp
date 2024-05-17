@@ -142,17 +142,13 @@ SCORE TuningSearch(BoardItem* Board, SCORE Alpha, SCORE Beta, const int Ply, con
 #endif // QUIESCENCE_CHECK_EXTENSION
 
     for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
-#if defined(MOVES_SORT_MVV_LVA) || defined(MOVES_SORT_HEURISTIC)
         PrepareNextMove(MoveNumber, MoveList, GenMoveCount);
-#endif // MOVES_SORT_MVV_LVA || MOVES_SORT_HEURISTIC
 
 #ifdef QUIESCENCE_SEE_MOVE_PRUNING
         if (!InCheck) {
-#ifdef MOVES_SORT_MVV_LVA
             if (CaptureSEE(Board, MOVE_FROM(MoveList[MoveNumber].Move), MOVE_TO(MoveList[MoveNumber].Move), MOVE_PROMOTE_PIECE(MoveList[MoveNumber].Move), MoveList[MoveNumber].Type) < 0) { // Bad capture/quiet move
                 continue; // Next move
             }
-#endif // MOVES_SORT_MVV_LVA
         }
 #endif // QUIESCENCE_SEE_MOVE_PRUNING
 
@@ -707,9 +703,7 @@ void FindBestK(void)
 
     SetFen(&CurrentBoard, StartFen);
 
-#ifdef MOVES_SORT_HEURISTIC
     ClearHeuristic(&CurrentBoard);
-#endif // MOVES_SORT_HEURISTIC
 
     // Load data
 
@@ -1090,9 +1084,7 @@ void TuningLocalSearch(void)
 
     SetFen(&CurrentBoard, StartFen);
 
-#ifdef MOVES_SORT_HEURISTIC
     ClearHeuristic(&CurrentBoard);
-#endif // MOVES_SORT_HEURISTIC
 
     // Load data
 
@@ -1267,9 +1259,7 @@ void TuningAdamSGD(void)
 
     SetFen(&CurrentBoard, StartFen);
 
-#ifdef MOVES_SORT_HEURISTIC
     ClearHeuristic(&CurrentBoard);
-#endif // MOVES_SORT_HEURISTIC
 
     // Load data
 

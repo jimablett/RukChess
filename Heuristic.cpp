@@ -8,8 +8,6 @@
 #include "Def.h"
 #include "Utils.h"
 
-#ifdef MOVES_SORT_HEURISTIC
-
 void UpdateHeuristic(BoardItem* Board, int** CMH_Pointer, const int Move, const int Bonus)
 {
     Board->HeuristicTable[Board->CurrentColor][PIECE(Board->Pieces[MOVE_FROM(Move)])][MOVE_TO(Move)] += Bonus - Board->HeuristicTable[Board->CurrentColor][PIECE(Board->Pieces[MOVE_FROM(Move)])][MOVE_TO(Move)] * ABS(Bonus) / MAX_HEURISTIC_SCORE;
@@ -74,8 +72,6 @@ void SetCounterMoveHistoryPointer(BoardItem* Board, volatile int** CMH_Pointer, 
     CMH_Pointer[1] = Board->CounterMoveHistoryTable[Info->PieceFrom][Info->To];
 }
 #endif // COUNTER_MOVE_HISTORY
-
-#endif // MOVES_SORT_HEURISTIC
 
 #ifdef KILLER_MOVE
 

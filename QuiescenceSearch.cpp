@@ -186,9 +186,7 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
 #endif // QUIESCENCE_HASH_MOVE
 
     for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
-#if defined(MOVES_SORT_MVV_LVA) || defined(MOVES_SORT_HEURISTIC)
         PrepareNextMove(MoveNumber, MoveList, GenMoveCount);
-#endif // MOVES_SORT_MVV_LVA || MOVES_SORT_HEURISTIC
 
 #ifdef QUIESCENCE_SEE_MOVE_PRUNING
         if (
@@ -200,11 +198,9 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
             && MoveList[MoveNumber].Move != HashMove
 #endif // QUIESCENCE_HASH_MOVE
         ) {
-#ifdef MOVES_SORT_MVV_LVA
             if (CaptureSEE(Board, MOVE_FROM(MoveList[MoveNumber].Move), MOVE_TO(MoveList[MoveNumber].Move), MOVE_PROMOTE_PIECE(MoveList[MoveNumber].Move), MoveList[MoveNumber].Type) < 0) { // Bad capture/quiet move
                 continue; // Next move
             }
-#endif // MOVES_SORT_MVV_LVA
         }
 #endif // QUIESCENCE_SEE_MOVE_PRUNING
 
@@ -249,7 +245,6 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
                 if (IsPrincipal && BestScore < Beta) {
                     Alpha = BestScore;
                 }
-#ifdef ALPHA_BETA_PRUNING
                 else { // !IsPrincipal || BestScore >= Beta
 #ifdef DEBUG_STATISTIC
                     ++Board->CutoffCount;
@@ -261,7 +256,6 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
 
                     return BestScore;
                 }
-#endif // ALPHA_BETA_PRUNING
             }
         }
     } // for

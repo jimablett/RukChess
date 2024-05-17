@@ -282,9 +282,7 @@ BOOL ComputerMove(void)
 
     CurrentBoard.BestMovesRoot[0] = (MoveItem){ 0, 0, 0 };
 
-#ifdef MOVES_SORT_HEURISTIC
     ClearHeuristic(&CurrentBoard);
-#endif // MOVES_SORT_HEURISTIC
 
 #ifdef KILLER_MOVE
     ClearKillerMove(&CurrentBoard);
@@ -371,9 +369,7 @@ BOOL ComputerMove(void)
 
     CurrentBoard.BestMovesRoot[0] = (MoveItem){ 0, 0, 0 };
 
-#ifdef MOVES_SORT_HEURISTIC
     ClearHeuristic(&CurrentBoard);
-#endif // MOVES_SORT_HEURISTIC
 
 #ifdef KILLER_MOVE
     ClearKillerMove(&CurrentBoard);

@@ -87,9 +87,7 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
     int BetaCut;
 #endif // PROBCUT
 
-#if defined(MOVES_SORT_MVV_LVA) && defined(BAD_CAPTURE_LAST)
     int SEE_Value;
-#endif // MOVES_SORT_MVV_LVA && BAD_CAPTURE_LAST
 
 #if defined(NEGA_SCOUT) && defined(LATE_MOVE_REDUCTION)
     int LateMoveReduction;
@@ -170,11 +168,11 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
         Board->SelDepth = Ply + 1;
     }
 
-#if defined(MOVES_SORT_HEURISTIC) && defined(COUNTER_MOVE_HISTORY)
+#ifdef COUNTER_MOVE_HISTORY
     SetCounterMoveHistoryPointer(Board, CMH_Pointer, Ply);
 #else
     CMH_Pointer[0] = CMH_Pointer[1] = NULL;
-#endif // MOVES_SORT_HEURISTIC && COUNTER_MOVE_HISTORY
+#endif // COUNTER_MOVE_HISTORY
 
 #if defined(HASH_SCORE) || defined(HASH_MOVE)
     if (!SkipMove) {
@@ -192,7 +190,6 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
                     || (HashFlag == HASH_ALPHA && HashScore <= Alpha)
                     || (HashFlag == HASH_EXACT)
                 ) {
-#if defined(MOVES_SORT_HEURISTIC) || defined(KILLER_MOVE) || defined(COUNTER_MOVE)
                     if (HashMove) {
                         if (
                             Board->Pieces[MOVE_TO(HashMove)] == EMPTY
@@ -206,9 +203,7 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
                             )
                         ) { // Not capture/promote move
                             if (HashFlag == HASH_BETA) {
-#ifdef MOVES_SORT_HEURISTIC
                                 UpdateHeuristic(Board, CMH_Pointer, HashMove, BONUS(Depth));
-#endif // MOVES_SORT_HEURISTIC
 
 #ifdef KILLER_MOVE
                                 UpdateKillerMove(Board, HashMove, Ply);
@@ -218,14 +213,11 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
                                 UpdateCounterMove(Board, HashMove, Ply);
 #endif // COUNTER_MOVE
                             }
-#ifdef MOVES_SORT_HEURISTIC
                             else if (HashFlag == HASH_ALPHA) {
                                 UpdateHeuristic(Board, CMH_Pointer, HashMove, -BONUS(Depth));
                             }
-#endif // MOVES_SORT_HEURISTIC
                         }
                     }
-#endif // MOVES_SORT_HEURISTIC || KILLER_MOVE || COUNTER_MOVE
 
                     return HashScore;
                 }
@@ -429,19 +421,15 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
 #endif // KILLER_MOVE
 
     for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
-#if defined(MOVES_SORT_MVV_LVA) && defined(BAD_CAPTURE_LAST)
 NextMove:
-#endif // MOVES_SORT_MVV_LVA && BAD_CAPTURE_LAST
 
-#if defined(MOVES_SORT_MVV_LVA) || defined(MOVES_SORT_HEURISTIC)
         PrepareNextMove(MoveNumber, MoveList, GenMoveCount);
-#endif // MOVES_SORT_MVV_LVA || MOVES_SORT_HEURISTIC
 
         if (MoveList[MoveNumber].Move == SkipMove) {
             continue; // Next move
         }
 
-#if defined(MOVES_SORT_MVV_LVA) && defined(BAD_CAPTURE_LAST)
+#ifdef BAD_CAPTURE_LAST
         if (
             (MoveList[MoveNumber].Type & MOVE_CAPTURE)
             && !(MoveList[MoveNumber].Type & MOVE_PAWN_PROMOTE)
@@ -461,7 +449,7 @@ NextMove:
                 goto NextMove;
             }
         }
-#endif // MOVES_SORT_MVV_LVA && BAD_CAPTURE_LAST
+#endif // BAD_CAPTURE_LAST
 
         MakeMove(Board, MoveList[MoveNumber]);
 
@@ -698,21 +686,17 @@ NextMove:
                 if (IsPrincipal && BestScore < Beta) {
                     Alpha = BestScore;
                 }
-#ifdef ALPHA_BETA_PRUNING
                 else { // !IsPrincipal || BestScore >= Beta
 #ifdef DEBUG_STATISTIC
                     ++Board->CutoffCount;
 #endif // DEBUG_STATISTIC
 
-#if defined(MOVES_SORT_HEURISTIC) || defined(KILLER_MOVE) || defined(COUNTER_MOVE)
                     if (!(BestMove.Type & (MOVE_CAPTURE | MOVE_PAWN_PROMOTE))) { // Not capture/promote move
-#ifdef MOVES_SORT_HEURISTIC
                         UpdateHeuristic(Board, CMH_Pointer, BestMove.Move, BONUS(Depth));
 
                         for (int QuietMoveNumber = 0; QuietMoveNumber < QuietMoveCount; ++QuietMoveNumber) {
                             UpdateHeuristic(Board, CMH_Pointer, QuietMoveList[QuietMoveNumber], -BONUS(Depth));
                         }
-#endif // MOVES_SORT_HEURISTIC
 
 #ifdef KILLER_MOVE
                         UpdateKillerMove(Board, BestMove.Move, Ply);
@@ -722,11 +706,9 @@ NextMove:
                         UpdateCounterMove(Board, BestMove.Move, Ply);
 #endif // COUNTER_MOVE
                     }
-#endif // MOVES_SORT_HEURISTIC || KILLER_MOVE || COUNTER_MOVE
 
                     break;
                 }
-#endif // ALPHA_BETA_PRUNING
             } // if
         } // if
 

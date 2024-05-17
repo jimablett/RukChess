@@ -120,7 +120,6 @@ void SetCounterMoveSortValue(const BoardItem* Board, const int Ply, MoveItem* Ge
 }
 #endif // COUNTER_MOVE
 
-#if defined(MOVES_SORT_MVV_LVA) || defined(MOVES_SORT_HEURISTIC)
 void PrepareNextMove(const int StartIndex, MoveItem* GenMoveList, const int GenMoveCount)
 {
     int BestMoveIndex = StartIndex;
@@ -141,4 +140,3 @@ void PrepareNextMove(const int StartIndex, MoveItem* GenMoveList, const int GenM
         GenMoveList[BestMoveIndex] = TempMoveItem;
     }
 }
-#endif // MOVES_SORT_MVV_LVA || MOVES_SORT_HEURISTIC

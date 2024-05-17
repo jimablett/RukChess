@@ -82,12 +82,7 @@
 
 #define ASPIRATION_WINDOW
 
-#define ALPHA_BETA_PRUNING
-
-#define MOVES_SORT_MVV_LVA
-#define MOVES_SORT_HEURISTIC
-
-#define COUNTER_MOVE_HISTORY                    // Required MOVES_SORT_HEURISTIC
+#define COUNTER_MOVE_HISTORY
 
 #define HASH_PREFETCH
 
@@ -105,7 +100,7 @@
 #define KILLER_MOVE                             // Required MOVES_SORT_... and HASH_MOVE
 #define KILLER_MOVE_2                           // Required MOVES_SORT_..., HASH_MOVE and KILLER_MOVE
 #define COUNTER_MOVE                            // Required MOVES_SORT_..., HASH_MOVE, KILLER_MOVE and KILLER_MOVE_2
-#define BAD_CAPTURE_LAST                        // Required MOVES_SORT_MVV_LVA
+#define BAD_CAPTURE_LAST
 #define CHECK_EXTENSION
 #define SINGULAR_EXTENSION                      // Required HASH_SCORE and HASH_MOVE
 #define FUTILITY_PRUNING
@@ -124,7 +119,7 @@
 #define QUIESCENCE_CHECK_EXTENSION
 //#define QUIESCENCE_PVS                        // Required MOVES_SORT_...
 #define QUIESCENCE_HASH_MOVE                    // Required MOVES_SORT_...
-#define QUIESCENCE_SEE_MOVE_PRUNING             // Required MOVES_SORT_MVV_LVA
+#define QUIESCENCE_SEE_MOVE_PRUNING
 
 //#define BIND_THREAD
 //#define BIND_THREAD_V2                        // Max. 64 CPUs
