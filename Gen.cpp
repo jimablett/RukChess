@@ -10,7 +10,6 @@
 #include "Evaluate.h"
 #include "Heuristic.h"
 #include "Move.h"
-#include "SEE.h"
 #include "Sort.h"
 #include "Types.h"
 
