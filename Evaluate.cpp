@@ -19,15 +19,15 @@ const int MaxGamePhase = 24; // 1 x 4N + 1 x 4B + 2 x 4R + 4 x 2Q
 
 // Material (4.2)
 
-SCORE PiecesScoreOpening[6] = { 70, 325, 325, 500, 975, 0 };    // PNBRQK
-SCORE PiecesScoreEnding[6] = { 90, 325, 325, 500, 975, 0 };     // PNBRQK
+int PiecesScoreOpening[6] = { 70, 325, 325, 500, 975, 0 };    // PNBRQK
+int PiecesScoreEnding[6] = { 90, 325, 325, 500, 975, 0 };     // PNBRQK
 
-SCORE BishopPairOpening = 50;
-SCORE BishopPairEnding = 50;
+int BishopPairOpening = 50;
+int BishopPairEnding = 50;
 
 // Piece-square tables (4.3)
 
-SCORE PawnSquareScoreOpening[64] = {
+int PawnSquareScoreOpening[64] = {
     -15, -5, 0,  5,  5, 0, -5, -15,
     -15, -5, 0,  5,  5, 0, -5, -15,
     -15, -5, 0,  5,  5, 0, -5, -15,
@@ -38,7 +38,7 @@ SCORE PawnSquareScoreOpening[64] = {
     -15, -5, 0,  5,  5, 0, -5, -15
 };
 
-SCORE PawnSquareScoreEnding[64] = {
+int PawnSquareScoreEnding[64] = {
     0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0,
@@ -49,7 +49,7 @@ SCORE PawnSquareScoreEnding[64] = {
     0, 0, 0, 0, 0, 0, 0, 0
 };
 
-SCORE KnightSquareScoreOpening[64] = {
+int KnightSquareScoreOpening[64] = {
     -135, -25, -15, -10, -10, -15, -25, -135,
      -20, -10,   0,   5,   5,   0, -10,  -20,
       -5,   5,  15,  20,  20,  15,   5,   -5,
@@ -60,7 +60,7 @@ SCORE KnightSquareScoreOpening[64] = {
      -50, -40, -30, -25, -25, -30, -40,  -50
 };
 
-SCORE KnightSquareScoreEnding[64] = {
+int KnightSquareScoreEnding[64] = {
     -40, -30, -20, -15, -15, -20, -30, -40,
     -30, -20, -10,  -5,  -5, -10, -20, -30,
     -20, -10,   0,   5,   5,   0, -10, -20,
@@ -71,7 +71,7 @@ SCORE KnightSquareScoreEnding[64] = {
     -40, -30, -20, -15, -15, -20, -30, -40
 };
 
-SCORE BishopSquareScoreOpening[64] = {
+int BishopSquareScoreOpening[64] = {
      -8,  -8,  -6,  -4,  -4,  -6,  -8,  -8,
      -8,   0,  -2,   0,   0,  -2,   0,  -8,
      -6,  -2,   4,   2,   2,   4,  -2,  -6,
@@ -82,7 +82,7 @@ SCORE BishopSquareScoreOpening[64] = {
     -18, -18, -16, -14, -14, -16, -18, -18
 };
 
-SCORE BishopSquareScoreEnding[64] = {
+int BishopSquareScoreEnding[64] = {
     -18, -12, -9, -6, -6, -9, -12, -18,
     -12,  -6, -3,  0,  0, -3,  -6, -12,
      -9,  -3,  0,  3,  3,  0,  -3,  -9,
@@ -93,7 +93,7 @@ SCORE BishopSquareScoreEnding[64] = {
     -18, -12, -9, -6, -6, -9, -12, -18
 };
 
-SCORE RookSquareScoreOpening[64] = {
+int RookSquareScoreOpening[64] = {
     -6, -3, 0, 3, 3, 0, -3, -6,
     -6, -3, 0, 3, 3, 0, -3, -6,
     -6, -3, 0, 3, 3, 0, -3, -6,
@@ -104,7 +104,7 @@ SCORE RookSquareScoreOpening[64] = {
     -6, -3, 0, 3, 3, 0, -3, -6
 };
 
-SCORE RookSquareScoreEnding[64] = {
+int RookSquareScoreEnding[64] = {
     0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0,
@@ -115,7 +115,7 @@ SCORE RookSquareScoreEnding[64] = {
     0, 0, 0, 0, 0, 0, 0, 0
 };
 
-SCORE QueenSquareScoreOpening[64] = {
+int QueenSquareScoreOpening[64] = {
      0,  0,  0,  0,  0,  0,  0,  0,
      0,  0,  0,  0,  0,  0,  0,  0,
      0,  0,  0,  0,  0,  0,  0,  0,
@@ -126,7 +126,7 @@ SCORE QueenSquareScoreOpening[64] = {
     -5, -5, -5, -5, -5, -5, -5, -5
 };
 
-SCORE QueenSquareScoreEnding[64] = {
+int QueenSquareScoreEnding[64] = {
     -24, -16, -12, -8, -8, -12, -16, -24,
     -16,  -8,  -4,  0,  0,  -4,  -8, -16,
     -12,  -4,   0,  4,  4,   0,  -4, -12,
@@ -137,7 +137,7 @@ SCORE QueenSquareScoreEnding[64] = {
     -24, -16, -12, -8, -8, -12, -16, -24
 };
 
-SCORE KingSquareScoreOpening[64] = {
+int KingSquareScoreOpening[64] = {
     -40, -30, -50, -70, -70, -50, -30, -40,
     -30, -20, -40, -60, -60, -40, -20, -30,
     -20, -10, -30, -50, -50, -30, -10, -20,
@@ -148,7 +148,7 @@ SCORE KingSquareScoreOpening[64] = {
      40,  50,  30,  10,  10,  30,  50,  40
 };
 
-SCORE KingSquareScoreEnding[64] = {
+int KingSquareScoreEnding[64] = {
     -72, -48, -36, -24, -24, -36, -48, -72,
     -48, -24, -12,   0,   0, -12, -24, -48,
     -36, -12,   0,  12,  12,   0, -12, -36,
@@ -161,80 +161,80 @@ SCORE KingSquareScoreEnding[64] = {
 
 // Pawns (4.4)
 
-SCORE PawnDoubledOpening = -10;
-SCORE PawnDoubledEnding = -20;
+int PawnDoubledOpening = -10;
+int PawnDoubledEnding = -20;
 
-SCORE PawnIsolatedOpening = -10;
-SCORE PawnIsolatedEnding = -20;
+int PawnIsolatedOpening = -10;
+int PawnIsolatedEnding = -20;
 
-SCORE PawnIsolatedOpenOpening = -20;
-SCORE PawnIsolatedOpenEnding = -20;
+int PawnIsolatedOpenOpening = -20;
+int PawnIsolatedOpenEnding = -20;
 
-SCORE PawnBackwardOpening = -8;
-SCORE PawnBackwardEnding = -10;
+int PawnBackwardOpening = -8;
+int PawnBackwardEnding = -10;
 
-SCORE PawnBackwardOpenOpening = -16;
-SCORE PawnBackwardOpenEnding = -10;
+int PawnBackwardOpenOpening = -16;
+int PawnBackwardOpenEnding = -10;
 
-SCORE PawnCandidateOpening[8] = { 0, 5, 5, 10, 20, 35, 55, 0 };
-SCORE PawnCandidateEnding[8] = { 0, 10, 10, 20, 40, 70, 110, 0 };
+int PawnCandidateOpening[8] = { 0, 5, 5, 10, 20, 35, 55, 0 };
+int PawnCandidateEnding[8] = { 0, 10, 10, 20, 40, 70, 110, 0 };
 
 // Tempo (4.5)
 
-SCORE TempoOpening = 20;
-SCORE TempoEnding = 10;
+int TempoOpening = 20;
+int TempoEnding = 10;
 
 // Pattern (4.6)
 
-SCORE TrappedBishopOpening = -100;
-SCORE TrappedBishopEnding = -100;
+int TrappedBishopOpening = -100;
+int TrappedBishopEnding = -100;
 
-SCORE BlockedBishopOpening = -50;
-SCORE BlockedBishopEnding = -50;
+int BlockedBishopOpening = -50;
+int BlockedBishopEnding = -50;
 
-SCORE BlockedRookOpening = -50;
-SCORE BlockedRookEnding = -50;
+int BlockedRookOpening = -50;
+int BlockedRookEnding = -50;
 
 // Piece (4.7)
 
 // Mobility (4.7.1)
 
-SCORE KnightMobilityMoveDecrease = 4;
-SCORE BishopMobilityMoveDecrease = 6;
-SCORE RookMobilityMoveDecrease = 7;
+int KnightMobilityMoveDecrease = 4;
+int BishopMobilityMoveDecrease = 6;
+int RookMobilityMoveDecrease = 7;
 
-SCORE KnightMobility = 4;
-SCORE BishopMobility = 5;
+int KnightMobility = 4;
+int BishopMobility = 5;
 
-SCORE RookMobilityOpening = 2;
-SCORE RookMobilityEnding = 4;
+int RookMobilityOpening = 2;
+int RookMobilityEnding = 4;
 
 // Open file (4.7.2)
 
-SCORE RookOnClosedFileOpening = -10;
-SCORE RookOnClosedFileEnding = -10;
+int RookOnClosedFileOpening = -10;
+int RookOnClosedFileEnding = -10;
 
-SCORE RookOnSemiOpenFileOpening = 0;
-SCORE RookOnSemiOpenFileEnding = 0;
+int RookOnSemiOpenFileOpening = 0;
+int RookOnSemiOpenFileEnding = 0;
 
-SCORE RookOnSemiOpenFileAdjacentToEnemyKingOpening = 10;
-SCORE RookOnSemiOpenFileAdjacentToEnemyKingEnding = 0;
+int RookOnSemiOpenFileAdjacentToEnemyKingOpening = 10;
+int RookOnSemiOpenFileAdjacentToEnemyKingEnding = 0;
 
-SCORE RookOnSemiOpenFileSameToEnemyKingOpening = 20;
-SCORE RookOnSemiOpenFileSameToEnemyKingEnding = 0;
+int RookOnSemiOpenFileSameToEnemyKingOpening = 20;
+int RookOnSemiOpenFileSameToEnemyKingEnding = 0;
 
-SCORE RookOnOpenFileOpening = 10;
-SCORE RookOnOpenFileEnding = 10;
+int RookOnOpenFileOpening = 10;
+int RookOnOpenFileEnding = 10;
 
-SCORE RookOnOpenFileAdjacentToEnemyKingOpening = 20;
-SCORE RookOnOpenFileAdjacentToEnemyKingEnding = 10;
+int RookOnOpenFileAdjacentToEnemyKingOpening = 20;
+int RookOnOpenFileAdjacentToEnemyKingEnding = 10;
 
-SCORE RookOnOpenFileSameToEnemyKingOpening = 30;
-SCORE RookOnOpenFileSameToEnemyKingEnding = 10;
+int RookOnOpenFileSameToEnemyKingOpening = 30;
+int RookOnOpenFileSameToEnemyKingEnding = 10;
 
 // Outpost (4.7.3)
 
-SCORE KnightOutpost[64] = {
+int KnightOutpost[64] = {
     0, 0, 0,  0,  0, 0, 0, 0,
     0, 0, 0,  0,  0, 0, 0, 0,
     0, 0, 4,  5,  5, 4, 0, 0,
@@ -247,11 +247,11 @@ SCORE KnightOutpost[64] = {
 
 // Seventh rank (4.7.4)
 
-SCORE RookOnSeventhOpening = 20;
-SCORE RookOnSeventhEnding = 40;
+int RookOnSeventhOpening = 20;
+int RookOnSeventhEnding = 40;
 
-SCORE QueenOnSeventhOpening = 10;
-SCORE QueenOnSeventhEnding = 20;
+int QueenOnSeventhOpening = 10;
+int QueenOnSeventhEnding = 20;
 
 // King distance (4.7.5)
 
@@ -259,32 +259,32 @@ SCORE QueenOnSeventhEnding = 20;
 
 // Pawn shelter (4.8.1)
 
-SCORE KingFriendlyPawnAdvanceBase = -36;
-SCORE KingFriendlyPawnAdvanceDefault = -11;
+int KingFriendlyPawnAdvanceBase = -36;
+int KingFriendlyPawnAdvanceDefault = -11;
 
 // Pawn storm (4.8.2)
 
-SCORE KingPawnStorm[8] = { 0, 0, 0, -10, -30, -60, 0, 0 };
+int KingPawnStorm[8] = { 0, 0, 0, -10, -30, -60, 0, 0 };
 
 // Piece attack (4.8.3)
 
-SCORE KingZoneAttackedBase = -20;
-SCORE KingZoneAttackedWeight[8] = { 0, 0, 50, 75, 88, 94, 97, 99 }; // %
+int KingZoneAttackedBase = -20;
+int KingZoneAttackedWeight[8] = { 0, 0, 50, 75, 88, 94, 97, 99 }; // %
 
 // Passed pawns (4.9)
 
-SCORE PawnPassedEndingBase1 = 20;
-SCORE PawnPassedEndingBase2 = 120;
+int PawnPassedEndingBase1 = 20;
+int PawnPassedEndingBase2 = 120;
 
-SCORE PawnPassedEndingHostileKingDistance = 20;
-SCORE PawnPassedEndingFriendlyKingDistance = -5;
+int PawnPassedEndingHostileKingDistance = 20;
+int PawnPassedEndingFriendlyKingDistance = -5;
 
-SCORE PawnPassedEndingConsideredFree = 60;
+int PawnPassedEndingConsideredFree = 60;
 
-SCORE PawnPassedEndingUnstoppable = 800;
+int PawnPassedEndingUnstoppable = 800;
 
-SCORE PawnPassedOpening[8] = { 0, 10, 10, 16, 28, 46, 70, 0 };
-SCORE PawnPassedEndingWeight[8] = { 0, 0, 0, 10, 30, 60, 100, 0 }; // %
+int PawnPassedOpening[8] = { 0, 10, 10, 16, 28, 46, 70, 0 };
+int PawnPassedEndingWeight[8] = { 0, 0, 0, 10, 30, 60, 100, 0 }; // %
 
 // ------------------------------------------------------------------
 
@@ -379,10 +379,10 @@ void InitEvaluation(void)
     }
 }
 
-SCORE EvaluateWhiteKingOpening(const int KingSquare, const U64 WhitePawns, const U64 BlackPawns)
+int EvaluateWhiteKingOpening(const int KingSquare, const U64 WhitePawns, const U64 BlackPawns)
 {
-    SCORE ScoreOpening = 0;
-    SCORE KingScoreOpening = 0;
+    int ScoreOpening = 0;
+    int KingScoreOpening = 0;
 
     int File = FILE(KingSquare);
 
@@ -429,10 +429,10 @@ SCORE EvaluateWhiteKingOpening(const int KingSquare, const U64 WhitePawns, const
     return ScoreOpening;
 }
 
-SCORE EvaluateBlackKingOpening(const int KingSquare, const U64 WhitePawns, const U64 BlackPawns)
+int EvaluateBlackKingOpening(const int KingSquare, const U64 WhitePawns, const U64 BlackPawns)
 {
-    SCORE ScoreOpening = 0;
-    SCORE KingScoreOpening = 0;
+    int ScoreOpening = 0;
+    int KingScoreOpening = 0;
 
     int File = FILE(KingSquare);
 
@@ -479,12 +479,12 @@ SCORE EvaluateBlackKingOpening(const int KingSquare, const U64 WhitePawns, const
     return ScoreOpening;
 }
 
-SCORE Evaluate(BoardItem* Board)
+int Evaluate(BoardItem* Board)
 {
-    SCORE ScoreOpening = 0;
-    SCORE ScoreEnding = 0;
+    int ScoreOpening = 0;
+    int ScoreEnding = 0;
 
-    SCORE Score;
+    int Score;
 
     U64 Pieces;
 
@@ -511,7 +511,7 @@ SCORE Evaluate(BoardItem* Board)
     U64 WhiteKingZone = KingAttacks(WhiteKingSquare);
     U64 BlackKingZone = KingAttacks(BlackKingSquare);
 
-    SCORE PawnPassedScoreEnding;
+    int PawnPassedScoreEnding;
 
     int WhiteKingZoneAttackedCount = 0;
     int BlackKingZoneAttackedCount = 0;
@@ -519,9 +519,9 @@ SCORE Evaluate(BoardItem* Board)
     int WhiteKingZoneAttackedValue = 0;
     int BlackKingZoneAttackedValue = 0;
 
-    SCORE KingOpening;
-    SCORE KingOpeningKingSide;
-    SCORE KingOpeningQueenSide;
+    int KingOpening;
+    int KingOpeningKingSide;
+    int KingOpeningQueenSide;
 
     int Phase;
 

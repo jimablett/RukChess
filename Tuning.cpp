@@ -25,22 +25,9 @@
 
 #define MIN_USE_PLY             0       // 0 moves
 
-#if defined(TUNING_LOCAL_SEARCH) || defined(TUNING_ADAM_SGD)
+#ifdef TOGA_EVALUATION_FUNCTION
 
 #define MAX_TUNING_PARAMS       1000    // 742 used
-
-#ifdef TUNING_ADAM_SGD
-
-#define TUNING_BATCH_SIZE       16384
-
-#define TUNING_MAX_EPOCH        100
-
-#define ALPHA                   0.1     // 0.001
-#define BETA1                   0.9
-#define BETA2                   0.999
-#define EPSILON                 1.0e-8
-
-#endif // TUNING_ADAM_SGD
 
 typedef struct {
     char Fen[MAX_FEN_LENGTH];
@@ -59,25 +46,20 @@ struct {
 struct {
     int Count;
 
-    SCORE* Params[MAX_TUNING_PARAMS];
-
-#ifdef TUNING_ADAM_SGD
-    double Gradients[MAX_TUNING_PARAMS];
-#endif // TUNING_ADAM_SGD
+    int* Params[MAX_TUNING_PARAMS];
 } TuningParamStore;
 
-//double K = 1.0;       // Default
-double K = 0.94117474;  // 4028460 FENs (24.12.2022)
+double K = 1.0;
 
-SCORE TuningSearch(BoardItem* Board, SCORE Alpha, SCORE Beta, const int Ply, const BOOL InCheck)
+int TuningSearch(BoardItem* Board, int Alpha, int Beta, const int Ply, const BOOL InCheck)
 {
     int GenMoveCount;
     MoveItem MoveList[MAX_GEN_MOVES];
 
     int LegalMoveCount = 0;
 
-    SCORE Score;
-    SCORE BestScore;
+    int Score;
+    int BestScore;
 
     BOOL GiveCheck;
 
@@ -191,7 +173,7 @@ SCORE TuningSearch(BoardItem* Board, SCORE Alpha, SCORE Beta, const int Ply, con
     return BestScore;
 }
 
-#endif // TUNING_LOCAL_SEARCH || TUNING_ADAM_SGD
+#endif // TOGA_EVALUATION_FUNCTION
 
 void Pgn2Fen(void)
 {
@@ -485,7 +467,7 @@ void Pgn2Fen(void)
     printf("Read PGN file...DONE\n");
 }
 
-#if defined(TUNING_LOCAL_SEARCH) || defined(TUNING_ADAM_SGD)
+#ifdef TOGA_EVALUATION_FUNCTION
 
 void ReadFenFile(void)
 {
@@ -604,7 +586,7 @@ void PositionStoreFree(void)
     free(PositionStore.Positions);
 }
 
-double Sigmoid(const SCORE Score)
+double Sigmoid(const int Score)
 {
     return 1.0 / (1.0 + pow(10.0, -K * (double)Score / 400.0));
 }
@@ -619,7 +601,7 @@ double CalculateError(const int Offset, const int BatchSize)
 
     BOOL InCheck;
 
-    SCORE Score;
+    int Score;
 
     double Result = 0.0;
 
@@ -1000,11 +982,7 @@ void LoadTuningParams(void)
     for (int ParamIndex = 0; ParamIndex < TuningParamStore.Count; ++ParamIndex) {
         fgets(Buf, sizeof(Buf), File);
 
-#ifdef TUNING_ADAM_SGD
-        *TuningParamStore.Params[ParamIndex] = atof(Buf);
-#else
         *TuningParamStore.Params[ParamIndex] = atoi(Buf);
-#endif // TUNING_ADAM_SGD
     }
 
     fclose(File);
@@ -1027,11 +1005,7 @@ void SaveTuningParams(void)
     }
 
     for (int ParamIndex = 0; ParamIndex < TuningParamStore.Count; ++ParamIndex) {
-#ifdef TUNING_ADAM_SGD
-        fprintf(File, "%.2f\n", *TuningParamStore.Params[ParamIndex]);
-#else
         fprintf(File, "%d\n", *TuningParamStore.Params[ParamIndex]);
-#endif // TUNING_ADAM_SGD
     }
 
     fclose(File);
@@ -1042,17 +1016,10 @@ void PrintTuningParams(void)
     printf("\n");
 
     for (int ParamIndex = 0; ParamIndex < TuningParamStore.Count; ++ParamIndex) {
-#ifdef TUNING_ADAM_SGD
-        printf("ParamIndex = %d Value = %.2f\n", ParamIndex + 1, *TuningParamStore.Params[ParamIndex]);
-#else
         printf("ParamIndex = %d Value = %d\n", ParamIndex + 1, *TuningParamStore.Params[ParamIndex]);
-#endif // TUNING_ADAM_SGD
     }
 }
 */
-#endif // TUNING_LOCAL_SEARCH || TUNING_ADAM_SGD
-
-#ifdef TUNING_LOCAL_SEARCH
 void TuningLocalSearch(void)
 {
     int InputThreads;
@@ -1154,207 +1121,5 @@ void TuningLocalSearch(void)
 
     PositionStoreFree();
 }
-#endif // TUNING_LOCAL_SEARCH
 
-#ifdef TUNING_ADAM_SGD
-
-void ShufflePositions(void)
-{
-    PositionItem** PositionPointer1;
-    PositionItem** PositionPointer2;
-
-    PositionItem* TempItemPointer;
-
-    U64 RandomValue;
-
-    printf("\n");
-
-    printf("Shuffle positions...\n");
-
-    for (int PositionNumber = 0; PositionNumber < PositionStore.Count; ++PositionNumber) {
-        PositionPointer1 = &PositionStore.Positions[PositionNumber];
-
-        RandomValue = Rand64();
-
-        PositionPointer2 = &PositionStore.Positions[RandomValue % PositionStore.Count];
-
-        TempItemPointer = *PositionPointer1;
-        *PositionPointer1 = *PositionPointer2;
-        *PositionPointer2 = TempItemPointer;
-    }
-
-    printf("Shuffle positions...DONE\n");
-}
-
-void CalculateGradients(const int Offset, const int BatchSize)
-{
-    double BaseError;
-    double Error;
-
-    printf("\n");
-
-    printf("Calculation gradients...\n");
-
-    BaseError = CalculateError(Offset, BatchSize);
-
-//    printf("\n");
-
-    for (int ParamIndex = 0; ParamIndex < TuningParamStore.Count; ++ParamIndex) {
-        printf(".");
-
-        *TuningParamStore.Params[ParamIndex] += 2.0; // Param + 2.0
-
-        Error = CalculateError(Offset, BatchSize);
-
-        TuningParamStore.Gradients[ParamIndex] = (Error - BaseError) / 2.0;
-
-//        printf("ParamIndex = %d Gradient = %.8f\n", ParamIndex + 1, TuningParamStore.Gradients[ParamIndex]);
-
-        *TuningParamStore.Params[ParamIndex] -= 2.0; // Param = Old param
-    }
-
-    printf("\n");
-
-    printf("Calculation gradients...DONE\n");
-}
-
-void TuningAdamSGD(void)
-{
-    int InputThreads;
-
-    double M[MAX_TUNING_PARAMS];
-    double V[MAX_TUNING_PARAMS];
-
-    double M_Corrected;
-    double V_Corrected;
-
-    int Batches;
-    int Offset;
-
-    double BestError;
-    double CompleteError;
-    double DiffError;
-
-    double Gradient;
-
-    double Delta;
-
-    // Cache not used
-
-    InitHashTable(1);
-    ClearHash();
-
-    // Input max. threads
-
-    printf("\n");
-
-    printf("Threads (min. 1 max. %d; 0 = %d): ", MaxThreads, DEFAULT_THREADS);
-    scanf_s("%d", &InputThreads);
-
-    InputThreads = (InputThreads >= 1 && InputThreads <= MaxThreads) ? InputThreads : DEFAULT_THREADS;
-
-    omp_set_num_threads(InputThreads);
-
-    // Prepare board
-
-    SetFen(&CurrentBoard, StartFen);
-
-    ClearHeuristic(&CurrentBoard);
-
-    // Load data
-
-    ReadFenFile();
-
-    // Initialize M and V
-
-    for (int ParamIndex = 0; ParamIndex < TuningParamStore.Count; ++ParamIndex) {
-        M[ParamIndex] = 0.0;
-        V[ParamIndex] = 0.0;
-    }
-
-    // Tuning
-
-    printf("\n");
-
-    printf("Tuning...\n");
-
-    Batches = PositionStore.Count / TUNING_BATCH_SIZE;
-
-    for (int Epoch = 1; Epoch <= TUNING_MAX_EPOCH; ++Epoch) {
-        printf("\n");
-
-        printf("Epoch = %d\n", Epoch);
-
-        BestError = CalculateError(0, PositionStore.Count);
-
-        printf("\n");
-
-        printf("Best error = %.8f\n", BestError);
-
-        ShufflePositions();
-
-        Offset = 0;
-
-        for (int Batch = 0; Batch < Batches; ++Batch) {
-            printf("\n");
-
-            printf("Batch = %d / %d\n", Batch + 1, Batches);
-
-            CalculateGradients(Offset, TUNING_BATCH_SIZE);
-
-            printf("\n");
-
-            printf("Apply gradients...\n");
-
-//            printf("\n");
-
-            for (int ParamIndex = 0; ParamIndex < TuningParamStore.Count; ++ParamIndex) {
-                Gradient = TuningParamStore.Gradients[ParamIndex];
-
-                M[ParamIndex] = BETA1 * M[ParamIndex] + (1.0 - BETA1) * Gradient;
-                V[ParamIndex] = BETA2 * V[ParamIndex] + (1.0 - BETA2) * Gradient * Gradient;
-
-                M_Corrected = M[ParamIndex] / (1.0 - pow(BETA1, Epoch));
-                V_Corrected = V[ParamIndex] / (1.0 - pow(BETA2, Epoch));
-
-                Delta = ALPHA * M_Corrected / (sqrt(V_Corrected) + EPSILON);
-
-//                printf("ParamIndex = %d M_Corrected = %.8f V_Corrected = %.8f Delta = %.8f\n", ParamIndex + 1, M_Corrected, V_Corrected, Delta);
-
-                *TuningParamStore.Params[ParamIndex] -= Delta;
-            }
-
-//            printf("\n");
-
-            printf("Apply gradients...DONE\n");
-
-            SaveTuningParams();
-
-            Offset += TUNING_BATCH_SIZE;
-        } // for (Batch)
-
-        CompleteError = CalculateError(0, PositionStore.Count);
-
-        DiffError = BestError - CompleteError;
-
-        printf("\n");
-
-        printf("Epoch = %d Best error = %.8f CompleteError = %.8f DiffError = %.8f\n", Epoch, BestError, CompleteError, DiffError);
-
-        SaveTuningParams();
-
-        if (fabs(DiffError) < 1.0e-8) {
-            break;
-        }
-
-        BestError = CompleteError;
-    } // for (Epoch)
-
-    printf("\n");
-
-    printf("Tuning...DONE\n");
-
-    PositionStoreFree();
-}
-
-#endif // TUNING_ADAM_SGD
+#endif // TOGA_EVALUATION_FUNCTION

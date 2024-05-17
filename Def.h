@@ -109,15 +109,6 @@
 //#define BIND_THREAD
 //#define BIND_THREAD_V2                        // Max. 64 CPUs
 
-// Tuning
-
-#ifdef TOGA_EVALUATION_FUNCTION
-
-#define TUNING_LOCAL_SEARCH                     // Required TOGA_EVALUATION_FUNCTION
-//#define TUNING_ADAM_SGD                       // Required TOGA_EVALUATION_FUNCTION
-
-#endif // TOGA_EVALUATION_FUNCTION
-
 // ------------------------------------------------------------------
 
 // Parameter values

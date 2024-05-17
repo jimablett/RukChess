@@ -91,10 +91,10 @@ int main(int argc, char** argv)
 
     // Initialize tuning function and read params (if present)
 
-#if defined(TUNING_LOCAL_SEARCH) || defined(TUNING_ADAM_SGD)
+#ifdef TOGA_EVALUATION_FUNCTION
     InitTuningParams();
     LoadTuningParams();
-#endif // TUNING_LOCAL_SEARCH || TUNING_ADAM_SGD
+#endif // TOGA_EVALUATION_FUNCTION
 
     // Initialize LMP
 
@@ -196,24 +196,18 @@ int main(int argc, char** argv)
 
         printf("13: Convert PGN file (games.pgn) to FEN file (games.fen)\n");
 
-#if defined(TUNING_LOCAL_SEARCH) || defined(TUNING_ADAM_SGD)
+#ifdef TOGA_EVALUATION_FUNCTION
 
         printf("14: Find best K (required games.fen)\n");
 
-#ifdef TUNING_LOCAL_SEARCH
         printf("15: Tuning evaluation function - Local search (required games.fen)\n");
-#endif // TUNING_LOCAL_SEARCH
 
-#ifdef TUNING_ADAM_SGD
-        printf("16: Tuning evaluation function - Adam SGD (required games.fen)\n");
-#endif // TUNING_ADAM_SGD
+        printf("16: Load tuning params (params.txt)\n");
+        printf("17: Save tuning params (params.txt)\n");
 
-        printf("17: Load tuning params (params.txt)\n");
-        printf("18: Save tuning params (params.txt)\n");
+#endif // TOGA_EVALUATION_FUNCTION
 
-#endif // TUNING_LOCAL_SEARCH || TUNING_ADAM_SGD
-
-        printf("19: Exit\n");
+        printf("18: Exit\n");
 
         printf("\n");
 
@@ -280,39 +274,27 @@ int main(int argc, char** argv)
                 Pgn2Fen();
                 break;
 
-#if defined(TUNING_LOCAL_SEARCH) || defined(TUNING_ADAM_SGD)
+#ifdef TOGA_EVALUATION_FUNCTION
 
             case 14:
                 FindBestK();
                 break;
 
-#ifdef TUNING_LOCAL_SEARCH
-
             case 15:
                 TuningLocalSearch();
                 break;
 
-#endif // TUNING_LOCAL_SEARCH
-
-#ifdef TUNING_ADAM_SGD
-
             case 16:
-                TuningAdamSGD();
-                break;
-
-#endif // TUNING_ADAM_SGD
-
-            case 17:
                 LoadTuningParams();
                 break;
 
-            case 18:
+            case 17:
                 SaveTuningParams();
                 break;
 
-#endif // TUNING_LOCAL_SEARCH || TUNING_ADAM_SGD
+#endif // TOGA_EVALUATION_FUNCTION
 
-            case 19: // Exit
+            case 18: // Exit
                 return 0;
         } // switch
 

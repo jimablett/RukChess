@@ -14,12 +14,6 @@
 
 #define INF                 10000
 
-#ifdef TUNING_ADAM_SGD
-#define SCORE               double
-#else
-#define SCORE               int
-#endif // TUNING_ADAM_SGD
-
 typedef __int8              I8;
 typedef __int16             I16;
 typedef __int32             I32;

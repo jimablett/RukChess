@@ -9,7 +9,7 @@
 
 void Pgn2Fen(void);
 
-#if defined(TUNING_LOCAL_SEARCH) || defined(TUNING_ADAM_SGD)
+#ifdef TOGA_EVALUATION_FUNCTION
 
 void FindBestK(void);
 
@@ -17,14 +17,8 @@ void InitTuningParams(void);
 void LoadTuningParams(void);
 void SaveTuningParams(void);
 
-#endif // TUNING_LOCAL_SEARCH || TUNING_ADAM_SGD
-
-#ifdef TUNING_LOCAL_SEARCH
 void TuningLocalSearch(void);
-#endif // TUNING_LOCAL_SEARCH
 
-#ifdef TUNING_ADAM_SGD
-void TuningAdamSGD(void);
-#endif // TUNING_ADAM_SGD
+#endif // TOGA_EVALUATION_FUNCTION
 
 #endif // !TUNING_H

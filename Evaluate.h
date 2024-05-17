@@ -17,116 +17,116 @@ extern const int MaxGamePhase;
 
 // Material (4.2)
 
-extern SCORE PiecesScoreOpening[6];
-extern SCORE PiecesScoreEnding[6];
+extern int PiecesScoreOpening[6];
+extern int PiecesScoreEnding[6];
 
-extern SCORE BishopPairOpening;
-extern SCORE BishopPairEnding;
+extern int BishopPairOpening;
+extern int BishopPairEnding;
 
 // Piece-square tables (4.3)
 
-extern SCORE PawnSquareScoreOpening[64];
-extern SCORE PawnSquareScoreEnding[64];
+extern int PawnSquareScoreOpening[64];
+extern int PawnSquareScoreEnding[64];
 
-extern SCORE KnightSquareScoreOpening[64];
-extern SCORE KnightSquareScoreEnding[64];
+extern int KnightSquareScoreOpening[64];
+extern int KnightSquareScoreEnding[64];
 
-extern SCORE BishopSquareScoreOpening[64];
-extern SCORE BishopSquareScoreEnding[64];
+extern int BishopSquareScoreOpening[64];
+extern int BishopSquareScoreEnding[64];
 
-extern SCORE RookSquareScoreOpening[64];
-extern SCORE RookSquareScoreEnding[64];
+extern int RookSquareScoreOpening[64];
+extern int RookSquareScoreEnding[64];
 
-extern SCORE QueenSquareScoreOpening[64];
-extern SCORE QueenSquareScoreEnding[64];
+extern int QueenSquareScoreOpening[64];
+extern int QueenSquareScoreEnding[64];
 
-extern SCORE KingSquareScoreOpening[64];
-extern SCORE KingSquareScoreEnding[64];
+extern int KingSquareScoreOpening[64];
+extern int KingSquareScoreEnding[64];
 
 // Pawns (4.4)
 
-extern SCORE PawnDoubledOpening;
-extern SCORE PawnDoubledEnding;
+extern int PawnDoubledOpening;
+extern int PawnDoubledEnding;
 
-extern SCORE PawnIsolatedOpening;
-extern SCORE PawnIsolatedEnding;
+extern int PawnIsolatedOpening;
+extern int PawnIsolatedEnding;
 
-extern SCORE PawnIsolatedOpenOpening;
-extern SCORE PawnIsolatedOpenEnding;
+extern int PawnIsolatedOpenOpening;
+extern int PawnIsolatedOpenEnding;
 
-extern SCORE PawnBackwardOpening;
-extern SCORE PawnBackwardEnding;
+extern int PawnBackwardOpening;
+extern int PawnBackwardEnding;
 
-extern SCORE PawnBackwardOpenOpening;
-extern SCORE PawnBackwardOpenEnding;
+extern int PawnBackwardOpenOpening;
+extern int PawnBackwardOpenEnding;
 
-extern SCORE PawnCandidateOpening[8];
-extern SCORE PawnCandidateEnding[8];
+extern int PawnCandidateOpening[8];
+extern int PawnCandidateEnding[8];
 
 // Tempo (4.5)
 
-extern SCORE TempoOpening;
-extern SCORE TempoEnding;
+extern int TempoOpening;
+extern int TempoEnding;
 
 // Pattern (4.6)
 
-extern SCORE TrappedBishopOpening;
-extern SCORE TrappedBishopEnding;
+extern int TrappedBishopOpening;
+extern int TrappedBishopEnding;
 
-extern SCORE BlockedBishopOpening;
-extern SCORE BlockedBishopEnding;
+extern int BlockedBishopOpening;
+extern int BlockedBishopEnding;
 
-extern SCORE BlockedRookOpening;
-extern SCORE BlockedRookEnding;
+extern int BlockedRookOpening;
+extern int BlockedRookEnding;
 
 // Piece (4.7)
 
 // Mobility (4.7.1)
 
-extern SCORE KnightMobilityMoveDecrease;
-extern SCORE BishopMobilityMoveDecrease;
-extern SCORE RookMobilityMoveDecrease;
+extern int KnightMobilityMoveDecrease;
+extern int BishopMobilityMoveDecrease;
+extern int RookMobilityMoveDecrease;
 
-extern SCORE KnightMobility;
-extern SCORE BishopMobility;
+extern int KnightMobility;
+extern int BishopMobility;
 
-extern SCORE RookMobilityOpening;
-extern SCORE RookMobilityEnding;
+extern int RookMobilityOpening;
+extern int RookMobilityEnding;
 
 // Open file (4.7.2)
 
-extern SCORE RookOnClosedFileOpening;
-extern SCORE RookOnClosedFileEnding;
+extern int RookOnClosedFileOpening;
+extern int RookOnClosedFileEnding;
 
-extern SCORE RookOnSemiOpenFileOpening;
-extern SCORE RookOnSemiOpenFileEnding;
+extern int RookOnSemiOpenFileOpening;
+extern int RookOnSemiOpenFileEnding;
 
-extern SCORE RookOnSemiOpenFileAdjacentToEnemyKingOpening;
-extern SCORE RookOnSemiOpenFileAdjacentToEnemyKingEnding;
+extern int RookOnSemiOpenFileAdjacentToEnemyKingOpening;
+extern int RookOnSemiOpenFileAdjacentToEnemyKingEnding;
 
-extern SCORE RookOnSemiOpenFileSameToEnemyKingOpening;
-extern SCORE RookOnSemiOpenFileSameToEnemyKingEnding;
+extern int RookOnSemiOpenFileSameToEnemyKingOpening;
+extern int RookOnSemiOpenFileSameToEnemyKingEnding;
 
-extern SCORE RookOnOpenFileOpening;
-extern SCORE RookOnOpenFileEnding;
+extern int RookOnOpenFileOpening;
+extern int RookOnOpenFileEnding;
 
-extern SCORE RookOnOpenFileAdjacentToEnemyKingOpening;
-extern SCORE RookOnOpenFileAdjacentToEnemyKingEnding;
+extern int RookOnOpenFileAdjacentToEnemyKingOpening;
+extern int RookOnOpenFileAdjacentToEnemyKingEnding;
 
-extern SCORE RookOnOpenFileSameToEnemyKingOpening;
-extern SCORE RookOnOpenFileSameToEnemyKingEnding;
+extern int RookOnOpenFileSameToEnemyKingOpening;
+extern int RookOnOpenFileSameToEnemyKingEnding;
 
 // Outpost (4.7.3)
 
-extern SCORE KnightOutpost[64];
+extern int KnightOutpost[64];
 
 // Seventh rank (4.7.4)
 
-extern SCORE RookOnSeventhOpening;
-extern SCORE RookOnSeventhEnding;
+extern int RookOnSeventhOpening;
+extern int RookOnSeventhEnding;
 
-extern SCORE QueenOnSeventhOpening;
-extern SCORE QueenOnSeventhEnding;
+extern int QueenOnSeventhOpening;
+extern int QueenOnSeventhEnding;
 
 // King distance (4.7.5)
 
@@ -134,38 +134,38 @@ extern SCORE QueenOnSeventhEnding;
 
 // Pawn shelter (4.8.1)
 
-extern SCORE KingFriendlyPawnAdvanceBase;
-extern SCORE KingFriendlyPawnAdvanceDefault;
+extern int KingFriendlyPawnAdvanceBase;
+extern int KingFriendlyPawnAdvanceDefault;
 
 // Pawn storm (4.8.2)
 
-extern SCORE KingPawnStorm[8];
+extern int KingPawnStorm[8];
 
 // Piece attack (4.8.3)
 
-extern SCORE KingZoneAttackedBase;
-extern SCORE KingZoneAttackedWeight[8]; // %
+extern int KingZoneAttackedBase;
+extern int KingZoneAttackedWeight[8]; // %
 
 // Passed pawns (4.9)
 
-extern SCORE PawnPassedEndingBase1;
-extern SCORE PawnPassedEndingBase2;
+extern int PawnPassedEndingBase1;
+extern int PawnPassedEndingBase2;
 
-extern SCORE PawnPassedEndingHostileKingDistance;
-extern SCORE PawnPassedEndingFriendlyKingDistance;
+extern int PawnPassedEndingHostileKingDistance;
+extern int PawnPassedEndingFriendlyKingDistance;
 
-extern SCORE PawnPassedEndingConsideredFree;
+extern int PawnPassedEndingConsideredFree;
 
-extern SCORE PawnPassedEndingUnstoppable;
+extern int PawnPassedEndingUnstoppable;
 
-extern SCORE PawnPassedOpening[8];
-extern SCORE PawnPassedEndingWeight[8]; // %
+extern int PawnPassedOpening[8];
+extern int PawnPassedEndingWeight[8]; // %
 
 // ------------------------------------------------------------------
 
 void InitEvaluation(void);
 
-SCORE Evaluate(BoardItem* Board);
+int Evaluate(BoardItem* Board);
 
 #elif defined(NNUE_EVALUATION_FUNCTION_2)
 
