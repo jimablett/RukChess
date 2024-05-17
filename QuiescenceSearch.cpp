@@ -186,9 +186,9 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
 #endif // QUIESCENCE_HASH_MOVE
 
     for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
-#if defined(MOVES_SORT_SEE) || defined(MOVES_SORT_MVV_LVA) || defined(MOVES_SORT_HEURISTIC)
+#if defined(MOVES_SORT_MVV_LVA) || defined(MOVES_SORT_HEURISTIC)
         PrepareNextMove(MoveNumber, MoveList, GenMoveCount);
-#endif // MOVES_SORT_SEE || MOVES_SORT_MVV_LVA || MOVES_SORT_HEURISTIC
+#endif // MOVES_SORT_MVV_LVA || MOVES_SORT_HEURISTIC
 
 #ifdef QUIESCENCE_SEE_MOVE_PRUNING
         if (
@@ -200,25 +200,11 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
             && MoveList[MoveNumber].Move != HashMove
 #endif // QUIESCENCE_HASH_MOVE
         ) {
-#ifdef MOVES_SORT_SEE
-            if (
-                (MoveList[MoveNumber].Type & MOVE_CAPTURE)
-                && !(MoveList[MoveNumber].Type & MOVE_PAWN_PROMOTE)
-            ) {
-                if (MoveList[MoveNumber].SortValue < -SORT_CAPTURE_MOVE_BONUS) { // Bad capture move
-                    break;
-                }
-            }
-            else {
-                if (CaptureSEE(Board, MOVE_FROM(MoveList[MoveNumber].Move), MOVE_TO(MoveList[MoveNumber].Move), MOVE_PROMOTE_PIECE(MoveList[MoveNumber].Move), MoveList[MoveNumber].Type) < 0) { // Bad quiet move
-                    continue; // Next move
-                }
-            }
-#elif defined(MOVES_SORT_MVV_LVA)
+#ifdef MOVES_SORT_MVV_LVA
             if (CaptureSEE(Board, MOVE_FROM(MoveList[MoveNumber].Move), MOVE_TO(MoveList[MoveNumber].Move), MOVE_PROMOTE_PIECE(MoveList[MoveNumber].Move), MoveList[MoveNumber].Type) < 0) { // Bad capture/quiet move
                 continue; // Next move
             }
-#endif // MOVES_SORT_SEE || MOVES_SORT_MVV_LVA
+#endif // MOVES_SORT_MVV_LVA
         }
 #endif // QUIESCENCE_SEE_MOVE_PRUNING
 

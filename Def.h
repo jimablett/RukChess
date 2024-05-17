@@ -84,9 +84,7 @@
 
 #define ALPHA_BETA_PRUNING
 
-//#define MOVES_SORT_SEE
 #define MOVES_SORT_MVV_LVA
-
 #define MOVES_SORT_HEURISTIC
 
 #define COUNTER_MOVE_HISTORY                    // Required MOVES_SORT_HEURISTIC
@@ -113,7 +111,7 @@
 #define FUTILITY_PRUNING
 #define LATE_MOVE_PRUNING
 #define SEE_QUIET_MOVE_PRUNING
-#define SEE_CAPTURE_MOVE_PRUNING                // Required MOVES_SORT_SEE or BAD_CAPTURE_LAST
+#define SEE_CAPTURE_MOVE_PRUNING                // Required BAD_CAPTURE_LAST
 #define NEGA_SCOUT
 #define LATE_MOVE_REDUCTION                     // Required NEGA_SCOUT
 
@@ -126,7 +124,7 @@
 #define QUIESCENCE_CHECK_EXTENSION
 //#define QUIESCENCE_PVS                        // Required MOVES_SORT_...
 #define QUIESCENCE_HASH_MOVE                    // Required MOVES_SORT_...
-#define QUIESCENCE_SEE_MOVE_PRUNING             // Required MOVES_SORT_SEE or MOVES_SORT_MVV_LVA
+#define QUIESCENCE_SEE_MOVE_PRUNING             // Required MOVES_SORT_MVV_LVA
 
 //#define BIND_THREAD
 //#define BIND_THREAD_V2                        // Max. 64 CPUs

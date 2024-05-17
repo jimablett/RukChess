@@ -433,9 +433,9 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
 NextMove:
 #endif // MOVES_SORT_MVV_LVA && BAD_CAPTURE_LAST
 
-#if defined(MOVES_SORT_SEE) || defined(MOVES_SORT_MVV_LVA) || defined(MOVES_SORT_HEURISTIC)
+#if defined(MOVES_SORT_MVV_LVA) || defined(MOVES_SORT_HEURISTIC)
         PrepareNextMove(MoveNumber, MoveList, GenMoveCount);
-#endif // MOVES_SORT_SEE || MOVES_SORT_MVV_LVA || MOVES_SORT_HEURISTIC
+#endif // MOVES_SORT_MVV_LVA || MOVES_SORT_HEURISTIC
 
         if (MoveList[MoveNumber].Move == SkipMove) {
             continue; // Next move
@@ -558,7 +558,7 @@ NextMove:
             && MoveList[MoveNumber].Move != HashMove
 #endif // HASH_MOVE
         ) {
-#if defined(SEE_CAPTURE_MOVE_PRUNING) && (defined(MOVES_SORT_SEE) || defined(BAD_CAPTURE_LAST))
+#if defined(SEE_CAPTURE_MOVE_PRUNING) && defined(BAD_CAPTURE_LAST)
             if (
                 Depth <= 3
                 && MoveList[MoveNumber].SortValue < -SORT_CAPTURE_MOVE_BONUS - 100 * Depth // Bad capture move
@@ -567,7 +567,7 @@ NextMove:
 
                 continue; // Next move
             }
-#endif // SEE_CAPTURE_MOVE_PRUNING && (MOVES_SORT_SEE || BAD_CAPTURE_LAST)
+#endif // SEE_CAPTURE_MOVE_PRUNING && BAD_CAPTURE_LAST
 
 #if defined(FUTILITY_PRUNING) || defined(LATE_MOVE_PRUNING) || defined(SEE_QUIET_MOVE_PRUNING)
             if (!(MoveList[MoveNumber].Type & (MOVE_CAPTURE | MOVE_PAWN_PROMOTE))) { // Not capture/promote move
