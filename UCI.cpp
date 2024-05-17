@@ -11,7 +11,6 @@
 #include "Gen.h"
 #include "Hash.h"
 #include "Move.h"
-#include "NNUE.h"
 #include "NNUE2.h"
 #include "Types.h"
 #include "Utils.h"
@@ -42,10 +41,10 @@ void UCI(void)
     char BookFileNameString[255];
     char* BookFileName;
 
-#if defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
+#ifdef NNUE_EVALUATION_FUNCTION_2
     char NnueFileNameString[255];
     char* NnueFileName;
-#endif // NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
+#endif // NNUE_EVALUATION_FUNCTION_2
 
     U64 WTime;
     U64 BTime;
@@ -71,9 +70,9 @@ void UCI(void)
     printf("option name Threads type spin default %d min %d max %d\n", DEFAULT_THREADS, 1, MaxThreads);
     printf("option name BookFile type string default %s\n", DEFAULT_BOOK_FILE_NAME);
 
-#if defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
+#ifdef NNUE_EVALUATION_FUNCTION_2
     printf("option name NnueFile type string default %s\n", DEFAULT_NNUE_FILE_NAME);
-#endif // NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
+#endif // NNUE_EVALUATION_FUNCTION_2
 
     SetFen(&CurrentBoard, StartFen);
 
@@ -124,7 +123,7 @@ void UCI(void)
 
             BookFileLoaded = LoadBook(BookFileNameString);
         }
-#if defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
+#ifdef NNUE_EVALUATION_FUNCTION_2
         else if (!strncmp(Part, "setoption name NnueFile value ", 30)) {
             Part += 30;
 
@@ -138,7 +137,7 @@ void UCI(void)
 
             NnueFileLoaded = LoadNetwork(NnueFileNameString);
         }
-#endif // NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
+#endif // NNUE_EVALUATION_FUNCTION_2
         else if (!strncmp(Part, "position ", 9)) {
             Part += 9;
 
@@ -365,13 +364,13 @@ void UCI(void)
                 TimeForMove = 0ULL;
             }
 
-#if defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
+#ifdef NNUE_EVALUATION_FUNCTION_2
             if (!NnueFileLoaded) {
                 printf("info string Network not loaded!\n");
 
                 continue; // Next command
             }
-#endif // NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
+#endif // NNUE_EVALUATION_FUNCTION_2
 
             _beginthread(ComputerMoveThread, 0, NULL);
         }

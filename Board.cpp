@@ -628,9 +628,9 @@ int SetFen(BoardItem* Board, char* Fen)
 
     memset(Board->MoveTable, 0, sizeof(Board->MoveTable));
 
-#if defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
+#ifdef NNUE_EVALUATION_FUNCTION_2
     Board->Accumulator.AccumulationComputed = FALSE;
-#endif // NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
+#endif // NNUE_EVALUATION_FUNCTION_2
 
     return (int)(Part - Fen);
 }

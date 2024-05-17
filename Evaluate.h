@@ -167,10 +167,10 @@ void InitEvaluation(void);
 
 SCORE Evaluate(BoardItem* Board);
 
-#elif defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
+#elif defined(NNUE_EVALUATION_FUNCTION_2)
 
 int Evaluate(BoardItem* Board);
 
-#endif // TOGA_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
+#endif // TOGA_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
 
 #endif // !EVALUATE_H

@@ -7,7 +7,6 @@
 #include "BitBoard.h"
 #include "Board.h"
 #include "Def.h"
-#include "NNUE.h"
 #include "NNUE2.h"
 #include "Types.h"
 #include "Utils.h"
@@ -1331,7 +1330,7 @@ SCORE Evaluate(BoardItem* Board)
     return Score;
 }
 
-#elif defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
+#elif defined(NNUE_EVALUATION_FUNCTION_2)
 
 int Evaluate(BoardItem* Board)
 {
@@ -1342,4 +1341,4 @@ int Evaluate(BoardItem* Board)
     return NetworkEvaluate(Board);
 }
 
-#endif // TOGA_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
+#endif // TOGA_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2

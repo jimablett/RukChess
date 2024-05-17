@@ -10,7 +10,6 @@
 #include "Game.h"
 #include "Gen.h"
 #include "Hash.h"
-#include "NNUE.h"
 #include "NNUE2.h"
 #include "Tests.h"
 #include "Tuning.h"
@@ -131,7 +130,7 @@ int main(int argc, char** argv)
 
     BookFileLoaded = LoadBook(DEFAULT_BOOK_FILE_NAME);
 
-#if defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
+#ifdef NNUE_EVALUATION_FUNCTION_2
     // Load network
 
     if (argc > 1) {
@@ -140,7 +139,7 @@ int main(int argc, char** argv)
     else {
         NnueFileLoaded = LoadNetwork(DEFAULT_NNUE_FILE_NAME);
     }
-#endif // NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
+#endif // NNUE_EVALUATION_FUNCTION_2
 
     // UCI or Console interface?
 
@@ -162,7 +161,7 @@ int main(int argc, char** argv)
 
     // Console interface
 
-#if defined(NNUE_EVALUATION_FUNCTION) || defined(NNUE_EVALUATION_FUNCTION_2)
+#ifdef NNUE_EVALUATION_FUNCTION_2
     if (!NnueFileLoaded) {
         printf("Network not loaded!\n");
 
@@ -170,7 +169,7 @@ int main(int argc, char** argv)
 
         return 0;
     }
-#endif // NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
+#endif // NNUE_EVALUATION_FUNCTION_2
 
     while (TRUE) {
         printf("Menu:\n");

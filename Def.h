@@ -14,26 +14,11 @@
 //#define TOGA_EVALUATION_FUNCTION
 
 /*
-    https://www.chessprogramming.org/Stockfish_NNUE
-    https://github.com/official-stockfish/Stockfish
-    https://github.com/nodchip/Stockfish
-    https://github.com/syzygy1/Cfish
-*/
-//#define NNUE_EVALUATION_FUNCTION
-
-/*
     https://github.com/jhonnold/berserk
     https://github.com/jhonnold/berserk-trainer
     https://github.com/Ilya-Ruk/RukChessTrainer
 */
 #define NNUE_EVALUATION_FUNCTION_2
-
-#ifdef NNUE_EVALUATION_FUNCTION
-
-#define USE_NNUE_AVX2                           // Required NNUE_EVALUATION_FUNCTION
-#define USE_NNUE_UPDATE                         // Required NNUE_EVALUATION_FUNCTION
-
-#endif // NNUE_EVALUATION_FUNCTION
 
 #ifdef NNUE_EVALUATION_FUNCTION_2
 
@@ -150,11 +135,9 @@
 
 #ifdef TOGA_EVALUATION_FUNCTION
 #define EVALUATION_NAME                         "Toga"
-#elif defined(NNUE_EVALUATION_FUNCTION)
-#define EVALUATION_NAME                         "NNUE"
 #elif defined(NNUE_EVALUATION_FUNCTION_2)
 #define EVALUATION_NAME                         "NNUE2"
-#endif // TOGA_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
+#endif // TOGA_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
 
 #define YEARS                                   "1999-2024"
 #define AUTHOR                                  "Ilya Rukavishnikov"
@@ -178,21 +161,14 @@
 
 #define DEFAULT_BOOK_FILE_NAME                  "book.txt"
 
-#ifdef NNUE_EVALUATION_FUNCTION
-
-/*
-    https://tests.stockfishchess.org/nns
-*/
-#define DEFAULT_NNUE_FILE_NAME                  "nn-62ef826d1a6d.nnue" // 28.11.2020
-
-#elif defined(NNUE_EVALUATION_FUNCTION_2)
+#ifdef NNUE_EVALUATION_FUNCTION_2
 
 /*
     https://github.com/Ilya-Ruk/RukChessNets
 */
 #define DEFAULT_NNUE_FILE_NAME                  "net-7cf57d4dc994.nnue" // 09.12.2023
 
-#endif // NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
+#endif // NNUE_EVALUATION_FUNCTION_2
 
 // Time management (Xiphos)
 
