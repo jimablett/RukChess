@@ -86,9 +86,9 @@ int main(int argc, char** argv)
 
     // Initialize evaluation function
 
-#if defined(SIMPLIFIED_EVALUATION_FUNCTION) || defined(TOGA_EVALUATION_FUNCTION)
+#ifdef TOGA_EVALUATION_FUNCTION
     InitEvaluation();
-#endif // SIMPLIFIED_EVALUATION_FUNCTION || TOGA_EVALUATION_FUNCTION
+#endif // TOGA_EVALUATION_FUNCTION
 
     // Initialize tuning function and read params (if present)
 

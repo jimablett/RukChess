@@ -41,8 +41,8 @@ void SetKillerMove2SortValue(const BoardItem* Board, const int Ply, MoveItem* Ge
 void SetCounterMoveSortValue(const BoardItem* Board, const int Ply, MoveItem* GenMoveList, const int GenMoveCount, const int HashMove);
 #endif // COUNTER_MOVE
 
-#if defined(MOVES_SORT_SEE) || defined(MOVES_SORT_MVV_LVA) || defined(MOVES_SORT_HEURISTIC) || defined(MOVES_SORT_SQUARE_SCORE)
+#if defined(MOVES_SORT_SEE) || defined(MOVES_SORT_MVV_LVA) || defined(MOVES_SORT_HEURISTIC)
 void PrepareNextMove(const int StartIndex, MoveItem* GenMoveList, const int GenMoveCount);
-#endif // MOVES_SORT_SEE || MOVES_SORT_MVV_LVA || MOVES_SORT_HEURISTIC || MOVES_SORT_SQUARE_SCORE
+#endif // MOVES_SORT_SEE || MOVES_SORT_MVV_LVA || MOVES_SORT_HEURISTIC
 
 #endif // !SORT_H

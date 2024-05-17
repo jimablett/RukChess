@@ -186,9 +186,9 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
 #endif // QUIESCENCE_HASH_MOVE
 
     for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
-#if defined(MOVES_SORT_SEE) || defined(MOVES_SORT_MVV_LVA) || defined(MOVES_SORT_HEURISTIC) || defined(MOVES_SORT_SQUARE_SCORE)
+#if defined(MOVES_SORT_SEE) || defined(MOVES_SORT_MVV_LVA) || defined(MOVES_SORT_HEURISTIC)
         PrepareNextMove(MoveNumber, MoveList, GenMoveCount);
-#endif // MOVES_SORT_SEE || MOVES_SORT_MVV_LVA || MOVES_SORT_HEURISTIC || MOVES_SORT_SQUARE_SCORE
+#endif // MOVES_SORT_SEE || MOVES_SORT_MVV_LVA || MOVES_SORT_HEURISTIC
 
 #ifdef QUIESCENCE_SEE_MOVE_PRUNING
         if (

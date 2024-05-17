@@ -25,11 +25,11 @@ void AddMove(const BoardItem* Board, int** CMH_Pointer, MoveItem* MoveList, int*
         MoveList[*GenMoveCount].Type = (MoveType | MOVE_PAWN_PROMOTE);
         MoveList[*GenMoveCount].Move = MOVE_CREATE(From, To, QUEEN);
 
-#if defined(MOVES_SORT_SEE) || defined(MOVES_SORT_MVV_LVA) || defined(MOVES_SORT_HEURISTIC) || defined(MOVES_SORT_SQUARE_SCORE)
+#if defined(MOVES_SORT_SEE) || defined(MOVES_SORT_MVV_LVA) || defined(MOVES_SORT_HEURISTIC)
         MoveList[*GenMoveCount].SortValue = SORT_PAWN_PROMOTE_MOVE_BONUS + QUEEN;
 #else
         MoveList[*GenMoveCount].SortValue = 0;
-#endif // MOVES_SORT_SEE || MOVES_SORT_MVV_LVA || MOVES_SORT_HEURISTIC || MOVES_SORT_SQUARE_SCORE
+#endif // MOVES_SORT_SEE || MOVES_SORT_MVV_LVA || MOVES_SORT_HEURISTIC
 
         ++(*GenMoveCount);
 
@@ -37,11 +37,11 @@ void AddMove(const BoardItem* Board, int** CMH_Pointer, MoveItem* MoveList, int*
         MoveList[*GenMoveCount].Type = (MoveType | MOVE_PAWN_PROMOTE);
         MoveList[*GenMoveCount].Move = MOVE_CREATE(From, To, ROOK);
 
-#if defined(MOVES_SORT_SEE) || defined(MOVES_SORT_MVV_LVA) || defined(MOVES_SORT_HEURISTIC) || defined(MOVES_SORT_SQUARE_SCORE)
+#if defined(MOVES_SORT_SEE) || defined(MOVES_SORT_MVV_LVA) || defined(MOVES_SORT_HEURISTIC)
         MoveList[*GenMoveCount].SortValue = SORT_PAWN_PROMOTE_MOVE_BONUS + ROOK;
 #else
         MoveList[*GenMoveCount].SortValue = 0;
-#endif // MOVES_SORT_SEE || MOVES_SORT_MVV_LVA || MOVES_SORT_HEURISTIC || MOVES_SORT_SQUARE_SCORE
+#endif // MOVES_SORT_SEE || MOVES_SORT_MVV_LVA || MOVES_SORT_HEURISTIC
 
         ++(*GenMoveCount);
 
@@ -49,11 +49,11 @@ void AddMove(const BoardItem* Board, int** CMH_Pointer, MoveItem* MoveList, int*
         MoveList[*GenMoveCount].Type = (MoveType | MOVE_PAWN_PROMOTE);
         MoveList[*GenMoveCount].Move = MOVE_CREATE(From, To, BISHOP);
 
-#if defined(MOVES_SORT_SEE) || defined(MOVES_SORT_MVV_LVA) || defined(MOVES_SORT_HEURISTIC) || defined(MOVES_SORT_SQUARE_SCORE)
+#if defined(MOVES_SORT_SEE) || defined(MOVES_SORT_MVV_LVA) || defined(MOVES_SORT_HEURISTIC)
         MoveList[*GenMoveCount].SortValue = SORT_PAWN_PROMOTE_MOVE_BONUS + BISHOP;
 #else
         MoveList[*GenMoveCount].SortValue = 0;
-#endif // MOVES_SORT_SEE || MOVES_SORT_MVV_LVA || MOVES_SORT_HEURISTIC || MOVES_SORT_SQUARE_SCORE
+#endif // MOVES_SORT_SEE || MOVES_SORT_MVV_LVA || MOVES_SORT_HEURISTIC
 
         ++(*GenMoveCount);
 
@@ -61,11 +61,11 @@ void AddMove(const BoardItem* Board, int** CMH_Pointer, MoveItem* MoveList, int*
         MoveList[*GenMoveCount].Type = (MoveType | MOVE_PAWN_PROMOTE);
         MoveList[*GenMoveCount].Move = MOVE_CREATE(From, To, KNIGHT);
 
-#if defined(MOVES_SORT_SEE) || defined(MOVES_SORT_MVV_LVA) || defined(MOVES_SORT_HEURISTIC) || defined(MOVES_SORT_SQUARE_SCORE)
+#if defined(MOVES_SORT_SEE) || defined(MOVES_SORT_MVV_LVA) || defined(MOVES_SORT_HEURISTIC)
         MoveList[*GenMoveCount].SortValue = SORT_PAWN_PROMOTE_MOVE_BONUS + KNIGHT;
 #else
         MoveList[*GenMoveCount].SortValue = 0;
-#endif // MOVES_SORT_SEE || MOVES_SORT_MVV_LVA || MOVES_SORT_HEURISTIC || MOVES_SORT_SQUARE_SCORE
+#endif // MOVES_SORT_SEE || MOVES_SORT_MVV_LVA || MOVES_SORT_HEURISTIC
 
         ++(*GenMoveCount);
     }
@@ -73,7 +73,7 @@ void AddMove(const BoardItem* Board, int** CMH_Pointer, MoveItem* MoveList, int*
         MoveList[*GenMoveCount].Type = MoveType;
         MoveList[*GenMoveCount].Move = MOVE_CREATE(From, To, 0);
 
-#if defined(MOVES_SORT_SEE) || defined(MOVES_SORT_MVV_LVA) || defined(MOVES_SORT_HEURISTIC) || (defined(MOVES_SORT_SQUARE_SCORE) && defined(SIMPLIFIED_EVALUATION_FUNCTION))
+#if defined(MOVES_SORT_SEE) || defined(MOVES_SORT_MVV_LVA) || defined(MOVES_SORT_HEURISTIC)
         if (MoveType & MOVE_CAPTURE) {
 #ifdef MOVES_SORT_SEE
             SEE_Value = CaptureSEE(Board, From, To, 0, MoveType);
@@ -111,70 +111,11 @@ void AddMove(const BoardItem* Board, int** CMH_Pointer, MoveItem* MoveList, int*
             }
 #endif // COUNTER_MOVE_HISTORY
 
-#elif defined(MOVES_SORT_SQUARE_SCORE) && defined(SIMPLIFIED_EVALUATION_FUNCTION)
-            if (PIECE(Board->Pieces[From]) == PAWN) {
-                if (Board->CurrentColor == WHITE) {
-                    MoveList[*GenMoveCount].SortValue = PawnSquareScore[To] - PawnSquareScore[From];
-                }
-                else { // BLACK
-                    MoveList[*GenMoveCount].SortValue = PawnSquareScore[To ^ 56] - PawnSquareScore[From ^ 56];
-                }
-            }
-            else if (PIECE(Board->Pieces[From]) == KNIGHT) {
-                if (Board->CurrentColor == WHITE) {
-                    MoveList[*GenMoveCount].SortValue = KnightSquareScore[To] - KnightSquareScore[From];
-                }
-                else { // BLACK
-                    MoveList[*GenMoveCount].SortValue = KnightSquareScore[To ^ 56] - KnightSquareScore[From ^ 56];
-                }
-            }
-            else if (PIECE(Board->Pieces[From]) == BISHOP) {
-                if (Board->CurrentColor == WHITE) {
-                    MoveList[*GenMoveCount].SortValue = BishopSquareScore[To] - BishopSquareScore[From];
-                }
-                else { // BLACK
-                    MoveList[*GenMoveCount].SortValue = BishopSquareScore[To ^ 56] - BishopSquareScore[From ^ 56];
-                }
-            }
-            else if (PIECE(Board->Pieces[From]) == ROOK) {
-                if (Board->CurrentColor == WHITE) {
-                    MoveList[*GenMoveCount].SortValue = RookSquareScore[To] - RookSquareScore[From];
-                }
-                else { // BLACK
-                    MoveList[*GenMoveCount].SortValue = RookSquareScore[To ^ 56] - RookSquareScore[From ^ 56];
-                }
-            }
-            else if (PIECE(Board->Pieces[From]) == QUEEN) {
-                if (Board->CurrentColor == WHITE) {
-                    MoveList[*GenMoveCount].SortValue = QueenSquareScore[To] - QueenSquareScore[From];
-                }
-                else { // BLACK
-                    MoveList[*GenMoveCount].SortValue = QueenSquareScore[To ^ 56] - QueenSquareScore[From ^ 56];
-                }
-            }
-            else { // KING
-                if (Board->CurrentColor == WHITE) {
-                    if (IsEndGame(Board)) { // End game
-                        MoveList[*GenMoveCount].SortValue = KingSquareScoreEnding[To] - KingSquareScoreEnding[From];
-                    }
-                    else { // Open/Middle game
-                        MoveList[*GenMoveCount].SortValue = KingSquareScoreOpening[To] - KingSquareScoreOpening[From];
-                    }
-                }
-                else { // BLACK
-                    if (IsEndGame(Board)) { // End game
-                        MoveList[*GenMoveCount].SortValue = KingSquareScoreEnding[To ^ 56] - KingSquareScoreEnding[From ^ 56];
-                    }
-                    else { // Open/Middle game
-                        MoveList[*GenMoveCount].SortValue = KingSquareScoreOpening[To ^ 56] - KingSquareScoreOpening[From ^ 56];
-                    }
-                }
-            }
 #else
             MoveList[*GenMoveCount].SortValue = 0;
-#endif // MOVES_SORT_HEURISTIC || (MOVES_SORT_SQUARE_SCORE && SIMPLIFIED_EVALUATION_FUNCTION)
+#endif // MOVES_SORT_HEURISTIC
         }
-#endif // MOVES_SORT_SEE || MOVES_SORT_MVV_LVA || MOVES_SORT_HEURISTIC || (MOVES_SORT_SQUARE_SCORE && SIMPLIFIED_EVALUATION_FUNCTION)
+#endif // MOVES_SORT_SEE || MOVES_SORT_MVV_LVA || MOVES_SORT_HEURISTIC
 
         ++(*GenMoveCount);
     }

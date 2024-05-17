@@ -142,9 +142,9 @@ SCORE TuningSearch(BoardItem* Board, SCORE Alpha, SCORE Beta, const int Ply, con
 #endif // QUIESCENCE_CHECK_EXTENSION
 
     for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
-#if defined(MOVES_SORT_SEE) || defined(MOVES_SORT_MVV_LVA) || defined(MOVES_SORT_HEURISTIC) || defined(MOVES_SORT_SQUARE_SCORE)
+#if defined(MOVES_SORT_SEE) || defined(MOVES_SORT_MVV_LVA) || defined(MOVES_SORT_HEURISTIC)
         PrepareNextMove(MoveNumber, MoveList, GenMoveCount);
-#endif // MOVES_SORT_SEE || MOVES_SORT_MVV_LVA || MOVES_SORT_HEURISTIC || MOVES_SORT_SQUARE_SCORE
+#endif // MOVES_SORT_SEE || MOVES_SORT_MVV_LVA || MOVES_SORT_HEURISTIC
 
 #ifdef QUIESCENCE_SEE_MOVE_PRUNING
         if (!InCheck) {

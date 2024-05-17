@@ -9,28 +9,7 @@
 #include "Def.h"
 #include "Types.h"
 
-#ifdef SIMPLIFIED_EVALUATION_FUNCTION
-
-extern int PiecesScore[6];
-
-extern int PawnSquareScore[64];
-extern int KnightSquareScore[64];
-extern int BishopSquareScore[64];
-extern int RookSquareScore[64];
-extern int QueenSquareScore[64];
-
-extern int KingSquareScoreOpening[64];
-extern int KingSquareScoreEnding[64];
-
-// ------------------------------------------------------------------
-
-void InitEvaluation(void);
-
-BOOL IsEndGame(const BoardItem* Board);
-
-int Evaluate(BoardItem* Board);
-
-#elif defined(TOGA_EVALUATION_FUNCTION)
+#ifdef TOGA_EVALUATION_FUNCTION
 
 // Game phase (4.1)
 
@@ -192,6 +171,6 @@ SCORE Evaluate(BoardItem* Board);
 
 int Evaluate(BoardItem* Board);
 
-#endif // SIMPLIFIED_EVALUATION_FUNCTION || TOGA_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
+#endif // TOGA_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
 
 #endif // !EVALUATE_H

@@ -8,11 +8,6 @@
 // Evaluation functions
 
 /*
-    https://www.chessprogramming.org/Simplified_Evaluation_Function
-*/
-//#define SIMPLIFIED_EVALUATION_FUNCTION
-
-/*
     https://www.chessprogramming.org/Toga_Log
     https://manualzz.com/doc/6937632/toga-log-user-manual
 */
@@ -93,7 +88,6 @@
 #define MOVES_SORT_MVV_LVA
 
 #define MOVES_SORT_HEURISTIC
-//#define MOVES_SORT_SQUARE_SCORE               // Required SIMPLIFIED_EVALUATION_FUNCTION
 
 #define COUNTER_MOVE_HISTORY                    // Required MOVES_SORT_HEURISTIC
 
@@ -161,15 +155,13 @@
 #define ALGORITHM_NAME                          "PVS"
 #endif // MCTS || PVS
 
-#ifdef SIMPLIFIED_EVALUATION_FUNCTION
-#define EVALUATION_NAME                         "SEF"
-#elif defined(TOGA_EVALUATION_FUNCTION)
+#ifdef TOGA_EVALUATION_FUNCTION
 #define EVALUATION_NAME                         "Toga"
 #elif defined(NNUE_EVALUATION_FUNCTION)
 #define EVALUATION_NAME                         "NNUE"
 #elif defined(NNUE_EVALUATION_FUNCTION_2)
 #define EVALUATION_NAME                         "NNUE2"
-#endif // SIMPLIFIED_EVALUATION_FUNCTION || TOGA_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
+#endif // TOGA_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
 
 #define YEARS                                   "1999-2024"
 #define AUTHOR                                  "Ilya Rukavishnikov"
