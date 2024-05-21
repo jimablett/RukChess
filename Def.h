@@ -14,8 +14,6 @@
 //#define TOGA_EVALUATION_FUNCTION
 
 /*
-    https://github.com/jhonnold/berserk
-    https://github.com/jhonnold/berserk-trainer
     https://github.com/Ilya-Ruk/RukChessTrainer
 */
 #define NNUE_EVALUATION_FUNCTION_2
