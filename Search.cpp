@@ -101,11 +101,9 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
 
     int* CMH_Pointer[2];
 
-#ifdef QUIESCENCE
     if (Depth <= 0) {
         return QuiescenceSearch(Board, Alpha, Beta, 0, Ply, BestMoves, IsPrincipal, InCheck);
     }
-#endif // QUIESCENCE
 
     if (
         Ply > 0
@@ -159,12 +157,6 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
     if (Board->HalfMoveNumber >= MAX_GAME_MOVES) {
         return (int)Evaluate(Board);
     }
-
-#ifndef QUIESCENCE
-    if (Depth <= 0) {
-        return (int)Evaluate(Board);
-    }
-#endif // !QUIESCENCE
 
     if (IsPrincipal && Board->SelDepth < Ply + 1) {
         Board->SelDepth = Ply + 1;

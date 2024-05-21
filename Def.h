@@ -74,9 +74,9 @@
 #define MATE_DISTANCE_PRUNING
 #define HASH_SCORE
 #define REVERSE_FUTILITY_PRUNING
-#define RAZORING                                // Required QUIESCENCE
+#define RAZORING
 #define NULL_MOVE_PRUNING
-#define PROBCUT                                 // Required QUIESCENCE
+#define PROBCUT
 #define IID                                     // Required HASH_MOVE
 //#define PVS                                   // Required MOVES_SORT_...
 #define HASH_MOVE                               // Required MOVES_SORT_...
@@ -94,8 +94,6 @@
 #define LATE_MOVE_REDUCTION                     // Required NEGA_SCOUT
 
 // Quiescence search
-
-#define QUIESCENCE
 
 #define QUIESCENCE_MATE_DISTANCE_PRUNING
 #define QUIESCENCE_HASH_SCORE

@@ -16,7 +16,6 @@
 #include "Types.h"
 #include "Utils.h"
 
-#ifdef QUIESCENCE
 int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, const int Ply, MoveItem* BestMoves, const BOOL IsPrincipal, const BOOL InCheck)
 {
     int GenMoveCount;
@@ -279,4 +278,3 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
 
     return BestScore;
 }
-#endif // QUIESCENCE
