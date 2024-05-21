@@ -87,7 +87,9 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
     int BetaCut;
 #endif // PROBCUT
 
+#ifdef BAD_CAPTURE_LAST
     int SEE_Value;
+#endif // BAD_CAPTURE_LAST
 
 #if defined(NEGA_SCOUT) && defined(LATE_MOVE_REDUCTION)
     int LateMoveReduction;
@@ -421,7 +423,9 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
 #endif // KILLER_MOVE
 
     for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
+#ifdef BAD_CAPTURE_LAST
 NextMove:
+#endif // BAD_CAPTURE_LAST
 
         PrepareNextMove(MoveNumber, MoveList, GenMoveCount);
 
