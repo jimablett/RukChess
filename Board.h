@@ -147,7 +147,7 @@ typedef struct {
 #ifdef NNUE_EVALUATION_FUNCTION_2
     AccumulatorItem Accumulator;
 #endif // NNUE_EVALUATION_FUNCTION_2
-} HistoryItem; // 48 bytes/1152 bytes (NNUE)/2176 bytes (NNUE2)
+} HistoryItem; // 48 bytes/2176 bytes (NNUE2)
 
 typedef struct {
     int Pieces[64]; // (Color << 3) | Piece
@@ -163,7 +163,7 @@ typedef struct {
 
     U64 Hash;
 
-    HistoryItem MoveTable[MAX_GAME_MOVES]; // 49152 bytes/1179648 bytes (NNUE)/2228224 bytes (NNUE2)
+    HistoryItem MoveTable[MAX_GAME_MOVES]; // 49152 bytes/2228224 bytes (NNUE2)
 
 #if defined(PVS) || defined(QUIESCENCE_PVS)
     BOOL FollowPV;
@@ -193,7 +193,7 @@ typedef struct {
 #ifdef NNUE_EVALUATION_FUNCTION_2
     AccumulatorItem Accumulator;
 #endif // NNUE_EVALUATION_FUNCTION_2
-} BoardItem; // 648104 bytes/1779776 bytes (NNUE)/2829376 bytes (NNUE2)
+} BoardItem; // 648104 bytes/2829376 bytes (NNUE2)
 
 extern const char* BoardName[64];
 
