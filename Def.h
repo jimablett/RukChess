@@ -65,7 +65,7 @@
 
 #define COUNTER_MOVE_HISTORY
 
-#define HASH_PREFETCH                           // Required HASH_SCORE or HASH_MOVE
+#define HASH_PREFETCH                           // Required HASH_SCORE or HASH_MOVE or QUIESCENCE_HASH_SCORE or QUIESCENCE_HASH_MOVE
 
 // Search
 
