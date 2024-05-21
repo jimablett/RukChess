@@ -88,8 +88,7 @@
 #define LATE_MOVE_PRUNING
 #define SEE_QUIET_MOVE_PRUNING
 #define SEE_CAPTURE_MOVE_PRUNING                // Required BAD_CAPTURE_LAST
-#define NEGA_SCOUT
-#define LATE_MOVE_REDUCTION                     // Required NEGA_SCOUT
+#define LATE_MOVE_REDUCTION
 
 // Quiescence search
 

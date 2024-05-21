@@ -91,9 +91,9 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
     int SEE_Value;
 #endif // BAD_CAPTURE_LAST
 
-#if defined(NEGA_SCOUT) && defined(LATE_MOVE_REDUCTION)
+#ifdef LATE_MOVE_REDUCTION
     int LateMoveReduction;
-#endif // NEGA_SCOUT && LATE_MOVE_REDUCTION
+#endif // LATE_MOVE_REDUCTION
 
 #if defined(SINGULAR_EXTENSION) && defined(HASH_SCORE) && defined(HASH_MOVE)
     int SingularBeta;
@@ -591,14 +591,11 @@ NextMove:
 
         NewDepth = Depth - 1 + Extension;
 
-#ifdef NEGA_SCOUT
         if (IsPrincipal && LegalMoveCount == 1) { // First move
-#endif // NEGA_SCOUT
             // Search with full window
             TempBestMoves[0] = (MoveItem){ 0, 0, 0 };
 
             Score = -Search(Board, -Beta, -Alpha, NewDepth, Ply + 1, TempBestMoves, TRUE, GiveCheck, TRUE, 0);
-#ifdef NEGA_SCOUT
         }
         else { // Other moves
 #ifdef LATE_MOVE_REDUCTION
@@ -650,7 +647,6 @@ NextMove:
                 Score = -Search(Board, -Beta, -Alpha, NewDepth, Ply + 1, TempBestMoves, TRUE, GiveCheck, TRUE, 0);
             }
         }
-#endif // NEGA_SCOUT
 
         UnmakeMove(Board);
 

@@ -108,7 +108,7 @@ int main(int argc, char** argv)
 
     // Initialize LMR
 
-#if defined(NEGA_SCOUT) && defined(LATE_MOVE_REDUCTION)
+#ifdef LATE_MOVE_REDUCTION
     for (int Depth = 0; Depth < 64; ++Depth) {
 //        printf("LateMoveReductionTable[%2d] = ", Depth);
 
@@ -120,7 +120,7 @@ int main(int argc, char** argv)
 
 //        printf("\n");
     }
-#endif // NEGA_SCOUT && LATE_MOVE_REDUCTION
+#endif // LATE_MOVE_REDUCTION
 
     // Initialize random generator
 

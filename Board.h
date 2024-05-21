@@ -213,9 +213,9 @@ extern BoardItem CurrentBoard;
 extern int LateMovePruningTable[7]; // [LMP depth]
 #endif // LATE_MOVE_PRUNING
 
-#if defined(NEGA_SCOUT) && defined(LATE_MOVE_REDUCTION)
+#ifdef LATE_MOVE_REDUCTION
 extern int LateMoveReductionTable[64][64]; // [LMR depth][Move number]
-#endif // NEGA_SCOUT && LATE_MOVE_REDUCTION
+#endif // LATE_MOVE_REDUCTION
 
 BOOL IsSquareAttacked(const BoardItem* Board, const int Square, const int Color);
 BOOL IsInCheck(const BoardItem* Board, const int Color);
