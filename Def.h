@@ -79,8 +79,7 @@
 //#define PVS
 #define HASH_MOVE
 #define KILLER_MOVE                             // Required HASH_MOVE
-#define KILLER_MOVE_2                           // Required HASH_MOVE and KILLER_MOVE
-#define COUNTER_MOVE                            // Required HASH_MOVE, KILLER_MOVE and KILLER_MOVE_2
+#define COUNTER_MOVE                            // Required HASH_MOVE, KILLER_MOVE
 #define BAD_CAPTURE_LAST
 #define CHECK_EXTENSION
 #define SINGULAR_EXTENSION                      // Required HASH_SCORE and HASH_MOVE

@@ -67,7 +67,6 @@ void SetKillerMove1SortValue(const BoardItem* Board, const int Ply, MoveItem* Ge
     }
 }
 
-#ifdef KILLER_MOVE_2
 void SetKillerMove2SortValue(const BoardItem* Board, const int Ply, MoveItem* GenMoveList, const int GenMoveCount, const int HashMove)
 {
     int KillerMove2 = Board->KillerMoveTable[Ply][1];
@@ -84,7 +83,6 @@ void SetKillerMove2SortValue(const BoardItem* Board, const int Ply, MoveItem* Ge
         }
     }
 }
-#endif // KILLER_MOVE_2
 
 #endif // KILLER_MOVE
 

@@ -28,13 +28,8 @@ void SetHashMoveSortValue(MoveItem* GenMoveList, const int GenMoveCount, const i
 #endif // HASH_MOVE || QUIESCENCE_HASH_MOVE
 
 #ifdef KILLER_MOVE
-
 void SetKillerMove1SortValue(const BoardItem* Board, const int Ply, MoveItem* GenMoveList, const int GenMoveCount, const int HashMove);
-
-#ifdef KILLER_MOVE_2
 void SetKillerMove2SortValue(const BoardItem* Board, const int Ply, MoveItem* GenMoveList, const int GenMoveCount, const int HashMove);
-#endif // KILLER_MOVE_2
-
 #endif // KILLER_MOVE
 
 #ifdef COUNTER_MOVE

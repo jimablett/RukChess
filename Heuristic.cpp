@@ -77,20 +77,14 @@ void SetCounterMoveHistoryPointer(BoardItem* Board, volatile int** CMH_Pointer, 
 
 void UpdateKillerMove(BoardItem* Board, const int Move, const int Ply)
 {
-#ifdef KILLER_MOVE_2
     int TempMove;
-#endif // KILLER_MOVE_2
 
     if (Board->KillerMoveTable[Ply][0] != Move) {
-#ifdef KILLER_MOVE_2
         TempMove = Board->KillerMoveTable[Ply][0];
-#endif // KILLER_MOVE_2
 
         Board->KillerMoveTable[Ply][0] = Move;
 
-#ifdef KILLER_MOVE_2
         Board->KillerMoveTable[Ply][1] = TempMove;
-#endif // KILLER_MOVE_2
     }
 }
 
