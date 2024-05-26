@@ -33,7 +33,6 @@ void SetPvsMoveSortValue(BoardItem* Board, const int Ply, MoveItem* GenMoveList,
 }
 #endif // PVS || QUIESCENCE_PVS
 
-#if defined(HASH_MOVE) || defined(QUIESCENCE_HASH_MOVE)
 void SetHashMoveSortValue(MoveItem* GenMoveList, const int GenMoveCount, const int HashMove)
 {
     if (HashMove) {
@@ -46,7 +45,6 @@ void SetHashMoveSortValue(MoveItem* GenMoveList, const int GenMoveCount, const i
         }
     }
 }
-#endif // HASH_MOVE || QUIESCENCE_HASH_MOVE
 
 #ifdef KILLER_MOVE
 

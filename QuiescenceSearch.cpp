@@ -27,7 +27,6 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
 
     MoveItem TempBestMoves[MAX_PLY];
 
-#if defined(QUIESCENCE_HASH_SCORE) || defined(QUIESCENCE_HASH_MOVE)
     int HashScore = -INF;
     int HashStaticScore = -INF;
     int HashMove = 0;
@@ -37,7 +36,6 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
     int QuiescenceHashDepth;
 
     int OriginalAlpha = Alpha;
-#endif // QUIESCENCE_HASH_SCORE || QUIESCENCE_HASH_MOVE
 
     int Score;
     int BestScore;
@@ -99,7 +97,6 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
         return (int)Evaluate(Board);
     }
 
-#if defined(QUIESCENCE_HASH_SCORE) || defined(QUIESCENCE_HASH_MOVE)
     LoadHash(Board->Hash, &HashDepth, Ply, &HashScore, &HashStaticScore, &HashMove, &HashFlag);
 
     if (InCheck || Depth >= 0) {
@@ -114,7 +111,6 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
         ++Board->HashCount;
 #endif // DEBUG_STATISTIC
 
-#ifdef QUIESCENCE_HASH_SCORE
         if (!IsPrincipal && HashDepth >= QuiescenceHashDepth) {
             if (
                 (HashFlag == HASH_BETA && HashScore >= Beta)
@@ -124,9 +120,7 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
                 return HashScore;
             }
         }
-#endif // QUIESCENCE_HASH_SCORE
     }
-#endif // QUIESCENCE_HASH_SCORE || QUIESCENCE_HASH_MOVE
 
 #ifdef QUIESCENCE_CHECK_EXTENSION
     if (InCheck) {
@@ -137,7 +131,6 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
     }
     else {
 #endif // QUIESCENCE_CHECK_EXTENSION
-#ifdef QUIESCENCE_HASH_SCORE
         if (HashFlag) {
             BestScore = StaticScore = HashStaticScore;
 
@@ -150,18 +143,13 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
             }
         }
         else {
-#endif // QUIESCENCE_HASH_SCORE
             BestScore = StaticScore = (int)Evaluate(Board);
-#ifdef QUIESCENCE_HASH_SCORE
         }
-#endif // QUIESCENCE_HASH_SCORE
 
         if (BestScore >= Beta) {
-#ifdef QUIESCENCE_HASH_SCORE
             if (!HashFlag) {
                 SaveHash(Board->Hash, -MAX_PLY, 0, 0, StaticScore, 0, HASH_STATIC_SCORE);
             }
-#endif // QUIESCENCE_HASH_SCORE
 
             return BestScore;
         }
@@ -180,9 +168,7 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
     SetPvsMoveSortValue(Board, Ply, MoveList, GenMoveCount);
 #endif // QUIESCENCE_PVS
 
-#ifdef QUIESCENCE_HASH_MOVE
     SetHashMoveSortValue(MoveList, GenMoveCount, HashMove);
-#endif // QUIESCENCE_HASH_MOVE
 
     for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
         PrepareNextMove(MoveNumber, MoveList, GenMoveCount);
@@ -193,9 +179,7 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
 #ifdef QUIESCENCE_PVS
             && MoveList[MoveNumber].SortValue != SORT_PVS_MOVE_VALUE
 #endif // QUIESCENCE_PVS
-#ifdef QUIESCENCE_HASH_MOVE
             && MoveList[MoveNumber].Move != HashMove
-#endif // QUIESCENCE_HASH_MOVE
         ) {
             if (CaptureSEE(Board, MOVE_FROM(MoveList[MoveNumber].Move), MOVE_TO(MoveList[MoveNumber].Move), MOVE_PROMOTE_PIECE(MoveList[MoveNumber].Move), MoveList[MoveNumber].Type) < 0) { // Bad capture/quiet move
                 continue; // Next move
@@ -205,9 +189,9 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
 
         MakeMove(Board, MoveList[MoveNumber]);
 
-#if defined(HASH_PREFETCH) && (defined(QUIESCENCE_HASH_SCORE) || defined(QUIESCENCE_HASH_MOVE))
+#ifdef HASH_PREFETCH
         Prefetch(Board->Hash);
-#endif // HASH_PREFETCH && (QUIESCENCE_HASH_SCORE || QUIESCENCE_HASH_MOVE)
+#endif // HASH_PREFETCH
 
         if (IsInCheck(Board, CHANGE_COLOR(Board->CurrentColor))) { // Illegal move
             UnmakeMove(Board);
@@ -249,9 +233,7 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
                     ++Board->CutoffCount;
 #endif // DEBUG_STATISTIC
 
-#if defined(QUIESCENCE_HASH_SCORE) || defined(QUIESCENCE_HASH_MOVE)
                     SaveHash(Board->Hash, QuiescenceHashDepth, Ply, BestScore, StaticScore, BestMove.Move, HASH_BETA);
-#endif // QUIESCENCE_HASH_SCORE || QUIESCENCE_HASH_MOVE
 
                     return BestScore;
                 }
@@ -265,7 +247,6 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
     }
 #endif // QUIESCENCE_CHECK_EXTENSION
 
-#if defined(QUIESCENCE_HASH_SCORE) || defined(QUIESCENCE_HASH_MOVE)
     if (IsPrincipal && BestScore > OriginalAlpha) {
         HashFlag = HASH_EXACT;
     }
@@ -274,7 +255,6 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
     }
 
     SaveHash(Board->Hash, QuiescenceHashDepth, Ply, BestScore, StaticScore, BestMove.Move, HashFlag);
-#endif // QUIESCENCE_HASH_SCORE || QUIESCENCE_HASH_MOVE
 
     return BestScore;
 }

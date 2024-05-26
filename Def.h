@@ -65,24 +65,22 @@
 
 #define COUNTER_MOVE_HISTORY
 
-#define HASH_PREFETCH                           // Required HASH_SCORE or HASH_MOVE or QUIESCENCE_HASH_SCORE or QUIESCENCE_HASH_MOVE
+#define HASH_PREFETCH
 
 // Search
 
 #define MATE_DISTANCE_PRUNING
-#define HASH_SCORE
 #define REVERSE_FUTILITY_PRUNING
 #define RAZORING
 #define NULL_MOVE_PRUNING
 #define PROBCUT
-#define IID                                     // Required HASH_MOVE
+#define IID
 //#define PVS
-#define HASH_MOVE
-#define KILLER_MOVE                             // Required HASH_MOVE
-#define COUNTER_MOVE                            // Required HASH_MOVE, KILLER_MOVE
+#define KILLER_MOVE
+#define COUNTER_MOVE                            // Required KILLER_MOVE
 #define BAD_CAPTURE_LAST
 #define CHECK_EXTENSION
-#define SINGULAR_EXTENSION                      // Required HASH_SCORE and HASH_MOVE
+#define SINGULAR_EXTENSION
 #define FUTILITY_PRUNING
 #define LATE_MOVE_PRUNING
 #define SEE_QUIET_MOVE_PRUNING
@@ -92,10 +90,8 @@
 // Quiescence search
 
 #define QUIESCENCE_MATE_DISTANCE_PRUNING
-#define QUIESCENCE_HASH_SCORE
 #define QUIESCENCE_CHECK_EXTENSION
 //#define QUIESCENCE_PVS
-#define QUIESCENCE_HASH_MOVE
 #define QUIESCENCE_SEE_MOVE_PRUNING
 
 //#define BIND_THREAD

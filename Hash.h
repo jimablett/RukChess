@@ -28,15 +28,13 @@ void ClearHash(void);
 
 void AddHashStoreIteration(void);
 
-#if defined(HASH_SCORE) || defined(HASH_MOVE) || defined(QUIESCENCE_HASH_SCORE) || defined(QUIESCENCE_HASH_MOVE)
 void SaveHash(const U64 Hash, const int Depth, const int Ply, const int Score, const int StaticScore, const int Move, const int Flag);
 void LoadHash(const U64 Hash, int* Depth, const int Ply, int* Score, int* StaticScore, int* Move, int* Flag);
-#endif // HASH_SCORE || HASH_MOVE || QUIESCENCE_HASH_SCORE || QUIESCENCE_HASH_MOVE
 
 int FullHash(void);
 
-#if defined(HASH_PREFETCH) && (defined(HASH_SCORE) || defined(HASH_MOVE) || defined(QUIESCENCE_HASH_SCORE) || defined(QUIESCENCE_HASH_MOVE))
+#ifdef HASH_PREFETCH
 void Prefetch(const U64 Hash);
-#endif // HASH_PREFETCH && (HASH_SCORE || HASH_MOVE || QUIESCENCE_HASH_SCORE || QUIESCENCE_HASH_MOVE)
+#endif // HASH_PREFETCH
 
 #endif // !HASH_H

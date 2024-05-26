@@ -53,13 +53,11 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
 
     MoveItem TempBestMoves[MAX_PLY];
 
-#if defined(HASH_SCORE) || defined(HASH_MOVE)
     int HashScore = -INF;
     int HashStaticScore = -INF;
     int HashMove = 0;
     int HashDepth = -MAX_PLY;
     int HashFlag = 0;
-#endif // HASH_SCORE || HASH_MOVE
 
     int Score;
     int BestScore;
@@ -95,9 +93,9 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
     int LateMoveReduction;
 #endif // LATE_MOVE_REDUCTION
 
-#if defined(SINGULAR_EXTENSION) && defined(HASH_SCORE) && defined(HASH_MOVE)
+#ifdef SINGULAR_EXTENSION
     int SingularBeta;
-#endif // SINGULAR_EXTENSION && HASH_SCORE && HASH_MOVE
+#endif // SINGULAR_EXTENSION
 
     int* CMH_Pointer[2];
 
@@ -168,7 +166,6 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
     CMH_Pointer[0] = CMH_Pointer[1] = NULL;
 #endif // COUNTER_MOVE_HISTORY
 
-#if defined(HASH_SCORE) || defined(HASH_MOVE)
     if (!SkipMove) {
         LoadHash(Board->Hash, &HashDepth, Ply, &HashScore, &HashStaticScore, &HashMove, &HashFlag);
 
@@ -177,7 +174,6 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
             ++Board->HashCount;
 #endif // DEBUG_STATISTIC
 
-#ifdef HASH_SCORE
             if (!IsPrincipal && HashDepth >= Depth) {
                 if (
                     (HashFlag == HASH_BETA && HashScore >= Beta)
@@ -216,29 +212,23 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
                     return HashScore;
                 }
             } // if
-#endif // HASH_SCORE
         } // if
     } // if
-#endif // HASH_SCORE || HASH_MOVE
 
     if (InCheck) {
         StaticScore = -INF + Ply;
     }
     else {
-#ifdef HASH_SCORE
         if (HashFlag) {
             StaticScore = HashStaticScore;
         }
         else {
-#endif // HASH_SCORE
             StaticScore = (int)Evaluate(Board);
 
-#ifdef HASH_SCORE
             if (!SkipMove) {
                 SaveHash(Board->Hash, -MAX_PLY, 0, 0, StaticScore, 0, HASH_STATIC_SCORE);
             }
         }
-#endif // HASH_SCORE
     }
 
 #if defined(REVERSE_FUTILITY_PRUNING) || defined(RAZORING) || defined(NULL_MOVE_PRUNING) || defined(PROBCUT)
@@ -274,9 +264,9 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
 
             MakeNullMove(Board);
 
-#if defined(HASH_PREFETCH) && (defined(HASH_SCORE) || defined(HASH_MOVE))
+#ifdef HASH_PREFETCH
             Prefetch(Board->Hash);
-#endif // HASH_PREFETCH && (HASH_SCORE || HASH_MOVE)
+#endif // HASH_PREFETCH
 
             ++Board->Nodes;
 
@@ -353,7 +343,7 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
     } // if
 #endif // REVERSE_FUTILITY_PRUNING || RAZORING || NULL_MOVE_PRUNING || PROBCUT
 
-#if defined(HASH_MOVE) && defined(IID)
+#ifdef IID
     if (!SkipMove && !HashMove && (IsPrincipal ? Depth > 4 : Depth > 7)) { // Hakkapeliitta
 #ifdef DEBUG_IID
         printf("-- IID: Depth = %d\n", Depth);
@@ -376,7 +366,7 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
         }
 #endif // DEBUG_IID
     }
-#endif // HASH_MOVE && IID
+#endif // IID
 
     BestScore = -INF + Ply;
 
@@ -387,9 +377,7 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
     SetPvsMoveSortValue(Board, Ply, MoveList, GenMoveCount);
 #endif // PVS
 
-#ifdef HASH_MOVE
     SetHashMoveSortValue(MoveList, GenMoveCount, HashMove);
-#endif // HASH_MOVE
 
 #ifdef KILLER_MOVE
     SetKillerMove1SortValue(Board, Ply, MoveList, GenMoveCount, HashMove);
@@ -424,9 +412,7 @@ NextMove:
 #ifdef PVS
             && MoveList[MoveNumber].SortValue != SORT_PVS_MOVE_VALUE
 #endif // PVS
-#ifdef HASH_MOVE
             && MoveList[MoveNumber].Move != HashMove
-#endif // HASH_MOVE
         ) {
             SEE_Value = CaptureSEE(Board, MOVE_FROM(MoveList[MoveNumber].Move), MOVE_TO(MoveList[MoveNumber].Move), MOVE_PROMOTE_PIECE(MoveList[MoveNumber].Move), MoveList[MoveNumber].Type);
 
@@ -440,9 +426,9 @@ NextMove:
 
         MakeMove(Board, MoveList[MoveNumber]);
 
-#if defined(HASH_PREFETCH) && (defined(HASH_SCORE) || defined(HASH_MOVE))
+#ifdef HASH_PREFETCH
         Prefetch(Board->Hash);
-#endif // HASH_PREFETCH && (HASH_SCORE || HASH_MOVE)
+#endif // HASH_PREFETCH
 
         if (IsInCheck(Board, CHANGE_COLOR(Board->CurrentColor))) { // Illegal move
             UnmakeMove(Board);
@@ -479,7 +465,7 @@ NextMove:
         }
 #endif // CHECK_EXTENSION
 
-#if defined(SINGULAR_EXTENSION) && defined(HASH_SCORE) && defined(HASH_MOVE)
+#ifdef SINGULAR_EXTENSION
         if (
             !Extension
             && Ply > 0
@@ -518,7 +504,7 @@ NextMove:
 
             MakeMove(Board, MoveList[MoveNumber]);
         }
-#endif // SINGULAR_EXTENSION && HASH_SCORE && HASH_MOVE
+#endif // SINGULAR_EXTENSION
 
 #if defined(FUTILITY_PRUNING) || defined(LATE_MOVE_PRUNING) || defined(SEE_QUIET_MOVE_PRUNING) || defined(SEE_CAPTURE_MOVE_PRUNING)
         if (
@@ -529,9 +515,7 @@ NextMove:
 #ifdef PVS
             && MoveList[MoveNumber].SortValue != SORT_PVS_MOVE_VALUE
 #endif // PVS
-#ifdef HASH_MOVE
             && MoveList[MoveNumber].Move != HashMove
-#endif // HASH_MOVE
         ) {
 #if defined(SEE_CAPTURE_MOVE_PRUNING) && defined(BAD_CAPTURE_LAST)
             if (
@@ -598,9 +582,7 @@ NextMove:
 #ifdef PVS
                 && MoveList[MoveNumber].SortValue != SORT_PVS_MOVE_VALUE
 #endif // PVS
-#ifdef HASH_MOVE
                 && MoveList[MoveNumber].Move != HashMove
-#endif // HASH_MOVE
                 && Depth >= 5
             ) {
                 LateMoveReduction = LateMoveReductionTable[MIN(Depth, 63)][MIN(MoveNumber, 63)]; // Hakkapeliitta
@@ -712,7 +694,6 @@ NextMove:
         }
     }
 
-#if defined(HASH_SCORE) || defined(HASH_MOVE)
     if (!SkipMove) {
         if (BestScore >= Beta) {
             HashFlag = HASH_BETA;
@@ -726,7 +707,6 @@ NextMove:
 
         SaveHash(Board->Hash, Depth, Ply, BestScore, StaticScore, BestMove.Move, HashFlag);
     }
-#endif // HASH_SCORE || HASH_MOVE
 
     return BestScore;
 }
