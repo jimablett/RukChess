@@ -5,13 +5,6 @@
 #ifndef DEF_H
 #define DEF_H
 
-#define USE_NNUE_AVX2
-#define USE_NNUE_UPDATE
-
-//#define PRINT_MIN_MAX_VALUES
-//#define PRINT_WEIGHT_INDEX
-//#define PRINT_ACCUMULATOR
-
 // Features (enable/disable)
 
 // Debug
@@ -33,6 +26,9 @@
 #define COUNTER_MOVE_HISTORY
 
 #define HASH_PREFETCH
+
+//#define BIND_THREAD
+//#define BIND_THREAD_V2                        // Max. 64 CPUs
 
 // Search
 
@@ -59,8 +55,14 @@
 #define QUIESCENCE_CHECK_EXTENSION
 #define QUIESCENCE_SEE_MOVE_PRUNING
 
-//#define BIND_THREAD
-//#define BIND_THREAD_V2                        // Max. 64 CPUs
+// NNUE
+
+#define USE_NNUE_AVX2
+#define USE_NNUE_UPDATE
+
+//#define PRINT_MIN_MAX_VALUES
+//#define PRINT_WEIGHT_INDEX
+//#define PRINT_ACCUMULATOR
 
 // ------------------------------------------------------------------
 
