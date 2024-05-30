@@ -352,10 +352,6 @@ BOOL ComputerMove(void)
 
     InCheck = IsInCheck(&CurrentBoard, CurrentBoard.CurrentColor);
 
-#if defined(PVS) || defined(QUIESCENCE_PVS)
-    CurrentBoard.FollowPV = TRUE;
-#endif // PVS || QUIESCENCE_PVS
-
     CurrentBoard.Nodes = 0ULL;
 
 #ifdef DEBUG_STATISTIC
@@ -422,10 +418,6 @@ BOOL ComputerMove(void)
                 printf("-- Start: Depth = %d Thread number = %d\n", Depth, omp_get_thread_num());
             }
 */
-#if defined(PVS) || defined(QUIESCENCE_PVS)
-            ThreadBoard.FollowPV = TRUE;
-#endif // PVS || QUIESCENCE_PVS
-
             ThreadBoard.Nodes = 0ULL;
 
 #ifdef DEBUG_STATISTIC

@@ -352,10 +352,6 @@ double RolloutSearch(NodeItem* Node, BoardItem* Board, int* Ply)
     InCheck = IsInCheck(Board, Board->CurrentColor);
 
     for (int Depth = 1; Depth <= SEARCH_DEPTH; ++Depth) {
-#if defined(PVS) || defined(QUIESCENCE_PVS)
-        Board->FollowPV = TRUE;
-#endif // PVS || QUIESCENCE_PVS
-
         Board->SelDepth = 0;
 
         Score = Search(Board, -INF, INF, Depth, *Ply, Board->BestMovesRoot, TRUE, InCheck, FALSE, 0);

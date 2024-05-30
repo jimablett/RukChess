@@ -22,7 +22,6 @@
 //#define DEBUG_MOVE
 //#define DEBUG_HASH
 //#define DEBUG_IID
-//#define DEBUG_PVS
 //#define DEBUG_SINGULAR_EXTENSION
 //#define DEBUG_SEE
 //#define DEBUG_NNUE_2
@@ -58,7 +57,6 @@
 #define NULL_MOVE_PRUNING
 #define PROBCUT
 #define IID
-//#define PVS
 #define KILLER_MOVE
 #define COUNTER_MOVE                            // Required KILLER_MOVE
 #define BAD_CAPTURE_LAST
@@ -74,7 +72,6 @@
 
 #define QUIESCENCE_MATE_DISTANCE_PRUNING
 #define QUIESCENCE_CHECK_EXTENSION
-//#define QUIESCENCE_PVS
 #define QUIESCENCE_SEE_MOVE_PRUNING
 
 //#define BIND_THREAD
