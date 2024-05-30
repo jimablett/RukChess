@@ -95,6 +95,10 @@
 #define ALGORITHM_NAME                          "PVS"
 #endif // MCTS || PVS
 
+/*
+    https://github.com/Ilya-Ruk/RukChessTrainer
+    https://github.com/Ilya-Ruk/RukChessNets
+*/
 #define EVALUATION_FUNCTION_NAME                "NNUE2"
 
 #define YEARS                                   "1999-2024"
@@ -118,10 +122,6 @@
 #define MAX_THREADS                             128
 
 #define DEFAULT_BOOK_FILE_NAME                  "book.txt"
-
-/*
-    https://github.com/Ilya-Ruk/RukChessNets
-*/
 #define DEFAULT_NNUE_FILE_NAME                  "net-7cf57d4dc994.nnue" // 09.12.2023
 
 // Time management (Xiphos)
