@@ -6,10 +6,10 @@
 
 #include "BitBoard.h"
 #include "Def.h"
-#include "Evaluate.h"
 #include "Gen.h"
 #include "Hash.h"
 #include "Move.h"
+#include "NNUE2.h"
 #include "Types.h"
 
 const char* BoardName[64] = {
@@ -386,7 +386,7 @@ void PrintBoard(BoardItem* Board)
 
     printf("\n");
 
-    printf("Static evaluate = %.2f\n", (double)Evaluate(Board) / 100.0);
+    printf("Static evaluate = %.2f\n", (double)NetworkEvaluate(Board) / 100.0);
 }
 
 void PrintBitMask(const U64 Mask)
@@ -628,9 +628,7 @@ int SetFen(BoardItem* Board, char* Fen)
 
     memset(Board->MoveTable, 0, sizeof(Board->MoveTable));
 
-#ifdef NNUE_EVALUATION_FUNCTION_2
     Board->Accumulator.AccumulationComputed = FALSE;
-#endif // NNUE_EVALUATION_FUNCTION_2
 
     return (int)(Part - Fen);
 }

@@ -6,7 +6,6 @@
 #include "Board.h"
 #include "Book.h"
 #include "Def.h"
-#include "Evaluate.h"
 #include "Game.h"
 #include "Gen.h"
 #include "Hash.h"
@@ -24,7 +23,7 @@ int main(int argc, char** argv)
 
     // Print program name, program version, evaluation function name and copyright information
 
-    printf("%s %s %s %s\n", PROGRAM_NAME, PROGRAM_VERSION, ALGORITHM_NAME, EVALUATION_NAME);
+    printf("%s %s %s %s\n", PROGRAM_NAME, PROGRAM_VERSION, ALGORITHM_NAME, EVALUATION_FUNCTION_NAME);
     printf("Copyright (C) %s %s\n", YEARS, AUTHOR);
 
     // Print debug information
@@ -83,19 +82,6 @@ int main(int argc, char** argv)
     SetRandState(0ULL); // For reproducibility
     InitHashBoards();
 
-    // Initialize evaluation function
-
-#ifdef TOGA_EVALUATION_FUNCTION
-    InitEvaluation();
-#endif // TOGA_EVALUATION_FUNCTION
-
-    // Initialize tuning function and read params (if present)
-
-#ifdef TOGA_EVALUATION_FUNCTION
-    InitTuningParams();
-    LoadTuningParams();
-#endif // TOGA_EVALUATION_FUNCTION
-
     // Initialize LMP
 
 #ifdef LATE_MOVE_PRUNING
@@ -130,7 +116,6 @@ int main(int argc, char** argv)
 
     BookFileLoaded = LoadBook(DEFAULT_BOOK_FILE_NAME);
 
-#ifdef NNUE_EVALUATION_FUNCTION_2
     // Load network
 
     if (argc > 1) {
@@ -139,7 +124,6 @@ int main(int argc, char** argv)
     else {
         NnueFileLoaded = LoadNetwork(DEFAULT_NNUE_FILE_NAME);
     }
-#endif // NNUE_EVALUATION_FUNCTION_2
 
     // UCI or Console interface?
 
@@ -161,7 +145,6 @@ int main(int argc, char** argv)
 
     // Console interface
 
-#ifdef NNUE_EVALUATION_FUNCTION_2
     if (!NnueFileLoaded) {
         printf("Network not loaded!\n");
 
@@ -169,7 +152,6 @@ int main(int argc, char** argv)
 
         return 0;
     }
-#endif // NNUE_EVALUATION_FUNCTION_2
 
     while (TRUE) {
         printf("Menu:\n");
@@ -196,18 +178,7 @@ int main(int argc, char** argv)
 
         printf("13: Convert PGN file (games.pgn) to FEN file (games.fen)\n");
 
-#ifdef TOGA_EVALUATION_FUNCTION
-
-        printf("14: Find best K (required games.fen)\n");
-
-        printf("15: Tuning evaluation function - Local search (required games.fen)\n");
-
-        printf("16: Load tuning params (params.txt)\n");
-        printf("17: Save tuning params (params.txt)\n");
-
-#endif // TOGA_EVALUATION_FUNCTION
-
-        printf("18: Exit\n");
+        printf("14: Exit\n");
 
         printf("\n");
 
@@ -274,27 +245,7 @@ int main(int argc, char** argv)
                 Pgn2Fen();
                 break;
 
-#ifdef TOGA_EVALUATION_FUNCTION
-
-            case 14:
-                FindBestK();
-                break;
-
-            case 15:
-                TuningLocalSearch();
-                break;
-
-            case 16:
-                LoadTuningParams();
-                break;
-
-            case 17:
-                SaveTuningParams();
-                break;
-
-#endif // TOGA_EVALUATION_FUNCTION
-
-            case 18: // Exit
+            case 14: // Exit
                 return 0;
         } // switch
 

@@ -127,7 +127,6 @@
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="Book.cpp" />
     <ClCompile Include="Chess.cpp" />
-    <ClCompile Include="Evaluate.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Gen.cpp" />
     <ClCompile Include="Hash.cpp" />
@@ -150,7 +149,6 @@
     <ClInclude Include="Board.h" />
     <ClInclude Include="Book.h" />
     <ClInclude Include="Def.h" />
-    <ClInclude Include="Evaluate.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Gen.h" />
     <ClInclude Include="Hash.h" />

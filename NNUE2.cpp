@@ -11,8 +11,6 @@
 #include "Types.h"
 #include "Utils.h"
 
-#ifdef NNUE_EVALUATION_FUNCTION_2
-
 #define NNUE_FILE_MAGIC             ('B' | 'R' << 8 | 'K' << 16 | 'R' << 24)
 //#define NNUE_FILE_HASH            0x00007CF57D4DC994
 #define NNUE_FILE_SIZE              1579024
@@ -554,6 +552,10 @@ int NetworkEvaluate(BoardItem* Board)
 {
     I32 OutputValue;
 
+#ifdef DEBUG_STATISTIC
+    ++Board->EvaluateCount;
+#endif // DEBUG_STATISTIC
+
     // Transform: Board -> (512 x 2)
 
     if (!Board->Accumulator.AccumulationComputed) {
@@ -572,5 +574,3 @@ int NetworkEvaluate(BoardItem* Board)
 
     return OutputValue;
 }
-
-#endif // NNUE_EVALUATION_FUNCTION_2

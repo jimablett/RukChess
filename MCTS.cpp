@@ -6,10 +6,10 @@
 
 #include "Board.h"
 #include "Def.h"
-#include "Evaluate.h"
 #include "Game.h"
 #include "Gen.h"
 #include "Move.h"
+#include "NNUE2.h"
 #include "QuiescenceSearch.h"
 #include "Search.h"
 #include "Types.h"
@@ -372,7 +372,7 @@ double RolloutSearch(NodeItem* Node, BoardItem* Board, int* Ply)
     }
 
 //    BestScore = QuiescenceSearch(Board, -INF, INF, 0, *Ply, Board->BestMovesRoot, TRUE, InCheck);
-//    BestScore = Evaluate(Board);
+//    BestScore = NetworkEvaluate(Board);
 
 //    printf("BestScore = %d Sigmoid = %f\n", BestScore, SigmoidMCTS2(BestScore));
 

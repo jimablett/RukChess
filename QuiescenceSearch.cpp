@@ -6,11 +6,11 @@
 
 #include "Board.h"
 #include "Def.h"
-#include "Evaluate.h"
 #include "Game.h"
 #include "Gen.h"
 #include "Hash.h"
 #include "Move.h"
+#include "NNUE2.h"
 #include "SEE.h"
 #include "Sort.h"
 #include "Types.h"
@@ -90,11 +90,11 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
     }
 
     if (Ply >= MAX_PLY) {
-        return (int)Evaluate(Board);
+        return NetworkEvaluate(Board);
     }
 
     if (Board->HalfMoveNumber >= MAX_GAME_MOVES) {
-        return (int)Evaluate(Board);
+        return NetworkEvaluate(Board);
     }
 
     LoadHash(Board->Hash, &HashDepth, Ply, &HashScore, &HashStaticScore, &HashMove, &HashFlag);
@@ -143,7 +143,7 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
             }
         }
         else {
-            BestScore = StaticScore = (int)Evaluate(Board);
+            BestScore = StaticScore = NetworkEvaluate(Board);
         }
 
         if (BestScore >= Beta) {

@@ -6,12 +6,12 @@
 
 #include "Board.h"
 #include "Def.h"
-#include "Evaluate.h"
 #include "Game.h"
 #include "Gen.h"
 #include "Hash.h"
 #include "Heuristic.h"
 #include "Move.h"
+#include "NNUE2.h"
 #include "QuiescenceSearch.h"
 #include "SEE.h"
 #include "Sort.h"
@@ -149,11 +149,11 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
     }
 
     if (Ply >= MAX_PLY) {
-        return (int)Evaluate(Board);
+        return NetworkEvaluate(Board);
     }
 
     if (Board->HalfMoveNumber >= MAX_GAME_MOVES) {
-        return (int)Evaluate(Board);
+        return NetworkEvaluate(Board);
     }
 
     if (IsPrincipal && Board->SelDepth < Ply + 1) {
@@ -223,7 +223,7 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
             StaticScore = HashStaticScore;
         }
         else {
-            StaticScore = (int)Evaluate(Board);
+            StaticScore = NetworkEvaluate(Board);
 
             if (!SkipMove) {
                 SaveHash(Board->Hash, -MAX_PLY, 0, 0, StaticScore, 0, HASH_STATIC_SCORE);

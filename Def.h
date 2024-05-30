@@ -5,31 +5,14 @@
 #ifndef DEF_H
 #define DEF_H
 
-// Evaluation functions
+#define USE_NNUE_AVX2
+#define USE_NNUE_UPDATE
 
-/*
-    https://www.chessprogramming.org/Toga_Log
-    https://manualzz.com/doc/6937632/toga-log-user-manual
-*/
-//#define TOGA_EVALUATION_FUNCTION
+//#define LAST_LAYER_AS_FLOAT
 
-/*
-    https://github.com/Ilya-Ruk/RukChessTrainer
-*/
-#define NNUE_EVALUATION_FUNCTION_2
-
-#ifdef NNUE_EVALUATION_FUNCTION_2
-
-#define USE_NNUE_AVX2                           // Required NNUE_EVALUATION_FUNCTION_2
-#define USE_NNUE_UPDATE                         // Required NNUE_EVALUATION_FUNCTION_2
-
-//#define LAST_LAYER_AS_FLOAT                   // Required NNUE_EVALUATION_FUNCTION_2
-
-//#define PRINT_MIN_MAX_VALUES                  // Required NNUE_EVALUATION_FUNCTION_2
-//#define PRINT_WEIGHT_INDEX                    // Required NNUE_EVALUATION_FUNCTION_2
-//#define PRINT_ACCUMULATOR                     // Required NNUE_EVALUATION_FUNCTION_2
-
-#endif // NNUE_EVALUATION_FUNCTION_2
+//#define PRINT_MIN_MAX_VALUES
+//#define PRINT_WEIGHT_INDEX
+//#define PRINT_ACCUMULATOR
 
 // Features (enable/disable)
 
@@ -112,11 +95,7 @@
 #define ALGORITHM_NAME                          "PVS"
 #endif // MCTS || PVS
 
-#ifdef TOGA_EVALUATION_FUNCTION
-#define EVALUATION_NAME                         "Toga"
-#elif defined(NNUE_EVALUATION_FUNCTION_2)
-#define EVALUATION_NAME                         "NNUE2"
-#endif // TOGA_EVALUATION_FUNCTION || NNUE_EVALUATION_FUNCTION_2
+#define EVALUATION_FUNCTION_NAME                "NNUE2"
 
 #define YEARS                                   "1999-2024"
 #define AUTHOR                                  "Ilya Rukavishnikov"
@@ -140,14 +119,10 @@
 
 #define DEFAULT_BOOK_FILE_NAME                  "book.txt"
 
-#ifdef NNUE_EVALUATION_FUNCTION_2
-
 /*
     https://github.com/Ilya-Ruk/RukChessNets
 */
 #define DEFAULT_NNUE_FILE_NAME                  "net-7cf57d4dc994.nnue" // 09.12.2023
-
-#endif // NNUE_EVALUATION_FUNCTION_2
 
 // Time management (Xiphos)
 

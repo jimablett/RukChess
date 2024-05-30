@@ -7,7 +7,6 @@
 #include "BitBoard.h"
 #include "Board.h"
 #include "Def.h"
-#include "Evaluate.h"
 #include "Hash.h"
 #include "Types.h"
 
@@ -46,9 +45,7 @@ void MakeMove(BoardItem* Board, const MoveItem Move)
     }
 #endif // DEBUG_MOVE
 
-#ifdef NNUE_EVALUATION_FUNCTION_2
     Info->Accumulator = Board->Accumulator;
-#endif // NNUE_EVALUATION_FUNCTION_2
 
     if (Info->PassantSquare != -1) {
         Board->PassantSquare = -1;
@@ -242,9 +239,7 @@ void MakeMove(BoardItem* Board, const MoveItem Move)
     }
 #endif // DEBUG_HASH
 
-#ifdef NNUE_EVALUATION_FUNCTION_2
     Board->Accumulator.AccumulationComputed = FALSE;
-#endif // NNUE_EVALUATION_FUNCTION_2
 }
 
 void UnmakeMove(BoardItem* Board)
@@ -415,9 +410,7 @@ void UnmakeMove(BoardItem* Board)
     }
 #endif // DEBUG_MOVE
 
-#ifdef NNUE_EVALUATION_FUNCTION_2
     Board->Accumulator = Info->Accumulator;
-#endif // NNUE_EVALUATION_FUNCTION_2
 }
 
 #ifdef NULL_MOVE_PRUNING
@@ -434,9 +427,7 @@ void MakeNullMove(BoardItem* Board)
 
     Info->Hash = Board->Hash;
 
-#ifdef NNUE_EVALUATION_FUNCTION_2
     Info->Accumulator = Board->Accumulator;
-#endif // NNUE_EVALUATION_FUNCTION_2
 
     if (Info->PassantSquare != -1) {
         Board->PassantSquare = -1;
@@ -460,9 +451,7 @@ void MakeNullMove(BoardItem* Board)
     }
 #endif // DEBUG_HASH
 
-#ifdef NNUE_EVALUATION_FUNCTION_2
     Board->Accumulator.AccumulationComputed = FALSE;
-#endif // NNUE_EVALUATION_FUNCTION_2
 }
 
 void UnmakeNullMove(BoardItem* Board)
@@ -477,9 +466,7 @@ void UnmakeNullMove(BoardItem* Board)
 
     Board->Hash = Info->Hash;
 
-#ifdef NNUE_EVALUATION_FUNCTION_2
     Board->Accumulator = Info->Accumulator;
-#endif // NNUE_EVALUATION_FUNCTION_2
 }
 
 #endif // NULL_MOVE_PRUNING
