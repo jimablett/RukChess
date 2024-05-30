@@ -8,8 +8,6 @@
 #define USE_NNUE_AVX2
 #define USE_NNUE_UPDATE
 
-//#define LAST_LAYER_AS_FLOAT
-
 //#define PRINT_MIN_MAX_VALUES
 //#define PRINT_WEIGHT_INDEX
 //#define PRINT_ACCUMULATOR
