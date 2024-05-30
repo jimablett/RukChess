@@ -26,19 +26,6 @@
 
 //#define DEBUG_STATISTIC
 
-// Monte Carlo tree search
-
-/*
-    https://homes.di.unimi.it/~cesabian/Pubblicazioni/ml-02.pdf
-    http://ggp.stanford.edu/readings/uct.pdf
-    http://old.sztaki.hu/~szcsaba/papers/cg06-ext.pdf
-    https://netman.aiops.org/~peidan/ANM2017/7.AnomalyLocalization/LectureCoverage/mcts-survey-master-origin.pdf
-    https://int8.io/monte-carlo-tree-search-beginners-guide/
-    https://github.com/int8/gomcts
-    http://www.tckerrigan.com/Chess/TSCP/Community/tscp_mcts_export.zip
-*/
-//#define MCTS
-
 // Common
 
 #define ASPIRATION_WINDOW
@@ -79,16 +66,10 @@
 
 // Parameter values
 
-// Program name, program version, algorithm name, evaluation function name and copyright information
+// Program name, program version, evaluation function name and copyright information
 
 #define PROGRAM_NAME                            "RukChess"
 #define PROGRAM_VERSION                         "4.0.0dev"
-
-#ifdef MCTS
-#define ALGORITHM_NAME                          "MCTS"
-#else // PVS
-#define ALGORITHM_NAME                          "PVS"
-#endif // MCTS || PVS
 
 /*
     https://github.com/Ilya-Ruk/RukChessTrainer
