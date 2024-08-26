@@ -26,9 +26,9 @@
 #define NUM_REGS                    (HIDDEN_DIMENSION * sizeof(I16) / sizeof(__m256i)) // 32
 #endif // USE_NNUE_AVX2
 
-_declspec(align(64)) I16 InputWeights[INPUT_DIMENSION * HIDDEN_DIMENSION];  // 768 x 512 = 393216
-_declspec(align(64)) I16 InputBiases[HIDDEN_DIMENSION];                     // 512
-_declspec(align(64)) I16 OutputWeights[HIDDEN_DIMENSION * 2];               // 512 x 2 = 1024
+_declspec(align(32)) I16 InputWeights[INPUT_DIMENSION * HIDDEN_DIMENSION];  // 768 x 512 = 393216
+_declspec(align(32)) I16 InputBiases[HIDDEN_DIMENSION];                     // 512
+_declspec(align(32)) I16 OutputWeights[HIDDEN_DIMENSION * 2];               // 512 x 2 = 1024
 I32 OutputBias;                                                             // 1
 
 BOOL NnueFileLoaded = FALSE;

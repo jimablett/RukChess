@@ -112,7 +112,7 @@ typedef struct {
 } MoveItem; // 12 bytes
 
 typedef struct {
-    _declspec(align(64)) I16 Accumulation[2][512]; // [Perspective][Hidden dimension]
+    _declspec(align(32)) I16 Accumulation[2][512]; // [Perspective][Hidden dimension]
 
     BOOL AccumulationComputed;
 } AccumulatorItem; // 2052 (aligned 2112) bytes
