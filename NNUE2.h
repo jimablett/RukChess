@@ -7,6 +7,7 @@
 
 #include "Board.h"
 #include "Def.h"
+#include "Types.h"
 
 extern BOOL NnueFileLoaded;
 
