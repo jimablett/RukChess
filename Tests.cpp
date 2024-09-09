@@ -714,7 +714,7 @@ void TestsNNUE(char* Tests[], const int TestCount)
 
     printf("\n");
 
-    printf("EPS %lld\n", 1000000LL * TestCount * MaxCycles / EvaluateTotalTime);
+    printf("EPS %lld\n", 1000000LL * (I64)TestCount * (I64)MaxCycles / EvaluateTotalTime);
 }
 
 void PerformanceTestNNUE(void)
