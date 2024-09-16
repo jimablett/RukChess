@@ -13,6 +13,6 @@ extern BOOL NnueFileLoaded;
 
 BOOL LoadNetwork(const char* NnueFileName);
 
-int NetworkEvaluate(BoardItem* Board);
+int Evaluate(BoardItem* Board);
 
 #endif // !NNUE2_H

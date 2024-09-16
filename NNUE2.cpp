@@ -481,7 +481,7 @@ I32 OutputLayer(BoardItem* Board)
     return Result / (QUANTIZATION_PRECISION_IN * QUANTIZATION_PRECISION_OUT);
 }
 
-int NetworkEvaluate(BoardItem* Board)
+int Evaluate(BoardItem* Board)
 {
     I32 OutputValue;
 

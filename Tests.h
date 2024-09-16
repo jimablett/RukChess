@@ -14,6 +14,6 @@ void BratkoKopecTest(void);
 void WinAtChessTest(void);
 
 void PerformanceTest(void);
-void PerformanceTestNNUE(void);
+void PerformanceTestEvaluate(void);
 
 #endif // !TESTS_H

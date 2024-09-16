@@ -90,11 +90,11 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
 #endif // QUIESCENCE_MATE_DISTANCE_PRUNING
 
     if (Ply >= MAX_PLY) {
-        return NetworkEvaluate(Board);
+        return Evaluate(Board);
     }
 
     if (Board->HalfMoveNumber >= MAX_GAME_MOVES) {
-        return NetworkEvaluate(Board);
+        return Evaluate(Board);
     }
 
     LoadHash(Board->Hash, &HashDepth, Ply, &HashScore, &HashStaticScore, &HashMove, &HashFlag);
@@ -143,7 +143,7 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
             }
         }
         else {
-            BestScore = StaticScore = NetworkEvaluate(Board);
+            BestScore = StaticScore = Evaluate(Board);
         }
 
         if (BestScore >= Beta) {

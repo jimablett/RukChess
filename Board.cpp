@@ -386,7 +386,7 @@ void PrintBoard(BoardItem* Board)
 
     printf("\n");
 
-    printf("Static evaluate = %.2f\n", (double)NetworkEvaluate(Board) / 100.0);
+    printf("Static evaluate = %.2f\n", (double)Evaluate(Board) / 100.0);
 }
 
 void PrintBitMask(const U64 Mask)

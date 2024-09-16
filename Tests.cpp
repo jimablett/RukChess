@@ -664,7 +664,7 @@ void PerformanceTest(void)
     }
 }
 
-void TestsNNUE(char* Tests[], const int TestCount)
+void TestsEvaluate(char* Tests[], const int TestCount)
 {
     int MaxCycles;
 
@@ -696,7 +696,7 @@ void TestsNNUE(char* Tests[], const int TestCount)
 
             QueryPerformanceCounter(&EvaluateTimeStart);
 
-            NetworkEvaluate(&CurrentBoard);
+            Evaluate(&CurrentBoard);
 
             QueryPerformanceCounter(&EvaluateTimeStop);
 
@@ -717,8 +717,8 @@ void TestsNNUE(char* Tests[], const int TestCount)
     printf("EPS %lld\n", 1000000LL * (I64)TestCount * (I64)MaxCycles / EvaluateTotalTime);
 }
 
-void PerformanceTestNNUE(void)
+void PerformanceTestEvaluate(void)
 {
-//    TestsNNUE(BratkoKopecTests, BratkoKopecTestCount);
-    TestsNNUE(WinAtChessTests, WinAtChessTestCount);
+//    TestsEvaluate(BratkoKopecTests, BratkoKopecTestCount);
+    TestsEvaluate(WinAtChessTests, WinAtChessTestCount);
 }
