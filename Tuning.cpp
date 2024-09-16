@@ -9,12 +9,8 @@
 #include "Game.h"
 #include "Gen.h"
 #include "Hash.h"
-#include "Heuristic.h"
 #include "Move.h"
-#include "SEE.h"
-#include "Sort.h"
 #include "Types.h"
-#include "Utils.h"
 
 #define STAGE_NONE              1
 #define STAGE_TAG               2
