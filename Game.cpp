@@ -340,7 +340,7 @@ BOOL ComputerMove(void)
             }
 
             if (omp_get_thread_num() > 0) { // Helper thread
-                if (Depth > 1 && Depth < MaxDepth && SearchDepthCount > MAX((omp_get_max_threads() + 1) / 2, 2)) {
+                if (Depth > 1 && Depth < MaxDepth && SearchDepthCount > MAX((MaxThreads + 1) / 2, 2)) {
                     continue; // Next depth
                 }
             }
