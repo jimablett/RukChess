@@ -100,7 +100,7 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
     int* CMH_Pointer[2];
 
     if (Depth <= 0) {
-        return QuiescenceSearch(Board, Alpha, Beta, 0, Ply, BestMoves, IsPrincipal, InCheck);
+        return QuiescenceSearch(Board, Alpha, Beta, 0, Ply, IsPrincipal, InCheck);
     }
 
     if (
@@ -244,9 +244,7 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
             RazoringAlpha = Alpha - RazoringMargin(Depth);
 
             // Zero window quiescence search
-            TempBestMoves[0] = (MoveItem){ 0, 0, 0 };
-
-            Score = QuiescenceSearch(Board, RazoringAlpha, RazoringAlpha + 1, 0, Ply, TempBestMoves, FALSE, FALSE);
+            Score = QuiescenceSearch(Board, RazoringAlpha, RazoringAlpha + 1, 0, Ply, FALSE, FALSE);
 
             if (StopSearch) {
                 return 0;
@@ -317,9 +315,7 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
                 }
 
                 // Zero window quiescence search
-                TempBestMoves[0] = (MoveItem){ 0, 0, 0 };
-
-                Score = -QuiescenceSearch(Board, -BetaCut, -BetaCut + 1, 0, Ply, TempBestMoves, FALSE, FALSE);
+                Score = -QuiescenceSearch(Board, -BetaCut, -BetaCut + 1, 0, Ply, FALSE, FALSE);
 
                 if (Score >= BetaCut) {
                     // Zero window search for reduced depth

@@ -16,7 +16,7 @@
 #include "Types.h"
 #include "Utils.h"
 
-int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, const int Ply, MoveItem* BestMoves, const BOOL IsPrincipal, const BOOL InCheck)
+int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, const int Ply, const BOOL IsPrincipal, const BOOL InCheck)
 {
     int GenMoveCount;
     MoveItem MoveList[MAX_GEN_MOVES];
@@ -24,8 +24,6 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
     int LegalMoveCount = 0;
 
     MoveItem BestMove = (MoveItem){ 0, 0, 0 };
-
-    MoveItem TempBestMoves[MAX_PLY];
 
     int HashScore = -INF;
     int HashStaticScore = -INF;
@@ -198,9 +196,7 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
 
         GiveCheck = IsInCheck(Board, Board->CurrentColor);
 
-        TempBestMoves[0] = (MoveItem){ 0, 0, 0 };
-
-        Score = -QuiescenceSearch(Board, -Beta, -Alpha, Depth - 1, Ply + 1, TempBestMoves, IsPrincipal, GiveCheck);
+        Score = -QuiescenceSearch(Board, -Beta, -Alpha, Depth - 1, Ply + 1, IsPrincipal, GiveCheck);
 
         UnmakeMove(Board);
 
@@ -213,10 +209,6 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
 
             if (BestScore > Alpha) {
                 BestMove = MoveList[MoveNumber];
-
-                if (IsPrincipal) {
-                    SaveBestMoves(BestMoves, BestMove, TempBestMoves);
-                }
 
                 if (IsPrincipal && BestScore < Beta) {
                     Alpha = BestScore;
