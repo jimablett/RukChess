@@ -459,11 +459,11 @@ BOOL ComputerMove(void)
                         StopSearch = TRUE;
                     }
                 } // pragma omp critical
-            } // if
 
-            if (StopSearch) {
-                break; // for (depth)
-            }
+                if (StopSearch) {
+                    break; // for (depth)
+                }
+            } // if
         } // for
     } // pragma omp parallel
 
