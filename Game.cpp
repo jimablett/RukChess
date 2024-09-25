@@ -455,7 +455,7 @@ BOOL ComputerMove(void)
                         StopSearch = TRUE;
                     }
 
-                    if (TargetTimeLocal > 0ULL && CompletedDepth >= MIN_SEARCH_DEPTH && (Clock() - TimeStart) >= TargetTimeLocal) {
+                    if (TargetTimeLocal > 0ULL && CompletedDepth >= MIN_SEARCH_DEPTH && (Clock() - TimeStart) >= TargetTimeLocal) { // Time is up
                         StopSearch = TRUE;
                     }
                 } // pragma omp critical
