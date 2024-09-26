@@ -439,7 +439,7 @@ NextMove:
                         printf("%c", PiecesCharBlack[MOVE_PROMOTE_PIECE(MoveList[MoveNumber].Move)]);
                     }
 
-                    printf(" nodes %llu\n", Board->Nodes);
+                    printf(" nodes %llu\n", Board->Nodes); // TODO
                 }
             }
         }

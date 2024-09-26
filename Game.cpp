@@ -251,9 +251,6 @@ BOOL ComputerMove(void)
 {
     BOOL InCheck;
 
-    int Score = 0;
-    int BestScore = 0;
-
     BoardItem ThreadBoard;
     int ThreadScore;
 
@@ -263,6 +260,8 @@ BOOL ComputerMove(void)
 
     MoveItem BestMove = (MoveItem){ 0, 0, 0 };
     MoveItem PonderMove = (MoveItem){ 0, 0, 0 };
+
+    int BestScore = 0;
 
 #ifdef ASPIRATION_WINDOW
     int Delta;
@@ -331,7 +330,7 @@ BOOL ComputerMove(void)
 #endif // BIND_THREAD || BIND_THREAD_V2
 
         ThreadBoard = CurrentBoard;
-        ThreadScore = Score;
+        ThreadScore = 0;
 
         for (int Depth = 1; Depth <= MaxDepth; ++Depth) {
 #pragma omp critical
@@ -416,10 +415,10 @@ BOOL ComputerMove(void)
             }
 
             if (omp_get_thread_num() == 0) { // Master thread
+                CompletedDepth = Depth;
+
 #pragma omp critical
                 {
-                    Score = ThreadScore;
-
                     for (int Ply = 0; Ply < MAX_PLY; ++Ply) {
                         CurrentBoard.BestMovesRoot[Ply] = ThreadBoard.BestMovesRoot[Ply];
 
@@ -428,43 +427,37 @@ BOOL ComputerMove(void)
                         }
                     }
 
-                    CompletedDepth = Depth;
+                    PrintBestMoves(&CurrentBoard, CompletedDepth, CurrentBoard.BestMovesRoot, ThreadScore);
+                }
 
-                    PrintBestMoves(&CurrentBoard, CompletedDepth, CurrentBoard.BestMovesRoot, Score);
+                BestMove = CurrentBoard.BestMovesRoot[0];
+                PonderMove = CurrentBoard.BestMovesRoot[1];
 
-                    BestMove = CurrentBoard.BestMovesRoot[0];
-                    PonderMove = CurrentBoard.BestMovesRoot[1];
+                TargetTimeLocal = TargetTime[TimeStep];
 
-                    TargetTimeLocal = TargetTime[TimeStep];
+                if (TargetTimeLocal > 0ULL && BestScore > ThreadScore) {
+                    TargetTimeLocal = (U64)((double)TargetTimeLocal * MIN((1.0 + (double)(BestScore - ThreadScore) / 80.0), 2.0));
+                }
 
-                    if (TargetTimeLocal > 0ULL && BestScore > Score) {
-                        TargetTimeLocal = (U64)((double)TargetTimeLocal * MIN((1.0 + (double)(BestScore - Score) / 80.0), 2.0));
-                    }
+                BestScore = ThreadScore;
 
-                    BestScore = Score;
+                if (!BestMove.Move) { // No legal moves
+                    break; // for (depth)
+                }
 
-                    if (Depth == MaxDepth) { // Stop helper threads
-                        StopSearch = TRUE;
-                    }
+                if (BestScore <= -INF + Depth || BestScore >= INF - Depth) { // Checkmate
+                    break; // for (depth)
+                }
 
-                    if (!BestMove.Move) { // No legal moves
-                        StopSearch = TRUE;
-                    }
-
-                    if (BestScore <= -INF + Depth || BestScore >= INF - Depth) { // Checkmate
-                        StopSearch = TRUE;
-                    }
-
-                    if (TargetTimeLocal > 0ULL && CompletedDepth >= MIN_SEARCH_DEPTH && (Clock() - TimeStart) >= TargetTimeLocal) { // Time is up
-                        StopSearch = TRUE;
-                    }
-                } // pragma omp critical
-
-                if (StopSearch) {
+                if (TargetTimeLocal > 0ULL && CompletedDepth >= MIN_SEARCH_DEPTH && (Clock() - TimeStart) >= TargetTimeLocal) { // Time is up
                     break; // for (depth)
                 }
             } // if
         } // for
+
+        if (omp_get_thread_num() == 0) { // Master thread
+            StopSearch = TRUE; // Stop helper threads
+        }
     } // pragma omp parallel
 
 Done:
