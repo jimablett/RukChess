@@ -233,6 +233,8 @@ int FullHash(void)
 #ifdef HASH_PREFETCH
 void Prefetch(const U64 Hash)
 {
-    _mm_prefetch((char*)&HashStore.Item[Hash & HashStore.Mask], _MM_HINT_T0);
+    HashItem* HashItemPointer = &HashStore.Item[Hash & HashStore.Mask];
+
+    _mm_prefetch((char*)HashItemPointer, _MM_HINT_T0);
 }
 #endif // HASH_PREFETCH
