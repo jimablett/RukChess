@@ -121,7 +121,7 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
         }
     }
 
-#ifdef QUIESCENCE_CHECK_EXTENSION
+#ifdef QUIESCENCE_USE_CHECK
     if (InCheck) {
         BestScore = StaticScore = -INF + Ply;
 
@@ -129,7 +129,7 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
         GenerateAllMoves(Board, NULL, MoveList, &GenMoveCount);
     }
     else {
-#endif // QUIESCENCE_CHECK_EXTENSION
+#endif // QUIESCENCE_USE_CHECK
         if (HashFlag) {
             BestScore = StaticScore = HashStaticScore;
 
@@ -159,9 +159,9 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
 
         GenMoveCount = 0;
         GenerateCaptureMoves(Board, NULL, MoveList, &GenMoveCount);
-#ifdef QUIESCENCE_CHECK_EXTENSION
+#ifdef QUIESCENCE_USE_CHECK
     }
-#endif // QUIESCENCE_CHECK_EXTENSION
+#endif // QUIESCENCE_USE_CHECK
 
     SetHashMoveSortValue(MoveList, GenMoveCount, HashMove);
 
@@ -227,11 +227,11 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
         }
     } // for
 
-#ifdef QUIESCENCE_CHECK_EXTENSION
+#ifdef QUIESCENCE_USE_CHECK
     if (InCheck && LegalMoveCount == 0) { // Checkmate
         return -INF + Ply;
     }
-#endif // QUIESCENCE_CHECK_EXTENSION
+#endif // QUIESCENCE_USE_CHECK
 
     if (IsPrincipal && BestScore > OriginalAlpha) {
         HashFlag = HASH_EXACT;
