@@ -21,7 +21,9 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
     int GenMoveCount;
     MoveItem MoveList[MAX_GEN_MOVES];
 
+#ifdef QUIESCENCE_USE_CHECK
     int LegalMoveCount = 0;
+#endif // QUIESCENCE_USE_CHECK
 
     MoveItem BestMove = (MoveItem){ 0, 0, 0 };
 
@@ -191,7 +193,9 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
             continue; // Next move
         }
 
+#ifdef QUIESCENCE_USE_CHECK
         ++LegalMoveCount;
+#endif // QUIESCENCE_USE_CHECK
 
         ++Board->Nodes;
 
