@@ -44,7 +44,10 @@ int main(int argc, char** argv)
 
     // Initialize threads
 
-    omp_set_dynamic(0); // Disable dynamic thread control
+    /*
+        https://learn.microsoft.com/en-us/cpp/parallel/openmp/3-run-time-library-functions?view=msvc-170#microsoft-specific
+    */
+    omp_set_dynamic(0);
 
     MaxThreads = omp_get_max_threads(); // Save hardware max. threads
 
