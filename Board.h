@@ -114,7 +114,9 @@ typedef struct {
 typedef struct {
     _declspec(align(32)) I16 Accumulation[2][512]; // [Perspective][Hidden dimension]
 
+#ifdef USE_NNUE_UPDATE
     BOOL AccumulationComputed;
+#endif // USE_NNUE_UPDATE
 } AccumulatorItem; // 2052 (aligned 2112) bytes
 
 typedef struct {

@@ -239,7 +239,9 @@ void MakeMove(BoardItem* Board, const MoveItem Move)
     }
 #endif // DEBUG_HASH
 
+#ifdef USE_NNUE_UPDATE
     Board->Accumulator.AccumulationComputed = FALSE;
+#endif // USE_NNUE_UPDATE
 }
 
 void UnmakeMove(BoardItem* Board)
@@ -455,7 +457,9 @@ void MakeNullMove(BoardItem* Board)
     }
 #endif // DEBUG_HASH
 
+#ifdef USE_NNUE_UPDATE
     Board->Accumulator.AccumulationComputed = FALSE;
+#endif // USE_NNUE_UPDATE
 }
 
 void UnmakeNullMove(BoardItem* Board)

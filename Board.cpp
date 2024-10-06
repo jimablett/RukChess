@@ -628,7 +628,9 @@ int SetFen(BoardItem* Board, char* Fen)
 
     memset(Board->MoveTable, 0, sizeof(Board->MoveTable));
 
+#ifdef USE_NNUE_UPDATE
     Board->Accumulator.AccumulationComputed = FALSE;
+#endif // USE_NNUE_UPDATE
 
     return (int)(Part - Fen);
 }

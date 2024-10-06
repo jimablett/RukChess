@@ -491,15 +491,15 @@ int Evaluate(BoardItem* Board)
 
     // Transform: Board -> (512 x 2)
 
-    if (!Board->Accumulator.AccumulationComputed) {
 #ifdef USE_NNUE_UPDATE
+    if (!Board->Accumulator.AccumulationComputed) {
         if (!UpdateAccumulator(Board)) {
 #endif // USE_NNUE_UPDATE
             RefreshAccumulator(Board);
 #ifdef USE_NNUE_UPDATE
         }
-#endif // USE_NNUE_UPDATE
     }
+#endif // USE_NNUE_UPDATE
 
     // Output: (512 x 2) -> 1
 
