@@ -39,7 +39,7 @@ void Pgn2Fen(void)
     int Stage;
 
     char Buf[4096];
-    char* Part;
+    const char* Part;
 
     char FenString[MAX_FEN_LENGTH];
     char* Fen;

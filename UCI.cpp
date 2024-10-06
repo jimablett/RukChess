@@ -18,7 +18,7 @@
 void UCI(void)
 {
     char Buf[4096];
-    char* Part;
+    const char* Part;
 
     int File;
     int Rank;

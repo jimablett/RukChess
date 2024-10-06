@@ -53,7 +53,7 @@ const int CastleMask[64] = {
 const char MoveFirstChar[] = "abcdefghNBRQKO";
 const char MoveSubsequentChar[] = "abcdefgh012345678x=NBRQ-O+#";
 
-char StartFen[] = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+const char StartFen[] = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
 BoardItem CurrentBoard;
 
@@ -407,9 +407,9 @@ void PrintBitMask(const U64 Mask)
     printf("\n");
 }
 
-int SetFen(BoardItem* Board, char* Fen)
+int SetFen(BoardItem* Board, const char* Fen)
 {
-    char* Part = Fen;
+    const char* Part = Fen;
 
     int Square;
 

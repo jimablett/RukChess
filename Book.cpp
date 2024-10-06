@@ -147,7 +147,7 @@ void GenerateBook(void)
     int Stage;
 
     char Buf[4096];
-    char* Part;
+    const char* Part;
 
     char FenString[MAX_FEN_LENGTH];
     char* Fen;
@@ -534,7 +534,7 @@ BOOL LoadBook(const char* BookFileName)
     FILE* File;
 
     char Buf[512];
-    char* Part;
+    const char* Part;
 
     int PositionNumber;
 

@@ -117,7 +117,7 @@ typedef struct {
 #ifdef USE_NNUE_UPDATE
     BOOL AccumulationComputed;
 #endif // USE_NNUE_UPDATE
-} AccumulatorItem; // 2052 (aligned 2112) bytes
+} AccumulatorItem; // 2052 (aligned 2080) bytes
 
 typedef struct {
     int Type;
@@ -145,7 +145,7 @@ typedef struct {
 #endif // DEBUG_MOVE
 
     AccumulatorItem Accumulator;
-} HistoryItem; // 2176 bytes
+} HistoryItem; // 2144 bytes
 
 typedef struct {
     int Pieces[64]; // (Color << 3) | Piece
@@ -161,7 +161,7 @@ typedef struct {
 
     U64 Hash;
 
-    HistoryItem MoveTable[MAX_GAME_MOVES]; // 2228224 bytes
+    HistoryItem MoveTable[MAX_GAME_MOVES]; // 2195456 bytes
 
     U64 Nodes;
 
@@ -187,7 +187,7 @@ typedef struct {
     int CounterMoveTable[2][6][64]; // [Color][Piece][Square] // 3072 bytes
 
     AccumulatorItem Accumulator;
-} BoardItem; // 2829376 bytes
+} BoardItem; // 2796512 bytes
 
 extern const char* BoardName[64];
 
@@ -199,7 +199,7 @@ extern const int CastleMask[64];
 extern const char MoveFirstChar[];
 extern const char MoveSubsequentChar[];
 
-extern char StartFen[];
+extern const char StartFen[];
 
 extern BoardItem CurrentBoard;
 
@@ -227,7 +227,7 @@ void PrintBoard(BoardItem* Board);
 
 void PrintBitMask(const U64 Mask);
 
-int SetFen(BoardItem* Board, char* Fen);
+int SetFen(BoardItem* Board, const char* Fen);
 void GetFen(const BoardItem* Board, char* Fen);
 
 U64 CountLegalMoves(BoardItem* Board, const int Depth);

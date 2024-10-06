@@ -122,7 +122,7 @@ const int GeneratorTestCount = sizeof(GeneratorTests) / sizeof(GeneratorTestItem
 /*
     https://www.chessprogramming.org/Bratko-Kopec_Test
 */
-char* BratkoKopecTests[24 * 2] = {
+const char* BratkoKopecTests[24 * 2] = {
     "1k1r4/pp1b1R2/3q2pp/4p3/2B5/4Q3/PPP2B2/2K5 b - - 0 1", "Qd1+",
     "3r1k2/4npp1/1ppr3p/p6P/P2PPPP1/1NR5/5K2/2R5 w - - 0 1", "d5",
     "2q1rr1k/3bbnnp/p2p1pp1/2pPp3/PpP1P1P1/1P2BNNP/2BQ1PRK/7R b - - 0 1", "f5",
@@ -154,7 +154,7 @@ const int BratkoKopecTestCount = sizeof(BratkoKopecTests) / sizeof(char*) / 2;
 /*
     https://www.chessprogramming.org/Win_at_Chess
 */
-char* WinAtChessTests[300 * 2] = {
+const char* WinAtChessTests[300 * 2] = {
     "2rr3k/pp3pp1/1nnqbN1p/3pN3/2pP4/2P3Q1/PPB4P/R4RK1 w - - 0 1", "Qg6",
     "8/7p/5k2/5p2/p1p2P2/Pr1pPK2/1P1R3P/8 b - - 0 1", "Rxb2",
     "5rk1/1ppb3p/p1pb4/6q1/3P1p1r/2P1R2P/PP1BQ1P1/5RKN w - - 0 1", "Rg3",
@@ -534,10 +534,10 @@ void GeneratorTest2(void)
     }
 }
 
-void Tests(char* Tests[], const int TestCount)
+void Tests(const char* Tests[], const int TestCount)
 {
-    char* Fen;
-    char* BestMoves;
+    const char* Fen;
+    const char* BestMoves;
 
     char NotateMoveStr[16];
 
@@ -664,11 +664,11 @@ void PerformanceTest(void)
     }
 }
 
-void TestsEvaluate(char* Tests[], const int TestCount)
+void TestsEvaluate(const char* Tests[], const int TestCount)
 {
     int MaxCycles;
 
-    char* Fen;
+    const char* Fen;
 
     LARGE_INTEGER EvaluateTimeStart;
     LARGE_INTEGER EvaluateTimeStop;
