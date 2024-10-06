@@ -9,9 +9,9 @@
 #include "Game.h"
 #include "Types.h"
 
-#ifdef BIND_THREAD
+#ifdef BIND_THREAD_V1
 int ThreadNode[MAX_THREADS];
-#endif // BIND_THREAD
+#endif // BIND_THREAD_V1
 
 U64 RandState = 0ULL; // The state can be seeded with any value
 
@@ -45,7 +45,8 @@ void SetRandState(const U64 NewRandState)
     RandState = NewRandState;
 }
 
-#ifdef BIND_THREAD
+#ifdef BIND_THREAD_V1
+
 void InitThreadNode(void)
 {
     int Nodes = 0;      // Physical processors
@@ -147,7 +148,8 @@ void BindThread(const int ThreadNumber)
         SetThreadGroupAffinity(GetCurrentThread(), &GroupAffinity, NULL);
     }
 }
-#endif // BIND_THREAD
+
+#endif // BIND_THREAD_V1
 
 #ifdef BIND_THREAD_V2
 void BindThread(const int ThreadNumber)

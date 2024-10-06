@@ -17,8 +17,6 @@
 //#define DEBUG_SEE
 //#define DEBUG_NNUE_2
 
-//#define DEBUG_STATISTIC
-
 // Common
 
 #define ASPIRATION_WINDOW
@@ -27,8 +25,10 @@
 
 #define HASH_PREFETCH
 
-//#define BIND_THREAD
+//#define BIND_THREAD_V1
 //#define BIND_THREAD_V2                        // Max. 64 CPUs
+
+//#define USE_STATISTIC
 
 // Search
 

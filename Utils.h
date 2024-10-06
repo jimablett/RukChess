@@ -25,11 +25,11 @@ U64 Rand64(void);
 
 void SetRandState(const U64 NewRandState);
 
-#ifdef BIND_THREAD
+#ifdef BIND_THREAD_V1
 void InitThreadNode(void);
 
 void BindThread(const int ThreadNumber);
-#endif // BIND_THREAD
+#endif // BIND_THREAD_V1
 
 #ifdef BIND_THREAD_V2
 void BindThread(const int ThreadNumber);

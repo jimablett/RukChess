@@ -172,9 +172,9 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
         LoadHash(Board->Hash, &HashDepth, Ply, &HashScore, &HashStaticScore, &HashMove, &HashFlag);
 
         if (HashFlag) {
-#ifdef DEBUG_STATISTIC
+#ifdef USE_STATISTIC
             ++Board->HashCount;
-#endif // DEBUG_STATISTIC
+#endif // USE_STATISTIC
 
             if (!IsPrincipal && HashDepth >= Depth) {
                 if (
@@ -643,9 +643,9 @@ NextMove:
                     Alpha = BestScore;
                 }
                 else { // !IsPrincipal || BestScore >= Beta
-#ifdef DEBUG_STATISTIC
+#ifdef USE_STATISTIC
                     ++Board->CutoffCount;
-#endif // DEBUG_STATISTIC
+#endif // USE_STATISTIC
 
                     if (!(BestMove.Type & (MOVE_CAPTURE | MOVE_PAWN_PROMOTE))) { // Not capture/promote move
                         UpdateHeuristic(Board, CMH_Pointer, BestMove.Move, BONUS(Depth));

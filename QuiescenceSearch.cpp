@@ -41,9 +41,9 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
 
     BOOL GiveCheck;
 
-#ifdef DEBUG_STATISTIC
+#ifdef USE_STATISTIC
     ++Board->QuiescenceCount;
-#endif // DEBUG_STATISTIC
+#endif // USE_STATISTIC
 
     if (omp_get_thread_num() == 0) { // Master thread
         if (
@@ -106,9 +106,9 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
     }
 
     if (HashFlag) {
-#ifdef DEBUG_STATISTIC
+#ifdef USE_STATISTIC
         ++Board->HashCount;
-#endif // DEBUG_STATISTIC
+#endif // USE_STATISTIC
 
         if (!IsPrincipal && HashDepth >= QuiescenceHashDepth) {
             if (
@@ -215,9 +215,9 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
                     Alpha = BestScore;
                 }
                 else { // !IsPrincipal || BestScore >= Beta
-#ifdef DEBUG_STATISTIC
+#ifdef USE_STATISTIC
                     ++Board->CutoffCount;
-#endif // DEBUG_STATISTIC
+#endif // USE_STATISTIC
 
                     SaveHash(Board->Hash, QuiescenceHashDepth, Ply, BestScore, StaticScore, BestMove.Move, HASH_BETA);
 

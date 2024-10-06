@@ -163,12 +163,12 @@ typedef struct {
 
     U64 Nodes;
 
-#ifdef DEBUG_STATISTIC
+#ifdef USE_STATISTIC
     U64 HashCount;
     U64 EvaluateCount;
     U64 CutoffCount;
     U64 QuiescenceCount;
-#endif // DEBUG_STATISTIC
+#endif // USE_STATISTIC
 
     int SelDepth;
 

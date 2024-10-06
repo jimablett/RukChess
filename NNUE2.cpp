@@ -485,9 +485,9 @@ int Evaluate(BoardItem* Board)
 {
     I32 OutputValue;
 
-#ifdef DEBUG_STATISTIC
+#ifdef USE_STATISTIC
     ++Board->EvaluateCount;
-#endif // DEBUG_STATISTIC
+#endif // USE_STATISTIC
 
     // Transform: Board -> (512 x 2)
 

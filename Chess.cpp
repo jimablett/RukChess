@@ -59,9 +59,9 @@ int main(int argc, char** argv)
     printf("Max. threads = %d\n", MaxThreads);
     printf("Threads = %d\n", DEFAULT_THREADS);
 
-#ifdef BIND_THREAD
+#ifdef BIND_THREAD_V1
     InitThreadNode();
-#endif // BIND_THREAD
+#endif // BIND_THREAD_V1
 
     // Initialize bit boards
 

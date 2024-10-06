@@ -193,11 +193,11 @@ BOOL PrintResult(const BOOL InCheck, const MoveItem BestMove, const MoveItem Pon
 
         printf("\n");
 
-#ifdef DEBUG_STATISTIC
+#ifdef USE_STATISTIC
         printf("\n");
 
         printf("Hash count %llu Evaluate count %llu Cutoff count %llu Quiescence count %llu\n", CurrentBoard.HashCount, CurrentBoard.EvaluateCount, CurrentBoard.CutoffCount, CurrentBoard.QuiescenceCount);
-#endif // DEBUG_STATISTIC
+#endif // USE_STATISTIC
 
         if (BestScore <= -INF + 1 || BestScore >= INF - 1) { // Checkmate
             printf("\n");
@@ -285,12 +285,12 @@ BOOL ComputerMove(void)
 
     CurrentBoard.Nodes = 0ULL;
 
-#ifdef DEBUG_STATISTIC
+#ifdef USE_STATISTIC
     CurrentBoard.HashCount = 0ULL;
     CurrentBoard.EvaluateCount = 0ULL;
     CurrentBoard.CutoffCount = 0ULL;
     CurrentBoard.QuiescenceCount = 0ULL;
-#endif // DEBUG_STATISTIC
+#endif // USE_STATISTIC
 
     CurrentBoard.SelDepth = 0;
 
@@ -325,9 +325,9 @@ BOOL ComputerMove(void)
 #pragma omp parallel private(SearchDepthCount, ThreadBoard, ThreadScore)
 #endif // ASPIRATION_WINDOW
     {
-#if defined(BIND_THREAD) || defined(BIND_THREAD_V2)
+#if defined(BIND_THREAD_V1) || defined(BIND_THREAD_V2)
         BindThread(omp_get_thread_num());
-#endif // BIND_THREAD || BIND_THREAD_V2
+#endif // BIND_THREAD_V1 || BIND_THREAD_V2
 
         ThreadBoard = CurrentBoard;
         ThreadScore = 0;
@@ -351,12 +351,12 @@ BOOL ComputerMove(void)
 */
             ThreadBoard.Nodes = 0ULL;
 
-#ifdef DEBUG_STATISTIC
+#ifdef USE_STATISTIC
             ThreadBoard.HashCount = 0ULL;
             ThreadBoard.EvaluateCount = 0ULL;
             ThreadBoard.CutoffCount = 0ULL;
             ThreadBoard.QuiescenceCount = 0ULL;
-#endif // DEBUG_STATISTIC
+#endif // USE_STATISTIC
 
             ThreadBoard.SelDepth = 0;
 
@@ -400,12 +400,12 @@ BOOL ComputerMove(void)
 
                 CurrentBoard.Nodes += ThreadBoard.Nodes;
 
-#ifdef DEBUG_STATISTIC
+#ifdef USE_STATISTIC
                 CurrentBoard.HashCount += ThreadBoard.HashCount;
                 CurrentBoard.EvaluateCount += ThreadBoard.EvaluateCount;
                 CurrentBoard.CutoffCount += ThreadBoard.CutoffCount;
                 CurrentBoard.QuiescenceCount += ThreadBoard.QuiescenceCount;
-#endif // DEBUG_STATISTIC
+#endif // USE_STATISTIC
 
                 CurrentBoard.SelDepth = MAX(CurrentBoard.SelDepth, ThreadBoard.SelDepth);
             }
