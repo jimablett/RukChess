@@ -70,7 +70,13 @@ void InitThreadNode(void)
     }
 
     // Once we know ReturnLength, allocate the buffer
-    Ptr = Buffer = (SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX*)malloc(ReturnedLength);
+    Buffer = (SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX*)malloc(ReturnedLength);
+
+    if (Buffer == NULL) { // Allocate memory error
+        printf("Allocate memory to buffer error!\n");
+
+        return;
+    }
 
     // Second call, now we expect to succeed
     if (!GetLogicalProcessorInformationEx(RelationAll, Buffer, &ReturnedLength)) {
@@ -78,6 +84,8 @@ void InitThreadNode(void)
 
         return;
     }
+
+    Ptr = Buffer;
 
     while (ByteOffset < ReturnedLength) {
         if (Ptr->Relationship == RelationNumaNode) {

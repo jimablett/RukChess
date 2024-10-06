@@ -45,10 +45,12 @@ U64 PieceHash[2][6][64]; // [Color][Piece][Square]
 U64 ColorHash;
 U64 PassantHash[64]; // [Square]
 
-void InitHashTable(int SizeInMb) // Xiphos
+void InitHashTable(const int SizeInMb) // Xiphos
 {
     U64 Items;
     U64 RoundItems = 1;
+
+    HashItem* HashItemPointer;
 
     Items = ((U64)SizeInMb << 20) / sizeof(HashItem);
 
@@ -61,7 +63,21 @@ void InitHashTable(int SizeInMb) // Xiphos
 
     HashStore.Iteration = 0;
 
-    HashStore.Item = (HashItem*)realloc(HashStore.Item, HashStore.Size);
+    HashItemPointer = (HashItem*)realloc(HashStore.Item, HashStore.Size);
+
+    if (HashItemPointer == NULL) { // Allocate memory error
+        if (HashStore.Item != NULL) {
+            free(HashStore.Item); // Free previously allocated memory
+        }
+
+        printf("Allocate memory to hash table error!\n");
+
+        Sleep(3000);
+
+        exit(0);
+    }
+
+    HashStore.Item = HashItemPointer;
 }
 
 void InitHashBoards(void)
@@ -140,7 +156,7 @@ void AddHashStoreIteration(void)
 
 void SaveHash(const U64 Hash, const int Depth, const int Ply, const int Score, const int StaticScore, const int Move, const int Flag)
 {
-    HashItem* HashItemPointer = HashStore.Item + (Hash & HashStore.Mask);
+    HashItem* HashItemPointer = &HashStore.Item[Hash & HashStore.Mask];
 
     HashDataU DataU = HashItemPointer->Value; // Load data from record
 
@@ -176,7 +192,7 @@ void SaveHash(const U64 Hash, const int Depth, const int Ply, const int Score, c
 
 void LoadHash(const U64 Hash, int* Depth, const int Ply, int* Score, int* StaticScore, int* Move, int* Flag)
 {
-    HashItem* HashItemPointer = HashStore.Item + (Hash & HashStore.Mask);
+    HashItem* HashItemPointer = &HashStore.Item[Hash & HashStore.Mask];
 
     HashDataU DataU = HashItemPointer->Value; // Load data from record
 

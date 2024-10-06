@@ -103,16 +103,17 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
         return QuiescenceSearch(Board, Alpha, Beta, 0, Ply, IsPrincipal, InCheck);
     }
 
-    if (
-        Ply > 0
-        && omp_get_thread_num() == 0 // Master thread
-        && (Board->Nodes & 65535) == 0
-        && CompletedDepth >= MIN_SEARCH_DEPTH
-        && Clock() >= TimeStop
-    ) {
-        StopSearch = TRUE;
+    if (omp_get_thread_num() == 0) { // Master thread
+        if (
+            Ply > 0
+            && CompletedDepth >= MIN_SEARCH_DEPTH
+            && (Board->Nodes & 32767) == 0
+            && Clock() >= TimeStop
+        ) {
+            StopSearch = TRUE;
 
-        return 0;
+            return 0;
+        }
     }
 
     if (StopSearch) {
@@ -163,7 +164,8 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
 #ifdef COUNTER_MOVE_HISTORY
     SetCounterMoveHistoryPointer(Board, CMH_Pointer, Ply);
 #else
-    CMH_Pointer[0] = CMH_Pointer[1] = NULL;
+    CMH_Pointer[0] = NULL;
+    CMH_Pointer[1] = NULL;
 #endif // COUNTER_MOVE_HISTORY
 
     if (!SkipMove) {
@@ -269,7 +271,7 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
             ++Board->Nodes;
 
             // Zero window search for reduced depth
-            TempBestMoves[0] = (MoveItem){ 0, 0, 0 };
+            TempBestMoves[0] = (MoveItem){ 0, 0, 0 }; // End of move list
 
             Score = -Search(Board, -Beta, -Beta + 1, Depth - 1 - NullMoveReduction, Ply + 1, TempBestMoves, FALSE, FALSE, FALSE, 0);
 
@@ -319,7 +321,7 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
 
                 if (Score >= BetaCut) {
                     // Zero window search for reduced depth
-                    TempBestMoves[0] = (MoveItem){ 0, 0, 0 };
+                    TempBestMoves[0] = (MoveItem){ 0, 0, 0 }; // End of move list
 
                     Score = -Search(Board, -BetaCut, -BetaCut + 1, Depth - 4, Ply + 1, TempBestMoves, FALSE, FALSE, FALSE, 0);
                 }
@@ -346,7 +348,7 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
 #endif // DEBUG_IID
 
         // Search with full window for reduced depth
-        TempBestMoves[0] = (MoveItem){ 0, 0, 0 };
+        TempBestMoves[0] = (MoveItem){ 0, 0, 0 }; // End of move list
 
         Search(Board, Alpha, Beta, (IsPrincipal ? Depth - 2 : Depth / 2), Ply, TempBestMoves, IsPrincipal, InCheck, FALSE, 0);
 
@@ -430,7 +432,11 @@ NextMove:
         ++Board->Nodes;
 /*
         if (omp_get_thread_num() == 0) { // Master thread
-            if (Ply == 0 && PrintMode == PRINT_MODE_UCI && (Clock() - TimeStart) >= 3000ULL) {
+            if (
+                Ply == 0 // Root node
+                && PrintMode == PRINT_MODE_UCI
+                && (Clock() - TimeStart) >= 3000ULL
+            ) {
 #pragma omp critical
                 {
                     printf("info depth %d currmovenumber %d currmove %s%s", Depth, MoveNumber + 1, BoardName[MOVE_FROM(MoveList[MoveNumber].Move)], BoardName[MOVE_TO(MoveList[MoveNumber].Move)]);
@@ -439,7 +445,7 @@ NextMove:
                         printf("%c", PiecesCharBlack[MOVE_PROMOTE_PIECE(MoveList[MoveNumber].Move)]);
                     }
 
-                    printf(" nodes %llu\n", Board->Nodes); // TODO
+                    printf("\n");
                 }
             }
         }
@@ -469,7 +475,7 @@ NextMove:
             SingularBeta = HashScore - Depth;
 
             // Zero window search for reduced depth
-            TempBestMoves[0] = (MoveItem){ 0, 0, 0 };
+            TempBestMoves[0] = (MoveItem){ 0, 0, 0 }; // End of move list
 
             Score = Search(Board, SingularBeta - 1, SingularBeta, Depth / 2, Ply, TempBestMoves, FALSE, InCheck, FALSE, MoveList[MoveNumber].Move);
 
@@ -554,7 +560,7 @@ NextMove:
 
         if (IsPrincipal && LegalMoveCount == 1) { // First move
             // Search with full window
-            TempBestMoves[0] = (MoveItem){ 0, 0, 0 };
+            TempBestMoves[0] = (MoveItem){ 0, 0, 0 }; // End of move list
 
             Score = -Search(Board, -Beta, -Alpha, NewDepth, Ply + 1, TempBestMoves, TRUE, GiveCheck, TRUE, 0);
         }
@@ -579,26 +585,26 @@ NextMove:
             }
 
             // Zero window search for reduced depth
-            TempBestMoves[0] = (MoveItem){ 0, 0, 0 };
+            TempBestMoves[0] = (MoveItem){ 0, 0, 0 }; // End of move list
 
             Score = -Search(Board, -Alpha - 1, -Alpha, NewDepth - LateMoveReduction, Ply + 1, TempBestMoves, FALSE, GiveCheck, TRUE, 0);
 
             if (LateMoveReduction > 0 && Score > Alpha) {
                 // Zero window search
-                TempBestMoves[0] = (MoveItem){ 0, 0, 0 };
+                TempBestMoves[0] = (MoveItem){ 0, 0, 0 }; // End of move list
 
                 Score = -Search(Board, -Alpha - 1, -Alpha, NewDepth, Ply + 1, TempBestMoves, FALSE, GiveCheck, TRUE, 0);
             }
 #else
             // Zero window search
-            TempBestMoves[0] = (MoveItem){ 0, 0, 0 };
+            TempBestMoves[0] = (MoveItem){ 0, 0, 0 }; // End of move list
 
             Score = -Search(Board, -Alpha - 1, -Alpha, NewDepth, Ply + 1, TempBestMoves, FALSE, GiveCheck, TRUE, 0);
 #endif // LATE_MOVE_REDUCTION
 
             if (IsPrincipal && Score > Alpha && (Ply == 0 || Score < Beta)) {
                 // Search with full window
-                TempBestMoves[0] = (MoveItem){ 0, 0, 0 };
+                TempBestMoves[0] = (MoveItem){ 0, 0, 0 }; // End of move list
 
                 Score = -Search(Board, -Beta, -Alpha, NewDepth, Ply + 1, TempBestMoves, TRUE, GiveCheck, TRUE, 0);
             }

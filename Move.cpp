@@ -290,6 +290,8 @@ void UnmakeMove(BoardItem* Board)
             Board->BB_Pieces[BLACK][PAWN] |= BB_SQUARE(Info->EatPawnSquare);
         }
         else if (Info->Type & MOVE_CAPTURE) {
+            //Board->Pieces[Info->To] = EMPTY;
+
             Board->BB_WhitePieces &= ~BB_SQUARE(Info->To);
 
             if (Info->Type & MOVE_PAWN_PROMOTE) {
@@ -305,6 +307,8 @@ void UnmakeMove(BoardItem* Board)
             Board->BB_Pieces[BLACK][Info->PieceTo] |= BB_SQUARE(Info->To);
         }
         else {
+            Board->Pieces[Info->To] = EMPTY;
+
             Board->BB_WhitePieces &= ~BB_SQUARE(Info->To);
 
             if (Info->Type & MOVE_PAWN_PROMOTE) {
@@ -313,8 +317,6 @@ void UnmakeMove(BoardItem* Board)
             else {
                 Board->BB_Pieces[WHITE][Info->PieceFrom] &= ~BB_SQUARE(Info->To);
             }
-
-            Board->Pieces[Info->To] = EMPTY;
         }
     }
     else { // BLACK
@@ -357,6 +359,8 @@ void UnmakeMove(BoardItem* Board)
             Board->BB_Pieces[WHITE][PAWN] |= BB_SQUARE(Info->EatPawnSquare);
         }
         else if (Info->Type & MOVE_CAPTURE) {
+            //Board->Pieces[Info->To] = EMPTY;
+
             Board->BB_BlackPieces &= ~BB_SQUARE(Info->To);
 
             if (Info->Type & MOVE_PAWN_PROMOTE) {
@@ -372,6 +376,8 @@ void UnmakeMove(BoardItem* Board)
             Board->BB_Pieces[WHITE][Info->PieceTo] |= BB_SQUARE(Info->To);
         }
         else {
+            Board->Pieces[Info->To] = EMPTY;
+
             Board->BB_BlackPieces &= ~BB_SQUARE(Info->To);
 
             if (Info->Type & MOVE_PAWN_PROMOTE) {
@@ -380,8 +386,6 @@ void UnmakeMove(BoardItem* Board)
             else {
                 Board->BB_Pieces[BLACK][Info->PieceFrom] &= ~BB_SQUARE(Info->To);
             }
-
-            Board->Pieces[Info->To] = EMPTY;
         }
     }
 

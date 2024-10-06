@@ -165,13 +165,8 @@ void UCI(void)
 
                     To = SQUARE(Rank, File);
 
-                    if (Part[4] == 'Q' || Part[4] == 'q') {
-                        PromotePiece = QUEEN;
-
-                        Part += 5;
-                    }
-                    else if (Part[4] == 'R' || Part[4] == 'r') {
-                        PromotePiece = ROOK;
+                    if (Part[4] == 'N' || Part[4] == 'n') {
+                        PromotePiece = KNIGHT;
 
                         Part += 5;
                     }
@@ -180,8 +175,13 @@ void UCI(void)
 
                         Part += 5;
                     }
-                    else if (Part[4] == 'N' || Part[4] == 'n') {
-                        PromotePiece = KNIGHT;
+                    else if (Part[4] == 'R' || Part[4] == 'r') {
+                        PromotePiece = ROOK;
+
+                        Part += 5;
+                    }
+                    else if (Part[4] == 'Q' || Part[4] == 'q') {
+                        PromotePiece = QUEEN;
 
                         Part += 5;
                     }

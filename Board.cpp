@@ -266,20 +266,20 @@ void NotateMove(BoardItem* Board, const MoveItem Move, char* Result)
             *Result++ = '=';
 
             switch (MOVE_PROMOTE_PIECE(Move.Move)) {
-                case QUEEN:
-                    *Result++ = 'Q';
-                    break;
-
-                case ROOK:
-                    *Result++ = 'R';
+                case KNIGHT:
+                    *Result++ = 'N';
                     break;
 
                 case BISHOP:
                     *Result++ = 'B';
                     break;
 
-                case KNIGHT:
-                    *Result++ = 'N';
+                case ROOK:
+                    *Result++ = 'R';
+                    break;
+
+                case QUEEN:
+                    *Result++ = 'Q';
                     break;
             }
         }
@@ -736,7 +736,7 @@ void GetFen(const BoardItem* Board, char* Fen)
     *Fen = '\0'; // Nul
 }
 
-U64 CountLegalMoves(const int Depth)
+U64 CountLegalMoves(BoardItem* Board, const int Depth)
 {
     int GenMoveCount;
     MoveItem MoveList[MAX_GEN_MOVES];
@@ -748,16 +748,16 @@ U64 CountLegalMoves(const int Depth)
     }
 
     GenMoveCount = 0;
-    GenerateAllMoves(&CurrentBoard, NULL, MoveList, &GenMoveCount);
+    GenerateAllMoves(Board, NULL, MoveList, &GenMoveCount);
 
     for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
-        MakeMove(&CurrentBoard, MoveList[MoveNumber]);
+        MakeMove(Board, MoveList[MoveNumber]);
 
-        if (!IsInCheck(&CurrentBoard, CHANGE_COLOR(CurrentBoard.CurrentColor))) { // Legal move
-            LegalMoveCount += CountLegalMoves(Depth - 1);
+        if (!IsInCheck(Board, CHANGE_COLOR(Board->CurrentColor))) { // Legal move
+            LegalMoveCount += CountLegalMoves(Board, Depth - 1);
         }
 
-        UnmakeMove(&CurrentBoard);
+        UnmakeMove(Board);
     }
 
     return LegalMoveCount;

@@ -487,7 +487,7 @@ void GeneratorTest1(void)
         printf("\n");
 
         for (int Depth = 1; Depth <= GeneratorTests[TestNumber].Depth; ++Depth) {
-            ResultNodes = CountLegalMoves(Depth);
+            ResultNodes = CountLegalMoves(&CurrentBoard, Depth);
 
             if (GeneratorTests[TestNumber].Nodes[Depth - 1] == ResultNodes) {
                 ResultString = "PASSED";
@@ -528,7 +528,7 @@ void GeneratorTest2(void)
     printf("\n");
 
     for (int Depth = 1; Depth <= MaxDepth; ++Depth) {
-        ResultNodes = CountLegalMoves(Depth);
+        ResultNodes = CountLegalMoves(&CurrentBoard, Depth);
 
         printf("Depth = %2d Result nodes = %10llu\n", Depth, ResultNodes);
     }

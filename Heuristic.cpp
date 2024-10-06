@@ -40,7 +40,8 @@ void SetCounterMoveHistoryPointer(BoardItem* Board, int** CMH_Pointer, const int
     HistoryItem* Info;
 
     if (Ply == 0) {
-        CMH_Pointer[0] = CMH_Pointer[1] = NULL;
+        CMH_Pointer[0] = NULL;
+        CMH_Pointer[1] = NULL;
 
         return;
     }
@@ -48,7 +49,8 @@ void SetCounterMoveHistoryPointer(BoardItem* Board, int** CMH_Pointer, const int
     Info = &Board->MoveTable[Board->HalfMoveNumber - 1]; // Prev. move info
 
     if (Info->Type == MOVE_NULL) {
-        CMH_Pointer[0] = CMH_Pointer[1] = NULL;
+        CMH_Pointer[0] = NULL;
+        CMH_Pointer[1] = NULL;
 
         return;
     }

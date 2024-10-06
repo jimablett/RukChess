@@ -228,6 +228,6 @@ void PrintBitMask(const U64 Mask);
 int SetFen(BoardItem* Board, char* Fen);
 void GetFen(const BoardItem* Board, char* Fen);
 
-U64 CountLegalMoves(const int Depth);
+U64 CountLegalMoves(BoardItem* Board, const int Depth);
 
 #endif // !BOARD_H

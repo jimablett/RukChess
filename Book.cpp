@@ -56,7 +56,15 @@ BOOL BookFileLoaded = FALSE;
 
 NodeItem* CreateNode(const MoveItem Move)
 {
-    NodeItem* Node = (NodeItem*)calloc(1, sizeof(NodeItem));
+    NodeItem* Node = (NodeItem*)malloc(sizeof(NodeItem));
+
+    if (Node == NULL) { // Allocate memory error
+        printf("Allocate memory to node error!\n");
+
+        Sleep(3000);
+
+        exit(0);
+    }
 
     Node->Move = Move;
 
@@ -655,7 +663,7 @@ BOOL LoadBook(const char* BookFileName)
         ++PositionNumber;
     } // while
 
-    qsort(BookStore.Item, BookStore.Count, sizeof(BookItem), HashCompare); // TODO: Move to GenerateBook
+    qsort(BookStore.Item, BookStore.Count, sizeof(BookItem), HashCompare); // TODO: move to GenerateBook
 /*
     for (int Index = 0; Index < BookStore.Count; ++Index) {
         BookItemPointer = &BookStore.Item[Index];
@@ -741,8 +749,8 @@ BOOL GetBookMove(const BoardItem* Board, MoveItem* BestMoves)
                 ) { // Valid book move
 //                    printf("0x%016llx %s %s %d\n", BookItemPointer->Hash, BoardName[BookItemPointer->From], BoardName[BookItemPointer->To], BookItemPointer->Total);
 
-                    BestMoves[0] = MoveList[MoveNumber];
-                    BestMoves[1] = (MoveItem){ 0, 0, 0 };
+                    BestMoves[0] = MoveList[MoveNumber]; // Best move
+                    BestMoves[1] = (MoveItem){ 0, 0, 0 }; // End of move list
 
                     return TRUE;
                 }

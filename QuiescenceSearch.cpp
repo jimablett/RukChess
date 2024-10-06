@@ -45,15 +45,16 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
     ++Board->QuiescenceCount;
 #endif // DEBUG_STATISTIC
 
-    if (
-        omp_get_thread_num() == 0 // Master thread
-        && (Board->Nodes & 65535) == 0
-        && CompletedDepth >= MIN_SEARCH_DEPTH
-        && Clock() >= TimeStop
-    ) {
-        StopSearch = TRUE;
+    if (omp_get_thread_num() == 0) { // Master thread
+        if (
+            CompletedDepth >= MIN_SEARCH_DEPTH
+            && (Board->Nodes & 32767) == 0
+            && Clock() >= TimeStop
+        ) {
+            StopSearch = TRUE;
 
-        return 0;
+            return 0;
+        }
     }
 
     if (StopSearch) {

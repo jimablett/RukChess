@@ -294,7 +294,7 @@ BOOL ComputerMove(void)
 
     CurrentBoard.SelDepth = 0;
 
-    CurrentBoard.BestMovesRoot[0] = (MoveItem){ 0, 0, 0 };
+    CurrentBoard.BestMovesRoot[0] = (MoveItem){ 0, 0, 0 }; // End of move list
 
     ClearHeuristic(&CurrentBoard);
 

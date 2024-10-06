@@ -42,9 +42,10 @@ void SetKillerMove1SortValue(const BoardItem* Board, const int Ply, MoveItem* Ge
 
 void SetKillerMove2SortValue(const BoardItem* Board, const int Ply, MoveItem* GenMoveList, const int GenMoveCount, const int HashMove)
 {
+    int KillerMove1 = Board->KillerMoveTable[Ply][0];
     int KillerMove2 = Board->KillerMoveTable[Ply][1];
 
-    if (KillerMove2 && KillerMove2 != HashMove) {
+    if (KillerMove2 && KillerMove2 != HashMove && KillerMove2 != KillerMove1) {
         for (int Index = 0; Index < GenMoveCount; ++Index) {
             if (GenMoveList[Index].Move == KillerMove2) {
                 if (!(GenMoveList[Index].Type & (MOVE_CAPTURE | MOVE_PAWN_PROMOTE))) { // Not capture/promote move
@@ -62,7 +63,7 @@ void SetKillerMove2SortValue(const BoardItem* Board, const int Ply, MoveItem* Ge
 #ifdef COUNTER_MOVE
 void SetCounterMoveSortValue(const BoardItem* Board, const int Ply, MoveItem* GenMoveList, const int GenMoveCount, const int HashMove)
 {
-    if (Board->HalfMoveNumber == 0) {
+    if (Ply == 0) {
         return;
     }
 

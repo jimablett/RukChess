@@ -10,7 +10,7 @@
 #include "targetver.h"
 
 #include <stdio.h>      // _IONBF, printf(), scanf_s(), fopen_s(), fgets(), fprintf(), fclose(), fseek(), sprintf_s(), fread_s()
-#include <stdlib.h>     // atoi(), atof(), malloc(), realloc(), calloc(), free(), qsort()
+#include <stdlib.h>     // atoi(), atof(), malloc(), realloc(), free(), qsort()
 #include <string.h>     // strcmp(), strncmp(), strstr(), strcpy_s(), strchr()
 #include <sys/timeb.h>  // _timeb, _ftime_s()
 #include <windows.h>    // GetLogicalProcessorInformationEx(), GetNumaNodeProcessorMaskEx(), GetCurrentThread(), Sleep()
