@@ -180,7 +180,7 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
                 if (
                     (HashFlag == HASH_BETA && HashScore >= Beta)
                     || (HashFlag == HASH_ALPHA && HashScore <= Alpha)
-                    || (HashFlag == HASH_EXACT)
+                    || HashFlag == HASH_EXACT
                 ) {
                     if (HashMove) {
                         if (

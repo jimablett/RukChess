@@ -116,7 +116,7 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
             if (
                 (HashFlag == HASH_BETA && HashScore >= Beta)
                 || (HashFlag == HASH_ALPHA && HashScore <= Alpha)
-                || (HashFlag == HASH_EXACT)
+                || HashFlag == HASH_EXACT
             ) {
                 return HashScore;
             }
@@ -138,7 +138,7 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
             if (
                 (HashFlag == HASH_BETA && HashScore > BestScore)
                 || (HashFlag == HASH_ALPHA && HashScore < BestScore)
-                || (HashFlag == HASH_EXACT)
+                || HashFlag == HASH_EXACT
             ) {
                 BestScore = HashScore;
             }
