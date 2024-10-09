@@ -92,6 +92,7 @@
 
 #define MAX_FEN_LENGTH                          256
 
+#define ASPIRATION_WINDOW_START_DEPTH           4
 #define ASPIRATION_WINDOW_INIT_DELTA            17
 
 #define DEFAULT_HASH_TABLE_SIZE                 512     // Mbyte

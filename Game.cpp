@@ -258,19 +258,19 @@ BOOL ComputerMove(void)
 
     int SearchDepthCount;
 
-    MoveItem BestMove = (MoveItem){ 0, 0, 0 };
-    MoveItem PonderMove = (MoveItem){ 0, 0, 0 };
-
-    int BestScore = 0;
-
 #ifdef ASPIRATION_WINDOW
-    int Delta;
-
     int Alpha;
     int Beta;
+
+    int Delta;
 #endif // ASPIRATION_WINDOW
 
     U64 TargetTimeLocal;
+
+    int BestScore = 0;
+
+    MoveItem BestMove;
+    MoveItem PonderMove;
 
     TimeStart = Clock();
     TimeStop = TimeStart + MaxTime;
@@ -309,9 +309,6 @@ BOOL ComputerMove(void)
     AddHashStoreIteration();
 
     if (BookFileLoaded && GetBookMove(&CurrentBoard, CurrentBoard.BestMovesRoot)) {
-        BestMove = CurrentBoard.BestMovesRoot[0];
-        PonderMove = CurrentBoard.BestMovesRoot[1];
-
         goto Done;
     }
 
@@ -320,9 +317,9 @@ BOOL ComputerMove(void)
     }
 
 #ifdef ASPIRATION_WINDOW
-#pragma omp parallel private(Alpha, Beta, Delta, SearchDepthCount, ThreadBoard, ThreadScore)
+#pragma omp parallel private(ThreadBoard, ThreadScore, SearchDepthCount, Alpha, Beta, Delta)
 #else
-#pragma omp parallel private(SearchDepthCount, ThreadBoard, ThreadScore)
+#pragma omp parallel private(ThreadBoard, ThreadScore, SearchDepthCount)
 #endif // ASPIRATION_WINDOW
     {
 #if defined(BIND_THREAD_V1) || defined(BIND_THREAD_V2)
@@ -361,30 +358,31 @@ BOOL ComputerMove(void)
             ThreadBoard.SelDepth = 0;
 
 #ifdef ASPIRATION_WINDOW
-            if (Depth >= 4) {
+            if (Depth >= ASPIRATION_WINDOW_START_DEPTH) {
                 Delta = ASPIRATION_WINDOW_INIT_DELTA;
 
                 Alpha = MAX((ThreadScore - Delta), -INF);
                 Beta = MIN((ThreadScore + Delta), INF);
 
-                while (TRUE) {
+                while (Delta <= INF) {
                     ThreadScore = Search(&ThreadBoard, Alpha, Beta, Depth, 0, ThreadBoard.BestMovesRoot, TRUE, InCheck, FALSE, 0);
 
                     if (StopSearch) {
                         break; // while
                     }
 
+                    Delta += Delta / 4 + 5;
+
                     if (ThreadScore <= Alpha) {
                         Alpha = MAX((ThreadScore - Delta), -INF);
+                        Beta = (Alpha + Beta) / 2;
                     }
                     else if (ThreadScore >= Beta) {
                         Beta = MIN((ThreadScore + Delta), INF);
                     }
-                    else {
+                    else { // ThreadScore > Alpha && ThreadScore < Beta
                         break; // while
                     }
-
-                    Delta += Delta / 4 + 5;
                 }
             }
             else {
@@ -430,9 +428,6 @@ BOOL ComputerMove(void)
                     PrintBestMoves(&CurrentBoard, CompletedDepth, CurrentBoard.BestMovesRoot, ThreadScore);
                 }
 
-                BestMove = CurrentBoard.BestMovesRoot[0];
-                PonderMove = CurrentBoard.BestMovesRoot[1];
-
                 TargetTimeLocal = TargetTime[TimeStep];
 
                 if (TargetTimeLocal > 0ULL && BestScore > ThreadScore) {
@@ -441,18 +436,18 @@ BOOL ComputerMove(void)
 
                 BestScore = ThreadScore;
 
-                if (!BestMove.Move) { // No legal moves
-                    break; // for (depth)
-                }
-
-                if (BestScore <= -INF + Depth || BestScore >= INF - Depth) { // Checkmate
-                    break; // for (depth)
-                }
-
                 if (TargetTimeLocal > 0ULL && CompletedDepth >= MIN_SEARCH_DEPTH && (Clock() - TimeStart) >= TargetTimeLocal) { // Time is up
                     break; // for (depth)
                 }
-            } // if
+            }
+
+            if (!ThreadBoard.BestMovesRoot[0].Move) { // No legal moves
+                break; // for (depth)
+            }
+
+            if (ThreadScore <= -INF + Depth || ThreadScore >= INF - Depth) { // Checkmate
+                break; // for (depth)
+            }
         } // for
 
         if (omp_get_thread_num() == 0) { // Master thread
@@ -464,6 +459,9 @@ Done:
 
     TimeStop = Clock();
     TotalTime = TimeStop - TimeStart;
+
+    BestMove = CurrentBoard.BestMovesRoot[0];
+    PonderMove = CurrentBoard.BestMovesRoot[1];
 
     return PrintResult(InCheck, BestMove, PonderMove, BestScore);
 }

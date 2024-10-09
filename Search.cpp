@@ -510,10 +510,7 @@ NextMove:
             && MoveList[MoveNumber].Move != HashMove
         ) {
 #if defined(SEE_CAPTURE_MOVE_PRUNING) && defined(BAD_CAPTURE_LAST)
-            if (
-                Depth <= 3
-                && MoveList[MoveNumber].SortValue < -SORT_CAPTURE_MOVE_BONUS - 100 * Depth // Bad capture move
-            ) { // Xiphos
+            if (Depth <= 3 && MoveList[MoveNumber].SortValue < -SORT_CAPTURE_MOVE_BONUS - 100 * Depth) { // Xiphos
                 UnmakeMove(Board);
 
                 continue; // Next move
