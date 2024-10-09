@@ -544,17 +544,17 @@ BOOL HumanMove(void)
 
             To = SQUARE(Rank, File);
 
-            if (ReadStr[4] == 'Q' || ReadStr[4] == 'q') {
-                PromotePiece = QUEEN;
-            }
-            else if (ReadStr[4] == 'R' || ReadStr[4] == 'r') {
-                PromotePiece = ROOK;
+            if (ReadStr[4] == 'N' || ReadStr[4] == 'n') {
+                PromotePiece = KNIGHT;
             }
             else if (ReadStr[4] == 'B' || ReadStr[4] == 'b') {
                 PromotePiece = BISHOP;
             }
-            else if (ReadStr[4] == 'N' || ReadStr[4] == 'n') {
-                PromotePiece = KNIGHT;
+            else if (ReadStr[4] == 'R' || ReadStr[4] == 'r') {
+                PromotePiece = ROOK;
+            }
+            else if (ReadStr[4] == 'Q' || ReadStr[4] == 'q') {
+                PromotePiece = QUEEN;
             }
             else {
                 PromotePiece = 0;
