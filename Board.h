@@ -105,6 +105,26 @@
 #define CASTLE_BLACK_KING       4   // Black O-O
 #define CASTLE_BLACK_QUEEN      8   // Black O-O-O
 
+// Squares index
+
+#define SQ_A1                   56
+#define SQ_B1                   57
+#define SQ_C1                   58
+#define SQ_D1                   59
+#define SQ_E1                   60
+#define SQ_F1                   61
+#define SQ_G1                   62
+#define SQ_H1                   63
+
+#define SQ_A8                   0
+#define SQ_B8                   1
+#define SQ_C8                   2
+#define SQ_D8                   3
+#define SQ_E8                   4
+#define SQ_F8                   5
+#define SQ_G8                   6
+#define SQ_H8                   7
+
 typedef struct {
     int Type;
     int Move; // (PromotePiece << 12) | (From << 6) | To
