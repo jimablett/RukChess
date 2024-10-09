@@ -61,35 +61,35 @@ void MakeMove(BoardItem* Board, const MoveItem Move)
         }
 
         if (Move.Type & MOVE_CASTLE_KING) { // White O-O
-            Board->Pieces[63] = EMPTY;
+            Board->Pieces[SQ_H1] = EMPTY;
 
-            Board->BB_WhitePieces &= ~BB_SQUARE(63);
-            Board->BB_Pieces[WHITE][ROOK] &= ~BB_SQUARE(63);
+            Board->BB_WhitePieces &= ~BB_SQUARE(SQ_H1);
+            Board->BB_Pieces[WHITE][ROOK] &= ~BB_SQUARE(SQ_H1);
 
-            Board->Hash ^= PieceHash[WHITE][ROOK][63];
+            Board->Hash ^= PieceHash[WHITE][ROOK][SQ_H1];
 
-            Board->Pieces[61] = PIECE_AND_COLOR(ROOK, WHITE);
+            Board->Pieces[SQ_F1] = PIECE_AND_COLOR(ROOK, WHITE);
 
-            Board->BB_WhitePieces |= BB_SQUARE(61);
-            Board->BB_Pieces[WHITE][ROOK] |= BB_SQUARE(61);
+            Board->BB_WhitePieces |= BB_SQUARE(SQ_F1);
+            Board->BB_Pieces[WHITE][ROOK] |= BB_SQUARE(SQ_F1);
 
-            Board->Hash ^= PieceHash[WHITE][ROOK][61];
+            Board->Hash ^= PieceHash[WHITE][ROOK][SQ_F1];
         }
 
         if (Move.Type & MOVE_CASTLE_QUEEN) { // White O-O-O
-            Board->Pieces[56] = EMPTY;
+            Board->Pieces[SQ_A1] = EMPTY;
 
-            Board->BB_WhitePieces &= ~BB_SQUARE(56);
-            Board->BB_Pieces[WHITE][ROOK] &= ~BB_SQUARE(56);
+            Board->BB_WhitePieces &= ~BB_SQUARE(SQ_A1);
+            Board->BB_Pieces[WHITE][ROOK] &= ~BB_SQUARE(SQ_A1);
 
-            Board->Hash ^= PieceHash[WHITE][ROOK][56];
+            Board->Hash ^= PieceHash[WHITE][ROOK][SQ_A1];
 
-            Board->Pieces[59] = PIECE_AND_COLOR(ROOK, WHITE);
+            Board->Pieces[SQ_D1] = PIECE_AND_COLOR(ROOK, WHITE);
 
-            Board->BB_WhitePieces |= BB_SQUARE(59);
-            Board->BB_Pieces[WHITE][ROOK] |= BB_SQUARE(59);
+            Board->BB_WhitePieces |= BB_SQUARE(SQ_D1);
+            Board->BB_Pieces[WHITE][ROOK] |= BB_SQUARE(SQ_D1);
 
-            Board->Hash ^= PieceHash[WHITE][ROOK][59];
+            Board->Hash ^= PieceHash[WHITE][ROOK][SQ_D1];
         }
 
         Board->CastleFlags &= CastleMask[From] & CastleMask[To];
@@ -143,35 +143,35 @@ void MakeMove(BoardItem* Board, const MoveItem Move)
         }
 
         if (Move.Type & MOVE_CASTLE_KING) { // Black O-O
-            Board->Pieces[7] = EMPTY;
+            Board->Pieces[SQ_H8] = EMPTY;
 
-            Board->BB_BlackPieces &= ~BB_SQUARE(7);
-            Board->BB_Pieces[BLACK][ROOK] &= ~BB_SQUARE(7);
+            Board->BB_BlackPieces &= ~BB_SQUARE(SQ_H8);
+            Board->BB_Pieces[BLACK][ROOK] &= ~BB_SQUARE(SQ_H8);
 
-            Board->Hash ^= PieceHash[BLACK][ROOK][7];
+            Board->Hash ^= PieceHash[BLACK][ROOK][SQ_H8];
 
-            Board->Pieces[5] = PIECE_AND_COLOR(ROOK, BLACK);
+            Board->Pieces[SQ_F8] = PIECE_AND_COLOR(ROOK, BLACK);
 
-            Board->BB_BlackPieces |= BB_SQUARE(5);
-            Board->BB_Pieces[BLACK][ROOK] |= BB_SQUARE(5);
+            Board->BB_BlackPieces |= BB_SQUARE(SQ_F8);
+            Board->BB_Pieces[BLACK][ROOK] |= BB_SQUARE(SQ_F8);
 
-            Board->Hash ^= PieceHash[BLACK][ROOK][5];
+            Board->Hash ^= PieceHash[BLACK][ROOK][SQ_F8];
         }
 
         if (Move.Type & MOVE_CASTLE_QUEEN) { // Black O-O-O
-            Board->Pieces[0] = EMPTY;
+            Board->Pieces[SQ_A8] = EMPTY;
 
-            Board->BB_BlackPieces &= ~BB_SQUARE(0);
-            Board->BB_Pieces[BLACK][ROOK] &= ~BB_SQUARE(0);
+            Board->BB_BlackPieces &= ~BB_SQUARE(SQ_A8);
+            Board->BB_Pieces[BLACK][ROOK] &= ~BB_SQUARE(SQ_A8);
 
-            Board->Hash ^= PieceHash[BLACK][ROOK][0];
+            Board->Hash ^= PieceHash[BLACK][ROOK][SQ_A8];
 
-            Board->Pieces[3] = PIECE_AND_COLOR(ROOK, BLACK);
+            Board->Pieces[SQ_D8] = PIECE_AND_COLOR(ROOK, BLACK);
 
-            Board->BB_BlackPieces |= BB_SQUARE(3);
-            Board->BB_Pieces[BLACK][ROOK] |= BB_SQUARE(3);
+            Board->BB_BlackPieces |= BB_SQUARE(SQ_D8);
+            Board->BB_Pieces[BLACK][ROOK] |= BB_SQUARE(SQ_D8);
 
-            Board->Hash ^= PieceHash[BLACK][ROOK][3];
+            Board->Hash ^= PieceHash[BLACK][ROOK][SQ_D8];
         }
 
         Board->CastleFlags &= CastleMask[From] & CastleMask[To];
@@ -257,27 +257,27 @@ void UnmakeMove(BoardItem* Board)
         Board->BB_Pieces[WHITE][Info->PieceFrom] |= BB_SQUARE(Info->From);
 
         if (Info->Type & MOVE_CASTLE_KING) { // White O-O
-            Board->Pieces[61] = EMPTY;
+            Board->Pieces[SQ_F1] = EMPTY;
 
-            Board->BB_WhitePieces &= ~BB_SQUARE(61);
-            Board->BB_Pieces[WHITE][ROOK] &= ~BB_SQUARE(61);
+            Board->BB_WhitePieces &= ~BB_SQUARE(SQ_F1);
+            Board->BB_Pieces[WHITE][ROOK] &= ~BB_SQUARE(SQ_F1);
 
-            Board->Pieces[63] = PIECE_AND_COLOR(ROOK, WHITE);
+            Board->Pieces[SQ_H1] = PIECE_AND_COLOR(ROOK, WHITE);
 
-            Board->BB_WhitePieces |= BB_SQUARE(63);
-            Board->BB_Pieces[WHITE][ROOK] |= BB_SQUARE(63);
+            Board->BB_WhitePieces |= BB_SQUARE(SQ_H1);
+            Board->BB_Pieces[WHITE][ROOK] |= BB_SQUARE(SQ_H1);
         }
 
         if (Info->Type & MOVE_CASTLE_QUEEN) { // White O-O-O
-            Board->Pieces[59] = EMPTY;
+            Board->Pieces[SQ_D1] = EMPTY;
 
-            Board->BB_WhitePieces &= ~BB_SQUARE(59);
-            Board->BB_Pieces[WHITE][ROOK] &= ~BB_SQUARE(59);
+            Board->BB_WhitePieces &= ~BB_SQUARE(SQ_D1);
+            Board->BB_Pieces[WHITE][ROOK] &= ~BB_SQUARE(SQ_D1);
 
-            Board->Pieces[56] = PIECE_AND_COLOR(ROOK, WHITE);
+            Board->Pieces[SQ_A1] = PIECE_AND_COLOR(ROOK, WHITE);
 
-            Board->BB_WhitePieces |= BB_SQUARE(56);
-            Board->BB_Pieces[WHITE][ROOK] |= BB_SQUARE(56);
+            Board->BB_WhitePieces |= BB_SQUARE(SQ_A1);
+            Board->BB_Pieces[WHITE][ROOK] |= BB_SQUARE(SQ_A1);
         }
 
         if (Info->Type & MOVE_PAWN_PASSANT) {
@@ -326,27 +326,27 @@ void UnmakeMove(BoardItem* Board)
         Board->BB_Pieces[BLACK][Info->PieceFrom] |= BB_SQUARE(Info->From);
 
         if (Info->Type & MOVE_CASTLE_KING) { // Black O-O
-            Board->Pieces[5] = EMPTY;
+            Board->Pieces[SQ_F8] = EMPTY;
 
-            Board->BB_BlackPieces &= ~BB_SQUARE(5);
-            Board->BB_Pieces[BLACK][ROOK] &= ~BB_SQUARE(5);
+            Board->BB_BlackPieces &= ~BB_SQUARE(SQ_F8);
+            Board->BB_Pieces[BLACK][ROOK] &= ~BB_SQUARE(SQ_F8);
 
-            Board->Pieces[7] = PIECE_AND_COLOR(ROOK, BLACK);
+            Board->Pieces[SQ_H8] = PIECE_AND_COLOR(ROOK, BLACK);
 
-            Board->BB_BlackPieces |= BB_SQUARE(7);
-            Board->BB_Pieces[BLACK][ROOK] |= BB_SQUARE(7);
+            Board->BB_BlackPieces |= BB_SQUARE(SQ_H8);
+            Board->BB_Pieces[BLACK][ROOK] |= BB_SQUARE(SQ_H8);
         }
 
         if (Info->Type & MOVE_CASTLE_QUEEN) { // Black O-O-O
-            Board->Pieces[3] = EMPTY;
+            Board->Pieces[SQ_D8] = EMPTY;
 
-            Board->BB_BlackPieces &= ~BB_SQUARE(3);
-            Board->BB_Pieces[BLACK][ROOK] &= ~BB_SQUARE(3);
+            Board->BB_BlackPieces &= ~BB_SQUARE(SQ_D8);
+            Board->BB_Pieces[BLACK][ROOK] &= ~BB_SQUARE(SQ_D8);
 
-            Board->Pieces[0] = PIECE_AND_COLOR(ROOK, BLACK);
+            Board->Pieces[SQ_A8] = PIECE_AND_COLOR(ROOK, BLACK);
 
-            Board->BB_BlackPieces |= BB_SQUARE(0);
-            Board->BB_Pieces[BLACK][ROOK] |= BB_SQUARE(0);
+            Board->BB_BlackPieces |= BB_SQUARE(SQ_A8);
+            Board->BB_Pieces[BLACK][ROOK] |= BB_SQUARE(SQ_A8);
         }
 
         if (Info->Type & MOVE_PAWN_PASSANT) {
