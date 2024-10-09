@@ -247,7 +247,7 @@ void GenerateBook(void)
 
         if (*Part == '[') { // Tag
             if (Stage == STAGE_NONE) {
-                if (GameNumber > 1 && ((GameNumber - 1) % 10000) == 0) {
+                if (GameNumber > 1 && (GameNumber - 1) % 10000 == 0) {
                     printf("\n");
 
                     printf("Game number = %d\n", GameNumber - 1);

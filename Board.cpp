@@ -357,7 +357,7 @@ void PrintBoard(BoardItem* Board)
     printf("     a   b   c   d   e   f   g   h\n");
 
     for (int Square = 0; Square < 64; ++Square) {
-        if ((Square % 8) == 0) {
+        if (Square % 8 == 0) {
             printf("   +---+---+---+---+---+---+---+---+\n");
             printf(" %d |", 8 - Square / 8);
         }
@@ -372,7 +372,7 @@ void PrintBoard(BoardItem* Board)
             printf(" %c |", PiecesCharBlack[PIECE(Board->Pieces[Square])]);
         }
 
-        if (((Square + 1) % 8) == 0) {
+        if ((Square + 1) % 8 == 0) {
             printf(" %d\n", 8 - Square / 8);
         }
     }

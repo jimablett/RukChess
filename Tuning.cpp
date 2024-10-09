@@ -18,8 +18,6 @@
 #define STAGE_MOVE              4
 #define STAGE_COMMENT           5
 
-#define MIN_USE_PLY             0       // 0 moves
-
 void Pgn2Fen(void)
 {
     FILE* FileIn;
@@ -133,7 +131,7 @@ void Pgn2Fen(void)
 
         if (*Part == '[') { // Tag
             if (Stage == STAGE_NONE) {
-                if (GameNumber > 1 && ((GameNumber - 1) % 1000) == 0) {
+                if (GameNumber > 1 && (GameNumber - 1) % 1000 == 0) {
                     printf("Game number = %d\n", GameNumber - 1);
                 }
 
@@ -177,11 +175,9 @@ void Pgn2Fen(void)
         if (Stage == STAGE_TAG) {
             Stage = STAGE_NOTATION;
 
-            if (Ply >= MIN_USE_PLY) {
-                GetFen(&CurrentBoard, FenOut); // First FEN in game (StartFen or FenString from FEN-tag)
+            GetFen(&CurrentBoard, FenOut); // First FEN in game (StartFen or FenString from FEN-tag)
 
-                fprintf(FileOut, "%s|%.1f\n", FenOut, Result);
-            }
+            fprintf(FileOut, "%s|%.1f\n", FenOut, Result);
 
             ++Ply;
         }
@@ -260,11 +256,9 @@ void Pgn2Fen(void)
                     }
 
                     if (MoveFound) {
-                        if (Ply >= MIN_USE_PLY) {
-                            GetFen(&CurrentBoard, FenOut);
+                        GetFen(&CurrentBoard, FenOut);
 
-                            fprintf(FileOut, "%s|%.1f\n", FenOut, Result);
-                        }
+                        fprintf(FileOut, "%s|%.1f\n", FenOut, Result);
                     }
                     else { // Move not found
                         Error = TRUE;

@@ -51,9 +51,7 @@ int main(int argc, char** argv)
 
     MaxThreads = omp_get_max_threads(); // Save hardware max. threads
 
-    if (MaxThreads > MAX_THREADS) {
-        MaxThreads = MAX_THREADS;
-    }
+    MaxThreads = MIN(MaxThreads, MAX_THREADS);
 
     omp_set_num_threads(DEFAULT_THREADS);
 
