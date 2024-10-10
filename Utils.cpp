@@ -74,7 +74,12 @@ void InitThreadNode(void)
     Buffer = (SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX*)malloc(ReturnedLength);
 
     if (Buffer == NULL) { // Allocate memory error
-        printf("Allocate memory to buffer error!\n");
+        if (PrintMode == PRINT_MODE_NORMAL) {
+            printf("Allocate memory to buffer error!\n");
+        }
+        else if (PrintMode == PRINT_MODE_UCI) {
+            printf("info string Allocate memory to buffer error!\n");
+        }
 
         return;
     }
