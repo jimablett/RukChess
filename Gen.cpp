@@ -15,17 +15,10 @@
 void AddMove(const BoardItem* Board, int** CMH_Pointer, MoveItem* MoveList, int* GenMoveCount, const int From, const int To, const int MoveType)
 {
     if ((MoveType & MOVE_PAWN) && (RANK(To) == 0 || RANK(To) == 7)) { // Pawn promote
-        // Queen
+        // Knight
         MoveList[*GenMoveCount].Type = (MoveType | MOVE_PAWN_PROMOTE);
-        MoveList[*GenMoveCount].Move = MOVE_CREATE(From, To, QUEEN);
-        MoveList[*GenMoveCount].SortValue = SORT_PAWN_PROMOTE_MOVE_BONUS + QUEEN;
-
-        ++(*GenMoveCount);
-
-        // Rook
-        MoveList[*GenMoveCount].Type = (MoveType | MOVE_PAWN_PROMOTE);
-        MoveList[*GenMoveCount].Move = MOVE_CREATE(From, To, ROOK);
-        MoveList[*GenMoveCount].SortValue = SORT_PAWN_PROMOTE_MOVE_BONUS + ROOK;
+        MoveList[*GenMoveCount].Move = MOVE_CREATE(From, To, KNIGHT);
+        MoveList[*GenMoveCount].SortValue = SORT_PAWN_PROMOTE_MOVE_BONUS + KNIGHT;
 
         ++(*GenMoveCount);
 
@@ -36,10 +29,17 @@ void AddMove(const BoardItem* Board, int** CMH_Pointer, MoveItem* MoveList, int*
 
         ++(*GenMoveCount);
 
-        // Knight
+        // Rook
         MoveList[*GenMoveCount].Type = (MoveType | MOVE_PAWN_PROMOTE);
-        MoveList[*GenMoveCount].Move = MOVE_CREATE(From, To, KNIGHT);
-        MoveList[*GenMoveCount].SortValue = SORT_PAWN_PROMOTE_MOVE_BONUS + KNIGHT;
+        MoveList[*GenMoveCount].Move = MOVE_CREATE(From, To, ROOK);
+        MoveList[*GenMoveCount].SortValue = SORT_PAWN_PROMOTE_MOVE_BONUS + ROOK;
+
+        ++(*GenMoveCount);
+
+        // Queen
+        MoveList[*GenMoveCount].Type = (MoveType | MOVE_PAWN_PROMOTE);
+        MoveList[*GenMoveCount].Move = MOVE_CREATE(From, To, QUEEN);
+        MoveList[*GenMoveCount].SortValue = SORT_PAWN_PROMOTE_MOVE_BONUS + QUEEN;
 
         ++(*GenMoveCount);
     }

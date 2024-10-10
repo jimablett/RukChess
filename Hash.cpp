@@ -66,9 +66,7 @@ void InitHashTable(const int SizeInMb) // Xiphos
     HashItemPointer = (HashItem*)realloc(HashStore.Item, HashStore.Size);
 
     if (HashItemPointer == NULL) { // Allocate memory error
-        if (HashStore.Item != NULL) {
-            free(HashStore.Item); // Free previously allocated memory
-        }
+        free(HashStore.Item); // Free previously allocated memory (if was allocated)
 
         printf("Allocate memory to hash table error!\n");
 

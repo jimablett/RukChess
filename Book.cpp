@@ -23,7 +23,7 @@
 
 #define MAX_BOOK_PLY        24 // 12 moves
 #define MIN_BOOK_ELO        0
-#define MIN_BOOK_GAMES      50
+#define MIN_BOOK_GAMES      20
 
 typedef struct Node {
     MoveItem Move;
@@ -56,7 +56,7 @@ BOOL BookFileLoaded = FALSE;
 
 NodeItem* CreateNode(const MoveItem Move)
 {
-    NodeItem* Node = (NodeItem*)malloc(sizeof(NodeItem));
+    NodeItem* Node = (NodeItem*)calloc(1, sizeof(NodeItem));
 
     if (Node == NULL) { // Allocate memory error
         printf("Allocate memory to node error!\n");
@@ -646,10 +646,6 @@ BOOL LoadBook(const char* BookFileName)
         ++Part; // Space
 
         Total = atoi(Part);
-
-        if (Total < MIN_BOOK_GAMES) {
-            continue; // Next string
-        }
 
         BookItemPointer = &BookStore.Item[PositionNumber];
 
