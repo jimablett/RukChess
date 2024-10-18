@@ -12,11 +12,11 @@
 #include "Move.h"
 #include "Types.h"
 
-#define STAGE_NONE              1
-#define STAGE_TAG               2
-#define STAGE_NOTATION          3
-#define STAGE_MOVE              4
-#define STAGE_COMMENT           5
+#define STAGE_NONE      1
+#define STAGE_TAG       2
+#define STAGE_NOTATION  3
+#define STAGE_MOVE      4
+#define STAGE_COMMENT   5
 
 void Pgn2Fen(void)
 {
@@ -224,7 +224,7 @@ void Pgn2Fen(void)
                     for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
                         NotateMove(&CurrentBoard, MoveList[MoveNumber], NotateMoveStr);
 
-                        if (strcmp(MoveString, NotateMoveStr) == 0) {
+                        if (!strcmp(MoveString, NotateMoveStr)) {
                             MakeMove(&CurrentBoard, MoveList[MoveNumber]);
 
                             if (IsInCheck(&CurrentBoard, CHANGE_COLOR(CurrentBoard.CurrentColor))) { // Illegal move
@@ -234,17 +234,7 @@ void Pgn2Fen(void)
 
                                 printf("\n");
 
-                                printf("Move = %s check\n", MoveString);
-
-                                printf("\n");
-
-                                printf("Gen. move = %s%s", BoardName[MOVE_FROM(MoveList[MoveNumber].Move)], BoardName[MOVE_TO(MoveList[MoveNumber].Move)]);
-
-                                if (MoveList[MoveNumber].Type & MOVE_PAWN_PROMOTE) {
-                                    printf("%c", PiecesCharBlack[MOVE_PROMOTE_PIECE(MoveList[MoveNumber].Move)]);
-                                }
-
-                                printf(" (%s)\n\n", NotateMoveStr);
+                                printf("Illegal move (%s)!\n", MoveString);
 
                                 continue; // Next move
                             }
@@ -267,11 +257,11 @@ void Pgn2Fen(void)
 
                         printf("\n");
 
-                        printf("Move = %s not found\n", MoveString);
+                        printf("Move (%s) not found!\n", MoveString);
 
                         printf("\n");
 
-                        printf("Gen. moves =");
+                        printf("Gen. moves:");
 
                         for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
                             NotateMove(&CurrentBoard, MoveList[MoveNumber], NotateMoveStr);
@@ -285,7 +275,7 @@ void Pgn2Fen(void)
                             printf(" (%s)", NotateMoveStr);
                         }
 
-                        printf("\n\n");
+                        printf("\n");
                     }
 
                     ++Ply;

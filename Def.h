@@ -38,7 +38,7 @@
 #define NULL_MOVE_PRUNING
 #define PROBCUT
 #define IID
-#define KILLER_MOVE
+#define KILLER_MOVE                             // Two killer moves
 #define COUNTER_MOVE                            // Required KILLER_MOVE
 #define BAD_CAPTURE_LAST
 #define CHECK_EXTENSION

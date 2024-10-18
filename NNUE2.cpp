@@ -52,28 +52,21 @@ BOOL LoadNetwork(const char* NnueFileName)
 
     float Value;
 
-    fpos_t FilePos;
+    int FilePos;
 
 #ifdef PRINT_MIN_MAX_VALUES
     float MinValue;
     float MaxValue;
 #endif // PRINT_MIN_MAX_VALUES
 
-    if (PrintMode == PRINT_MODE_NORMAL) {
-        printf("\n");
+    printf("\n");
 
-        printf("Load network...\n");
-    }
+    printf("Load network...\n");
 
     fopen_s(&File, NnueFileName, "rb");
 
     if (File == NULL) { // File open error
-        if (PrintMode == PRINT_MODE_NORMAL) {
-            printf("File '%s' open error!\n", NnueFileName);
-        }
-        else if (PrintMode == PRINT_MODE_UCI) {
-            printf("info string File '%s' open error!\n", NnueFileName);
-        }
+        printf("File '%s' open error!\n", NnueFileName);
 
         return FALSE;
     }
@@ -85,12 +78,7 @@ BOOL LoadNetwork(const char* NnueFileName)
 //    printf("FileMagic = %d\n", FileMagic);
 
     if (FileMagic != NNUE_FILE_MAGIC) { // File format error
-        if (PrintMode == PRINT_MODE_NORMAL) {
-            printf("File '%s' format error!\n", NnueFileName);
-        }
-        else if (PrintMode == PRINT_MODE_UCI) {
-            printf("info string File '%s' format error!\n", NnueFileName);
-        }
+        printf("File '%s' format error!\n", NnueFileName);
 
         return FALSE;
     }
@@ -102,12 +90,7 @@ BOOL LoadNetwork(const char* NnueFileName)
 //    printf("FileHash = 0x%016llX\n", FileHash);
 /*
     if (FileHash != NNUE_FILE_HASH) { // File format error
-        if (PrintMode == PRINT_MODE_NORMAL) {
-            printf("File '%s' format error!\n", NnueFileName);
-        }
-        else if (PrintMode == PRINT_MODE_UCI) {
-            printf("info string File '%s' format error!\n", NnueFileName);
-        }
+        printf("File '%s' format error!\n", NnueFileName);
 
         return FALSE;
     }
@@ -116,20 +99,15 @@ BOOL LoadNetwork(const char* NnueFileName)
 
 #ifdef PRINT_MIN_MAX_VALUES
     MinValue = FLT_MAX;
-    MaxValue = FLT_MIN;
+    MaxValue = -FLT_MAX;
 #endif // PRINT_MIN_MAX_VALUES
 
     for (int Index = 0; Index < INPUT_DIMENSION * HIDDEN_DIMENSION; ++Index) { // 768 x 512 = 393216
         fread(&Value, sizeof(float), 1, File);
 
 #ifdef PRINT_MIN_MAX_VALUES
-        if (Value < MinValue) {
-            MinValue = Value;
-        }
-
-        if (Value > MaxValue) {
-            MaxValue = Value;
-        }
+        MinValue = MIN(MinValue, Value);
+        MaxValue = MAX(MaxValue, Value);
 #endif // PRINT_MIN_MAX_VALUES
 
         InputWeights[Index] = LoadInt16(Value, QUANTIZATION_PRECISION_IN);
@@ -143,20 +121,15 @@ BOOL LoadNetwork(const char* NnueFileName)
 
 #ifdef PRINT_MIN_MAX_VALUES
     MinValue = FLT_MAX;
-    MaxValue = FLT_MIN;
+    MaxValue = -FLT_MAX;
 #endif // PRINT_MIN_MAX_VALUES
 
     for (int Index = 0; Index < HIDDEN_DIMENSION; ++Index) { // 512
         fread(&Value, sizeof(float), 1, File);
 
 #ifdef PRINT_MIN_MAX_VALUES
-        if (Value < MinValue) {
-            MinValue = Value;
-        }
-
-        if (Value > MaxValue) {
-            MaxValue = Value;
-        }
+        MinValue = MIN(MinValue, Value);
+        MaxValue = MAX(MaxValue, Value);
 #endif // PRINT_MIN_MAX_VALUES
 
         InputBiases[Index] = LoadInt16(Value, QUANTIZATION_PRECISION_IN);
@@ -170,20 +143,15 @@ BOOL LoadNetwork(const char* NnueFileName)
 
 #ifdef PRINT_MIN_MAX_VALUES
     MinValue = FLT_MAX;
-    MaxValue = FLT_MIN;
+    MaxValue = -FLT_MAX;
 #endif // PRINT_MIN_MAX_VALUES
 
     for (int Index = 0; Index < HIDDEN_DIMENSION * 2; ++Index) { // 512 x 2 = 1024
         fread(&Value, sizeof(float), 1, File);
 
 #ifdef PRINT_MIN_MAX_VALUES
-        if (Value < MinValue) {
-            MinValue = Value;
-        }
-
-        if (Value > MaxValue) {
-            MaxValue = Value;
-        }
+        MinValue = MIN(MinValue, Value);
+        MaxValue = MAX(MaxValue, Value);
 #endif // PRINT_MIN_MAX_VALUES
 
         OutputWeights[Index] = LoadInt16(Value, QUANTIZATION_PRECISION_OUT);
@@ -203,29 +171,37 @@ BOOL LoadNetwork(const char* NnueFileName)
     printf("Output bias: Value = %f\n", Value);
 #endif // PRINT_MIN_MAX_VALUES
 
-    fgetpos(File, &FilePos);
+    // Get the current position of the file pointer
+
+    FilePos = ftell(File);
 
 //    printf("File position = %llu\n", FilePos);
 
     if (FilePos != NNUE_FILE_SIZE) { // File format error
-        if (PrintMode == PRINT_MODE_NORMAL) {
-            printf("File '%s' format error!\n", NnueFileName);
-        }
-        else if (PrintMode == PRINT_MODE_UCI) {
-            printf("info string File '%s' format error!\n", NnueFileName);
-        }
+        printf("File '%s' format error!\n", NnueFileName);
+
+        return FALSE;
+    }
+
+    // Set the pointer to the ending of the file
+
+    fseek(File, 0, SEEK_END);
+
+    // Get the current position of the file pointer
+
+    FilePos = ftell(File);
+
+//    printf("File position = %llu\n", FilePos);
+
+    if (FilePos != NNUE_FILE_SIZE) { // File format error
+        printf("File '%s' format error!\n", NnueFileName);
 
         return FALSE;
     }
 
     fclose(File);
 
-    if (PrintMode == PRINT_MODE_NORMAL) {
-        printf("Load network...DONE (%s; 0x%012llx)\n", NnueFileName, FileHash);
-    }
-    else if (PrintMode == PRINT_MODE_UCI) {
-        printf("info string Network loaded (%s; 0x%012llx)\n", NnueFileName, FileHash);
-    }
+    printf("Load network...DONE (%s; 0x%012llx)\n", NnueFileName, FileHash);
 
     return TRUE;
 }

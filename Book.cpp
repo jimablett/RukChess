@@ -13,17 +13,17 @@
 #include "Types.h"
 #include "Utils.h"
 
-#define MAX_CHILDREN        32
+#define MAX_CHILDREN    32
 
-#define STAGE_NONE          1
-#define STAGE_TAG           2
-#define STAGE_NOTATION      3
-#define STAGE_MOVE          4
-#define STAGE_COMMENT       5
+#define STAGE_NONE      1
+#define STAGE_TAG       2
+#define STAGE_NOTATION  3
+#define STAGE_MOVE      4
+#define STAGE_COMMENT   5
 
-#define MAX_BOOK_PLY        24 // 12 moves
-#define MIN_BOOK_ELO        0
-#define MIN_BOOK_GAMES      20
+#define MAX_BOOK_PLY    24 // 12 moves
+#define MIN_BOOK_ELO    0
+#define MIN_BOOK_GAMES  20
 
 typedef struct Node {
     MoveItem Move;
@@ -376,7 +376,7 @@ void GenerateBook(void)
                     for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
                         NotateMove(&CurrentBoard, MoveList[MoveNumber], NotateMoveStr);
 
-                        if (strcmp(MoveString, NotateMoveStr) == 0) {
+                        if (!strcmp(MoveString, NotateMoveStr)) {
                             MakeMove(&CurrentBoard, MoveList[MoveNumber]);
 
                             if (IsInCheck(&CurrentBoard, CHANGE_COLOR(CurrentBoard.CurrentColor))) { // Illegal move
@@ -386,17 +386,7 @@ void GenerateBook(void)
 
                                 printf("\n");
 
-                                printf("Move = %s check\n", MoveString);
-
-                                printf("\n");
-
-                                printf("Gen. move = %s%s", BoardName[MOVE_FROM(MoveList[MoveNumber].Move)], BoardName[MOVE_TO(MoveList[MoveNumber].Move)]);
-
-                                if (MoveList[MoveNumber].Type & MOVE_PAWN_PROMOTE) {
-                                    printf("%c", PiecesCharBlack[MOVE_PROMOTE_PIECE(MoveList[MoveNumber].Move)]);
-                                }
-
-                                printf(" (%s)\n", NotateMoveStr);
+                                printf("Illegal move (%s)!\n", MoveString);
 
                                 continue; // Next move
                             }
@@ -427,7 +417,7 @@ void GenerateBook(void)
 
                                 printf("\n");
 
-                                printf("No child node\n");
+                                printf("No child node!\n");
                             }
                             else {
                                 if (Result == 1) { // White win
@@ -460,11 +450,11 @@ void GenerateBook(void)
 
                         printf("\n");
 
-                        printf("Move = %s not found\n", MoveString);
+                        printf("Move (%s) not found!\n", MoveString);
 
                         printf("\n");
 
-                        printf("Gen. moves =");
+                        printf("Gen. moves:");
 
                         for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
                             NotateMove(&CurrentBoard, MoveList[MoveNumber], NotateMoveStr);
@@ -552,21 +542,14 @@ BOOL LoadBook(const char* BookFileName)
 
 //    printf("BookItem = %zd\n", sizeof(BookItem));
 
-    if (PrintMode == PRINT_MODE_NORMAL) {
-        printf("\n");
+    printf("\n");
 
-        printf("Load book...\n");
-    }
+    printf("Load book...\n");
 
     fopen_s(&File, BookFileName, "r");
 
     if (File == NULL) { // File open error
-        if (PrintMode == PRINT_MODE_NORMAL) {
-            printf("File '%s' open error!\n", BookFileName);
-        }
-        else if (PrintMode == PRINT_MODE_UCI) {
-            printf("info string File '%s' open error!\n", BookFileName);
-        }
+        printf("File '%s' open error!\n", BookFileName);
 
         return FALSE;
     }
@@ -584,12 +567,7 @@ BOOL LoadBook(const char* BookFileName)
     BookStore.Item = (BookItem*)malloc(BookStore.Count * sizeof(BookItem));
 
     if (BookStore.Item == NULL) { // Allocate memory error
-        if (PrintMode == PRINT_MODE_NORMAL) {
-            printf("Allocate memory to store book error!\n");
-        }
-        else if (PrintMode == PRINT_MODE_UCI) {
-            printf("info string Allocate memory to store book error!\n");
-        }
+        printf("Allocate memory to store book error!\n");
 
         return FALSE;
     }
@@ -669,12 +647,7 @@ BOOL LoadBook(const char* BookFileName)
 */
     fclose(File);
 
-    if (PrintMode == PRINT_MODE_NORMAL) {
-        printf("Load book...DONE (%d)\n", BookStore.Count);
-    }
-    else if (PrintMode == PRINT_MODE_UCI) {
-        printf("info string Book loaded (%d)\n", BookStore.Count);
-    }
+    printf("Load book...DONE (%d)\n", BookStore.Count);
 
     return TRUE;
 }
