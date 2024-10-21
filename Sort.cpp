@@ -75,10 +75,16 @@ void SetCounterMoveSortValue(const BoardItem* Board, const int Ply, MoveItem* Ge
 
     int CounterMove = Board->CounterMoveTable[CHANGE_COLOR(Board->CurrentColor)][Info->PieceFrom][Info->To];
 
+#ifdef KILLER_MOVE
     int KillerMove1 = Board->KillerMoveTable[Ply][0];
     int KillerMove2 = Board->KillerMoveTable[Ply][1];
+#endif // KILLER_MOVE
 
+#ifdef KILLER_MOVE
     if (CounterMove && CounterMove != HashMove && CounterMove != KillerMove1 && CounterMove != KillerMove2) {
+#else
+    if (CounterMove && CounterMove != HashMove) {
+#endif // KILLER_MOVE
         for (int Index = 0; Index < GenMoveCount; ++Index) {
             if (GenMoveList[Index].Move == CounterMove) {
                 if (!(GenMoveList[Index].Type & (MOVE_CAPTURE | MOVE_PAWN_PROMOTE))) { // Not capture/promote move

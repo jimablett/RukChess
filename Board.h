@@ -202,9 +202,13 @@ typedef struct {
     int CounterMoveHistoryTable[6][64][6 * 64]; // [Piece][Square][Piece * Square] // 589824 bytes
 #endif // COUNTER_MOVE_HISTORY
 
+#ifdef KILLER_MOVE
     int KillerMoveTable[MAX_PLY + 1][2]; // [Max. ply + 1][Two killer moves] // 1032 bytes
+#endif // KILLER_MOVE
 
+#ifdef COUNTER_MOVE
     int CounterMoveTable[2][6][64]; // [Color][Piece][Square] // 3072 bytes
+#endif // COUNTER_MOVE
 
     AccumulatorItem Accumulator;
 } BoardItem; // 2796512 bytes

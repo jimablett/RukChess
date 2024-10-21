@@ -317,7 +317,7 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
                 }
 
                 // Zero window quiescence search
-                Score = -QuiescenceSearch(Board, -BetaCut, -BetaCut + 1, 0, Ply, FALSE, FALSE);
+                Score = -QuiescenceSearch(Board, -BetaCut, -BetaCut + 1, 0, Ply + 1, FALSE, FALSE);
 
                 if (Score >= BetaCut) {
                     // Zero window search for reduced depth
@@ -350,7 +350,7 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
         // Search with full window for reduced depth
         TempBestMoves[0] = (MoveItem){ 0, 0, 0 }; // End of move list
 
-        Search(Board, Alpha, Beta, (IsPrincipal ? Depth - 2 : Depth / 2), Ply, TempBestMoves, IsPrincipal, InCheck, FALSE, 0);
+        Search(Board, Alpha, Beta, (IsPrincipal ? Depth - 2 : Depth / 2), Ply, TempBestMoves, IsPrincipal, InCheck, UsePruning, 0);
 
         if (StopSearch) {
             return 0;
@@ -465,6 +465,7 @@ NextMove:
             !Extension
             && Ply > 0
             && Depth >= 8
+            && !SkipMove // TODO: ? (Xiphos)
             && MoveList[MoveNumber].Move == HashMove
             && HashFlag == HASH_BETA
             && HashDepth >= Depth - 3
@@ -509,13 +510,25 @@ NextMove:
             && !GiveCheck
             && MoveList[MoveNumber].Move != HashMove
         ) {
-#if defined(SEE_CAPTURE_MOVE_PRUNING) && defined(BAD_CAPTURE_LAST)
-            if (Depth <= 3 && MoveList[MoveNumber].SortValue < -SORT_CAPTURE_MOVE_BONUS - 100 * Depth) { // Xiphos
+#ifdef SEE_CAPTURE_MOVE_PRUNING
+            if (Depth <= 3) {
+#ifdef BAD_CAPTURE_LAST
+                if (MoveList[MoveNumber].SortValue + SORT_CAPTURE_MOVE_BONUS < -100 * Depth) { // Bad capture move (Xiphos)
+                    UnmakeMove(Board);
+
+                    continue; // Next move
+                }
+#else
                 UnmakeMove(Board);
 
-                continue; // Next move
+                if (CaptureSEE(Board, MOVE_FROM(MoveList[MoveNumber].Move), MOVE_TO(MoveList[MoveNumber].Move), MOVE_PROMOTE_PIECE(MoveList[MoveNumber].Move), MoveList[MoveNumber].Type) < -100 * Depth) { // Bad capture move (Xiphos)
+                    continue; // Next move
+                }
+
+                MakeMove(Board, MoveList[MoveNumber]);
+#endif // BAD_CAPTURE_LAST
             }
-#endif // SEE_CAPTURE_MOVE_PRUNING && BAD_CAPTURE_LAST
+#endif // SEE_CAPTURE_MOVE_PRUNING
 
 #if defined(FUTILITY_PRUNING) || defined(LATE_MOVE_PRUNING) || defined(SEE_QUIET_MOVE_PRUNING)
             if (!(MoveList[MoveNumber].Type & (MOVE_CAPTURE | MOVE_PAWN_PROMOTE))) { // Not capture/promote move
@@ -587,16 +600,13 @@ NextMove:
             Score = -Search(Board, -Alpha - 1, -Alpha, NewDepth - LateMoveReduction, Ply + 1, TempBestMoves, FALSE, GiveCheck, TRUE, 0);
 
             if (LateMoveReduction > 0 && Score > Alpha) {
+#endif // LATE_MOVE_REDUCTION
                 // Zero window search
                 TempBestMoves[0] = (MoveItem){ 0, 0, 0 }; // End of move list
 
                 Score = -Search(Board, -Alpha - 1, -Alpha, NewDepth, Ply + 1, TempBestMoves, FALSE, GiveCheck, TRUE, 0);
+#ifdef LATE_MOVE_REDUCTION
             }
-#else
-            // Zero window search
-            TempBestMoves[0] = (MoveItem){ 0, 0, 0 }; // End of move list
-
-            Score = -Search(Board, -Alpha - 1, -Alpha, NewDepth, Ply + 1, TempBestMoves, FALSE, GiveCheck, TRUE, 0);
 #endif // LATE_MOVE_REDUCTION
 
             if (IsPrincipal && Score > Alpha && (Ply == 0 || Score < Beta)) {

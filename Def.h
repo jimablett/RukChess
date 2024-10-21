@@ -39,14 +39,14 @@
 #define PROBCUT
 #define IID
 #define KILLER_MOVE                             // Two killer moves
-#define COUNTER_MOVE                            // Required KILLER_MOVE
+#define COUNTER_MOVE
 #define BAD_CAPTURE_LAST
 #define CHECK_EXTENSION
 #define SINGULAR_EXTENSION
 #define FUTILITY_PRUNING
 #define LATE_MOVE_PRUNING
 #define SEE_QUIET_MOVE_PRUNING
-#define SEE_CAPTURE_MOVE_PRUNING                // Required BAD_CAPTURE_LAST
+#define SEE_CAPTURE_MOVE_PRUNING
 #define LATE_MOVE_REDUCTION
 
 // Quiescence search

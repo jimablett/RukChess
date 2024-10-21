@@ -250,9 +250,9 @@ void UnmakeMove(BoardItem* Board)
 
     Board->CurrentColor ^= 1;
 
-    Board->Pieces[Info->From] = PIECE_AND_COLOR(Info->PieceFrom, Board->CurrentColor);
-
     if (Board->CurrentColor == WHITE) {
+        Board->Pieces[Info->From] = PIECE_AND_COLOR(Info->PieceFrom, WHITE);
+
         Board->BB_WhitePieces |= BB_SQUARE(Info->From);
         Board->BB_Pieces[WHITE][Info->PieceFrom] |= BB_SQUARE(Info->From);
 
@@ -322,6 +322,8 @@ void UnmakeMove(BoardItem* Board)
         }
     }
     else { // BLACK
+        Board->Pieces[Info->From] = PIECE_AND_COLOR(Info->PieceFrom, BLACK);
+
         Board->BB_BlackPieces |= BB_SQUARE(Info->From);
         Board->BB_Pieces[BLACK][Info->PieceFrom] |= BB_SQUARE(Info->From);
 
@@ -457,9 +459,9 @@ void MakeNullMove(BoardItem* Board)
     }
 #endif // DEBUG_HASH
 
-#ifdef USE_NNUE_UPDATE
-    Board->Accumulator.AccumulationComputed = FALSE;
-#endif // USE_NNUE_UPDATE
+//#ifdef USE_NNUE_UPDATE
+//    Board->Accumulator.AccumulationComputed = FALSE;
+//#endif // USE_NNUE_UPDATE
 }
 
 void UnmakeNullMove(BoardItem* Board)

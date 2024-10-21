@@ -331,7 +331,7 @@ BOOL UpdateAccumulator(BoardItem* Board)
     }
 
     if (Info->Type & MOVE_NULL) {
-        Board->Accumulator.AccumulationComputed = TRUE;
+//        Board->Accumulator.AccumulationComputed = TRUE;
 
         return TRUE;
     }
