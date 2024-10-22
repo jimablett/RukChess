@@ -300,6 +300,12 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
             GenerateCaptureMoves(Board, CMH_Pointer, MoveList, &GenMoveCount);
 
             for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
+                PrepareNextMove(MoveNumber, MoveList, GenMoveCount);
+
+                if (MoveList[MoveNumber].Move == SkipMove) {
+                    continue; // Next move
+                }
+
                 if (!(MoveList[MoveNumber].Type & MOVE_CAPTURE)) {
                     continue; // Next move
                 }
@@ -309,6 +315,10 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
                 }
 
                 MakeMove(Board, MoveList[MoveNumber]);
+
+#ifdef HASH_PREFETCH
+                Prefetch(Board->Hash);
+#endif // HASH_PREFETCH
 
                 if (IsInCheck(Board, CHANGE_COLOR(Board->CurrentColor))) { // Illegal move
                     UnmakeMove(Board);
