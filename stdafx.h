@@ -31,5 +31,6 @@
 #include <limits.h>             // INT_MAX
 #include <float.h>              // FLT_MAX
 #include <math.h>               // round(), pow(), log()
+#include <assert.h>             // assert()
 
 #endif // !STDAFX_H

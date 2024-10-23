@@ -18,6 +18,10 @@
 
 int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, const int Ply, const BOOL IsPrincipal, const BOOL InCheck)
 {
+    assert(Alpha >= -INF);
+    assert(Beta <= INF);
+    assert(Ply >= 0 && Ply <= MAX_PLY);
+
     int GenMoveCount;
     MoveItem MoveList[MAX_GEN_MOVES];
 

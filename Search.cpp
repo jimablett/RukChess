@@ -41,6 +41,10 @@ int RazoringMargin(const int Depth) // Hakkapeliitta
 
 int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, MoveItem* BestMoves, const BOOL IsPrincipal, const BOOL InCheck, const BOOL UsePruning, const int SkipMove)
 {
+    assert(Alpha >= -INF);
+    assert(Beta <= INF);
+    assert(Ply >= 0 && Ply <= MAX_PLY);
+
     int GenMoveCount;
     MoveItem MoveList[MAX_GEN_MOVES];
 
@@ -184,7 +188,7 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
                 ) {
                     if (HashMove) {
                         if (
-                            Board->Pieces[MOVE_TO(HashMove)] == EMPTY
+                            Board->Pieces[MOVE_TO(HashMove)] == EMPTY_SQUARE
                             && (
                                 PIECE(Board->Pieces[MOVE_FROM(HashMove)]) != PAWN
                                 || (
@@ -270,10 +274,12 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
 
             ++Board->Nodes;
 
+            GiveCheck = IsInCheck(Board, Board->CurrentColor);
+
             // Zero window search for reduced depth
             TempBestMoves[0] = (MoveItem){ 0, 0, 0 }; // End of move list
 
-            Score = -Search(Board, -Beta, -Beta + 1, Depth - 1 - NullMoveReduction, Ply + 1, TempBestMoves, FALSE, FALSE, FALSE, 0);
+            Score = -Search(Board, -Beta, -Beta + 1, Depth - 1 - NullMoveReduction, Ply + 1, TempBestMoves, FALSE, GiveCheck, TRUE, 0);
 
             UnmakeNullMove(Board);
 
@@ -320,20 +326,24 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
                 Prefetch(Board->Hash);
 #endif // HASH_PREFETCH
 
+                ++Board->Nodes;
+
                 if (IsInCheck(Board, CHANGE_COLOR(Board->CurrentColor))) { // Illegal move
                     UnmakeMove(Board);
 
                     continue; // Next move
                 }
 
+                GiveCheck = IsInCheck(Board, Board->CurrentColor);
+
                 // Zero window quiescence search
-                Score = -QuiescenceSearch(Board, -BetaCut, -BetaCut + 1, 0, Ply + 1, FALSE, FALSE);
+                Score = -QuiescenceSearch(Board, -BetaCut, -BetaCut + 1, 0, Ply + 1, FALSE, GiveCheck);
 
                 if (Score >= BetaCut) {
                     // Zero window search for reduced depth
                     TempBestMoves[0] = (MoveItem){ 0, 0, 0 }; // End of move list
 
-                    Score = -Search(Board, -BetaCut, -BetaCut + 1, Depth - 4, Ply + 1, TempBestMoves, FALSE, FALSE, FALSE, 0);
+                    Score = -Search(Board, -BetaCut, -BetaCut + 1, Depth - 4, Ply + 1, TempBestMoves, FALSE, GiveCheck, TRUE, 0);
                 }
 
                 UnmakeMove(Board);

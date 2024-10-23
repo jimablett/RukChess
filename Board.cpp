@@ -67,6 +67,9 @@ int LateMoveReductionTable[64][64]; // [LMR depth][Move number]
 
 BOOL IsSquareAttacked(const BoardItem* Board, const int Square, const int Color)
 {
+    assert(Square >= 0 && Square <= 63);
+    assert(Color == WHITE || Color == BLACK);
+
     int EnemyColor = CHANGE_COLOR(Color);
 
     U64 Attackers = 0ULL;
@@ -91,7 +94,11 @@ BOOL IsSquareAttacked(const BoardItem* Board, const int Square, const int Color)
 
 BOOL IsInCheck(const BoardItem* Board, const int Color)
 {
+    assert(Color == WHITE || Color == BLACK);
+
     int KingSquare = LSB(Board->BB_Pieces[Color][KING]);
+
+    assert(KingSquare >= 0 && KingSquare <= 63);
 
     return IsSquareAttacked(Board, KingSquare, Color);
 }
@@ -362,7 +369,7 @@ void PrintBoard(BoardItem* Board)
             printf(" %d |", 8 - Square / 8);
         }
 
-        if (Board->Pieces[Square] == EMPTY) {
+        if (Board->Pieces[Square] == EMPTY_SQUARE) {
             printf("   |");
         }
         else if (COLOR(Board->Pieces[Square]) == WHITE) {
@@ -421,7 +428,7 @@ int SetFen(BoardItem* Board, const char* Fen)
     // Clear board
 
     for (Square = 0; Square < 64; ++Square) {
-        Board->Pieces[Square] = EMPTY;
+        Board->Pieces[Square] = EMPTY_SQUARE;
     }
 
     Board->BB_WhitePieces = 0ULL;
@@ -652,7 +659,7 @@ void GetFen(const BoardItem* Board, char* Fen)
             *Fen++ = '/';
         }
 
-        if (Board->Pieces[Square] == EMPTY) {
+        if (Board->Pieces[Square] == EMPTY_SQUARE) {
             ++EmptyCount;
 
             continue; // Next square

@@ -46,21 +46,25 @@
 
 // Piece type (3 bits)
 
-#define PAWN    0
-#define KNIGHT  1
-#define BISHOP  2
-#define ROOK    3
-#define QUEEN   4
-#define KING    5
+#define PAWN            0
+#define KNIGHT          1
+#define BISHOP          2
+#define ROOK            3
+#define QUEEN           4
+#define KING            5
 
 // Piece color (1 bit)
 
-#define WHITE   0
-#define BLACK   1
+#define WHITE           0
+#define BLACK           1
+
+// No piece
+
+#define NO_PIECE        7   // 3 bits
 
 // Empty square
 
-#define EMPTY   15
+#define EMPTY_SQUARE    15  // 4 bits
 
 #define PIECE(PieceAndColor)                    ((PieceAndColor) & 7)
 #define COLOR(PieceAndColor)                    ((PieceAndColor) >> 3)
