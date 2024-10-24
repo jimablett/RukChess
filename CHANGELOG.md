@@ -1,5 +1,46 @@
 # RukChess change log
 
+## RukChess 4.0.0dev
+
+1. OMP bugfix
+2. Using C17
+3. Deleted PV-splitting
+4. Deleted Root splitting
+5. Deleted ABDADA
+6. Deleted common tables
+7. Lazy SMP is default
+8. Deleted simplified evaluation function and sort moves by piece`s square score
+9. Deleted sort moves by SEE
+10. Alpha-beta pruning with MVV/LVA and heuristic is default
+11. Deleted NNUE evaluation function (old Stockfish net)
+12. Deleted Adam SGD tuning
+13. Quiescence search is default
+14. NegaScout is default
+15. Using hash move and hash score is default
+16. NNUE evaluation function is default (deleted the Toga evaluation function with tuning code)
+17. Deleted PVS sorting
+18. Deleted LAST_LAYER_AS_FLOAT
+19. Deleted MCTS
+20. Change align from 64 to 32 (256 / 8)
+21. Mate distance pruning after draw conditions and if not root node
+22. Added built-in performance test NNUE
+23. Save best moves only in master thread (function Search)
+24. Deleted use SaveBestMoves function from function QuiescenceSearch
+25. Changed MAX_THREADS from 128 to 64
+26. Corrected ComputerMove function
+27. Added allocate memory error check
+28. Changed time control from 65535 to 32767 nodes
+29. Corrected killer move
+30. Corrected aspiration window search
+31. Changed MIN_BOOK_GAMES from 50 to 20
+32.
+33.
+34.
+35.
+36.
+37.
+38. Corrected the code
+
 ## RukChess 3.0.19 (08.05.2024)
 
 1. Added COUNTER_MOVE_HISTORY
