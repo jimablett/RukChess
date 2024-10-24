@@ -15,7 +15,7 @@
 //#define DEBUG_IID
 //#define DEBUG_SINGULAR_EXTENSION
 //#define DEBUG_SEE
-//#define DEBUG_NNUE_2
+//#define DEBUG_NNUE
 
 // Common
 
@@ -30,7 +30,7 @@
 
 //#define USE_STATISTIC
 
-//#define PRINT_CURRENT_MOVE                      // For UCI in root node
+//#define PRINT_CURRENT_MOVE                    // For UCI in root node
 
 // Search
 

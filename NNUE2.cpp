@@ -380,7 +380,7 @@ BOOL UpdateAccumulator(BoardItem* Board)
         }
     } // for
 
-#ifdef DEBUG_NNUE_2
+#ifdef DEBUG_NNUE
     AccumulatorItem Accumulator = Board->Accumulator;
 
     RefreshAccumulator(Board);
@@ -394,7 +394,7 @@ BOOL UpdateAccumulator(BoardItem* Board)
             }
         }
     }
-#endif // DEBUG_NNUE_2
+#endif // DEBUG_NNUE
 
     Board->Accumulator.AccumulationComputed = TRUE;
 
