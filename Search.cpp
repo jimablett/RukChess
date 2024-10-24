@@ -216,7 +216,7 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
                     }
 
                     return HashScore;
-                }
+                } // if
             } // if
         } // if
     } // if
@@ -279,7 +279,7 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
             // Zero window search for reduced depth
             TempBestMoves[0] = (MoveItem){ 0, 0, 0 }; // End of move list
 
-            Score = -Search(Board, -Beta, -Beta + 1, Depth - 1 - NullMoveReduction, Ply + 1, TempBestMoves, FALSE, GiveCheck, TRUE, 0);
+            Score = -Search(Board, -Beta, -Beta + 1, Depth - 1 - NullMoveReduction, Ply + 1, TempBestMoves, FALSE, GiveCheck, FALSE, 0);
 
             UnmakeNullMove(Board);
 
@@ -326,13 +326,13 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
                 Prefetch(Board->Hash);
 #endif // HASH_PREFETCH
 
-                ++Board->Nodes;
-
                 if (IsInCheck(Board, CHANGE_COLOR(Board->CurrentColor))) { // Illegal move
                     UnmakeMove(Board);
 
                     continue; // Next move
                 }
+
+                ++Board->Nodes;
 
                 GiveCheck = IsInCheck(Board, Board->CurrentColor);
 
@@ -343,7 +343,7 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
                     // Zero window search for reduced depth
                     TempBestMoves[0] = (MoveItem){ 0, 0, 0 }; // End of move list
 
-                    Score = -Search(Board, -BetaCut, -BetaCut + 1, Depth - 4, Ply + 1, TempBestMoves, FALSE, GiveCheck, TRUE, 0);
+                    Score = -Search(Board, -BetaCut, -BetaCut + 1, Depth - 4, Ply + 1, TempBestMoves, FALSE, GiveCheck, FALSE, 0);
                 }
 
                 UnmakeMove(Board);
@@ -450,13 +450,10 @@ NextMove:
         ++LegalMoveCount;
 
         ++Board->Nodes;
-/*
+
+#ifdef PRINT_CURRENT_MOVE
         if (omp_get_thread_num() == 0) { // Master thread
-            if (
-                Ply == 0 // Root node
-                && PrintMode == PRINT_MODE_UCI
-                && (Clock() - TimeStart) >= 3000ULL
-            ) {
+            if (Ply == 0 && PrintMode == PRINT_MODE_UCI && (Clock() - TimeStart) >= 3000ULL) {
 #pragma omp critical
                 {
                     printf("info depth %d currmovenumber %d currmove %s%s", Depth, MoveNumber + 1, BoardName[MOVE_FROM(MoveList[MoveNumber].Move)], BoardName[MOVE_TO(MoveList[MoveNumber].Move)]);
@@ -469,7 +466,8 @@ NextMove:
                 }
             }
         }
-*/
+#endif // PRINT_CURRENT_MOVE
+
         GiveCheck = IsInCheck(Board, Board->CurrentColor);
 
         Extension = 0;
@@ -485,7 +483,6 @@ NextMove:
             !Extension
             && Ply > 0
             && Depth >= 8
-            && !SkipMove // TODO: ? (Xiphos)
             && MoveList[MoveNumber].Move == HashMove
             && HashFlag == HASH_BETA
             && HashDepth >= Depth - 3

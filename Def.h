@@ -30,6 +30,8 @@
 
 //#define USE_STATISTIC
 
+//#define PRINT_CURRENT_MOVE                      // For UCI in root node
+
 // Search
 
 #define MATE_DISTANCE_PRUNING
