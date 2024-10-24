@@ -80,6 +80,8 @@ BOOL LoadNetwork(const char* NnueFileName)
     if (FileMagic != NNUE_FILE_MAGIC) { // File format error
         printf("File '%s' format error!\n", NnueFileName);
 
+        fclose(File);
+
         return FALSE;
     }
 
@@ -91,6 +93,8 @@ BOOL LoadNetwork(const char* NnueFileName)
 /*
     if (FileHash != NNUE_FILE_HASH) { // File format error
         printf("File '%s' format error!\n", NnueFileName);
+
+        fclose(File);
 
         return FALSE;
     }
@@ -180,6 +184,8 @@ BOOL LoadNetwork(const char* NnueFileName)
     if (FilePos != NNUE_FILE_SIZE) { // File format error
         printf("File '%s' format error!\n", NnueFileName);
 
+        fclose(File);
+
         return FALSE;
     }
 
@@ -195,6 +201,8 @@ BOOL LoadNetwork(const char* NnueFileName)
 
     if (FilePos != NNUE_FILE_SIZE) { // File format error
         printf("File '%s' format error!\n", NnueFileName);
+
+        fclose(File);
 
         return FALSE;
     }

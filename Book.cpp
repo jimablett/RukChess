@@ -13,8 +13,6 @@
 #include "Types.h"
 #include "Utils.h"
 
-#define MAX_CHILDREN    32
-
 #define STAGE_NONE      1
 #define STAGE_TAG       2
 #define STAGE_NOTATION  3
@@ -25,32 +23,7 @@
 #define MIN_BOOK_ELO    0
 #define MIN_BOOK_GAMES  20
 
-typedef struct Node {
-    MoveItem Move;
-
-    int White;
-    int Draw;
-    int Black;
-
-    int Total;
-
-    struct Node* Children[MAX_CHILDREN];
-} NodeItem; // 284 bytes (aligned 288 bytes)
-
-typedef struct {
-    U64 Hash;
-
-    int From;
-    int To;
-
-    int Total;
-} BookItem; // 20 bytes (aligned 24 bytes)
-
-struct {
-    int Count;
-
-    BookItem* Item;
-} BookStore;
+BookStoreItem BookStore;
 
 BOOL BookFileLoaded = FALSE;
 
@@ -61,9 +34,7 @@ NodeItem* CreateNode(const MoveItem Move)
     if (Node == NULL) { // Allocate memory error
         printf("Allocate memory to node error!\n");
 
-        Sleep(3000);
-
-        exit(0);
+        return NULL;
     }
 
     Node->Move = Move;
@@ -138,7 +109,7 @@ void GenerateBook(void)
 
     int Ply;
 
-    NodeItem* RootNode = CreateNode((MoveItem){ 0, 0, 0 });
+    NodeItem* RootNode;
     NodeItem* Node;
     NodeItem* ChildNode;
 
@@ -163,16 +134,22 @@ void GenerateBook(void)
 
     printf("\n");
 
-    printf("Generate book...\n");
+    printf("Generate book file from PGN file...\n");
+
+    RootNode = CreateNode((MoveItem) { 0, 0, 0 });
+
+    if (RootNode == NULL) { // Create node error
+        return;
+    }
 
     fopen_s(&FileIn, "book.pgn", "r");
 
     if (FileIn == NULL) { // File open error
         printf("File 'book.pgn' open error!\n");
 
-        Sleep(3000);
+        FreeNode(RootNode);
 
-        exit(0);
+        return;
     }
 
     fopen_s(&FileOut, DEFAULT_BOOK_FILE_NAME, "w");
@@ -180,9 +157,11 @@ void GenerateBook(void)
     if (FileOut == NULL) { // File create (open) error
         printf("File '%s' create (open) error!\n", DEFAULT_BOOK_FILE_NAME);
 
-        Sleep(3000);
+        fclose(FileIn);
 
-        exit(0);
+        FreeNode(RootNode);
+
+        return;
     }
 
     // Cache not used
@@ -313,8 +292,6 @@ void GenerateBook(void)
         } // if
 
         if (Stage == STAGE_TAG) {
-            Stage = STAGE_NOTATION;
-
             if (MinElo >= MIN_BOOK_ELO) {
                 if (Result == 1) { // White win
                     ++RootNode->White;
@@ -332,6 +309,12 @@ void GenerateBook(void)
                     ++RootNode->Total;
                 }
             }
+
+            Stage = STAGE_NOTATION;
+        }
+
+        if (Error || Ply >= MAX_BOOK_PLY || MinElo < MIN_BOOK_ELO) {
+            continue; // Next string
         }
 
         while (*Part != '\0') { // Scan string
@@ -344,11 +327,11 @@ void GenerateBook(void)
 
             if (Stage == STAGE_NOTATION) {
                 if (strchr(MoveFirstChar, *Part) != NULL) {
-                    Stage = STAGE_MOVE;
-
                     Move = MoveString;
 
                     *Move++ = *Part; // Copy move (first char)
+
+                    Stage = STAGE_MOVE;
                 }
             }
             else if (Stage == STAGE_MOVE) {
@@ -356,9 +339,9 @@ void GenerateBook(void)
                     *Move++ = *Part; // Copy move (subsequent char)
                 }
                 else { // End of move
-                    Stage = STAGE_NOTATION;
-
                     *Move = '\0'; // Nul
+
+                    Stage = STAGE_NOTATION;
 
                     if (Error || Ply >= MAX_BOOK_PLY || MinElo < MIN_BOOK_ELO) {
                         ++Part;
@@ -405,6 +388,10 @@ void GenerateBook(void)
                                 }
                                 else {
                                     ChildNode = CreateNode(MoveList[MoveNumber]);
+
+                                    if (ChildNode == NULL) { // Create node error
+                                        break; // for (children)
+                                    }
 
                                     Node->Children[Index] = ChildNode;
 
@@ -500,7 +487,7 @@ void GenerateBook(void)
 
     printf("\n");
 
-    printf("Generate book...DONE\n");
+    printf("Generate book file from PGN file...DONE\n");
 }
 
 int HashCompare(const void* BookItem1, const void* BookItem2)
@@ -569,6 +556,8 @@ BOOL LoadBook(const char* BookFileName)
     if (BookStore.Item == NULL) { // Allocate memory error
         printf("Allocate memory to store book error!\n");
 
+        fclose(File);
+
         return FALSE;
     }
 
@@ -576,7 +565,7 @@ BOOL LoadBook(const char* BookFileName)
 
     fseek(File, 0, SEEK_SET);
 
-    // The second cycle for reading book
+    // The second cycle to read book items
 
     PositionNumber = 0;
 
@@ -594,7 +583,13 @@ BOOL LoadBook(const char* BookFileName)
         Hash = strtoull(HashString, NULL, 16);
 
         if (Hash == 0) { // Hash error
-            continue; // Next string
+            printf("Read book error!\n");
+
+            free(BookStore.Item);
+
+            fclose(File);
+
+            return FALSE;
         }
 
         ++Part; // Space
@@ -602,7 +597,13 @@ BOOL LoadBook(const char* BookFileName)
         From = atoi(Part);
 
         if (From < 0 || From > 63) {
-            continue; // Next string
+            printf("Read book error!\n");
+
+            free(BookStore.Item);
+
+            fclose(File);
+
+            return FALSE;
         }
 
         while (*Part != ' ') {
@@ -614,7 +615,13 @@ BOOL LoadBook(const char* BookFileName)
         To = atoi(Part);
 
         if (To < 0 || To > 63) {
-            continue; // Next string
+            printf("Read book error!\n");
+
+            free(BookStore.Item);
+
+            fclose(File);
+
+            return FALSE;
         }
 
         while (*Part != ' ') {
@@ -645,9 +652,19 @@ BOOL LoadBook(const char* BookFileName)
         printf("0x%016llx %s %s %d\n", BookItemPointer->Hash, BoardName[BookItemPointer->From], BoardName[BookItemPointer->To], BookItemPointer->Total);
     }
 */
+    if (PositionNumber != BookStore.Count) {
+        printf("Read book error!\n");
+
+        free(BookStore.Item);
+
+        fclose(File);
+
+        return FALSE;
+    }
+
     fclose(File);
 
-    printf("Load book...DONE (%d)\n", BookStore.Count);
+    printf("Load book...DONE (%d)\n", PositionNumber);
 
     return TRUE;
 }

@@ -10,7 +10,7 @@
 #include "Types.h"
 #include "Utils.h"
 
-#if defined(PROBCUT) || defined(BAD_CAPTURE_LAST) || defined(SEE_QUIET_MOVE_PRUNING) || defined(QUIESCENCE_SEE_MOVE_PRUNING)
+#if defined(PROBCUT) || defined(BAD_CAPTURE_LAST) || defined(SEE_CAPTURE_MOVE_PRUNING) || defined(SEE_QUIET_MOVE_PRUNING) || defined(QUIESCENCE_SEE_MOVE_PRUNING)
 
 const int PiecesScoreSEE[6] = { 100, 300, 300, 500, 900, INF }; // PNBRQK
 
@@ -155,4 +155,4 @@ int CaptureSEE(const BoardItem* Board, const int From, const int To, const int P
     return Gain[0];
 }
 
-#endif // PROBCUT || BAD_CAPTURE_LAST || SEE_QUIET_MOVE_PRUNING || QUIESCENCE_SEE_MOVE_PRUNING
+#endif // PROBCUT || BAD_CAPTURE_LAST || SEE_CAPTURE_MOVE_PRUNING || SEE_QUIET_MOVE_PRUNING || QUIESCENCE_SEE_MOVE_PRUNING

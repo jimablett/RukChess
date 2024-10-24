@@ -53,16 +53,14 @@ void Pgn2Fen(void)
 
     printf("\n");
 
-    printf("Read PGN file...\n");
+    printf("Convert PGN file to FEN file...\n");
 
     fopen_s(&FileIn, "games.pgn", "r");
 
     if (FileIn == NULL) { // File open error
         printf("File 'games.pgn' open error!\n");
 
-        Sleep(3000);
-
-        exit(0);
+        return;
     }
 
     fopen_s(&FileOut, "games.fen", "w");
@@ -70,9 +68,9 @@ void Pgn2Fen(void)
     if (FileOut == NULL) { // File create (open) error
         printf("File 'games.fen' create (open) error!\n");
 
-        Sleep(3000);
+        fclose(FileIn);
 
-        exit(0);
+        return;
     }
 
     // Cache not used
@@ -173,13 +171,17 @@ void Pgn2Fen(void)
         } // if
 
         if (Stage == STAGE_TAG) {
-            Stage = STAGE_NOTATION;
-
             GetFen(&CurrentBoard, FenOut); // First FEN in game (StartFen or FenString from FEN-tag)
 
             fprintf(FileOut, "%s|%.1f\n", FenOut, Result);
 
             ++Ply;
+
+            Stage = STAGE_NOTATION;
+        }
+
+        if (Error) {
+            continue; // Next string
         }
 
         while (*Part != '\0') { // Scan string
@@ -192,11 +194,11 @@ void Pgn2Fen(void)
 
             if (Stage == STAGE_NOTATION) {
                 if (strchr(MoveFirstChar, *Part) != NULL) {
-                    Stage = STAGE_MOVE;
-
                     Move = MoveString;
 
                     *Move++ = *Part; // Copy move (first char)
+
+                    Stage = STAGE_MOVE;
                 }
             }
             else if (Stage == STAGE_MOVE) {
@@ -204,9 +206,9 @@ void Pgn2Fen(void)
                     *Move++ = *Part; // Copy move (subsequent char)
                 }
                 else { // End of move
-                    Stage = STAGE_NOTATION;
-
                     *Move = '\0'; // Nul
+
+                    Stage = STAGE_NOTATION;
 
                     if (Error) {
                         ++Part;
@@ -293,5 +295,5 @@ void Pgn2Fen(void)
 
     printf("\n");
 
-    printf("Read PGN file...DONE\n");
+    printf("Convert PGN file to FEN file...DONE\n");
 }

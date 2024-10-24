@@ -9,43 +9,13 @@
 #include "Types.h"
 #include "Utils.h"
 
-typedef struct {
-    I16 Score;
-    I16 StaticScore;
+HashStoreItem HashStore;
 
-    U16 Move;
-
-    I8 Depth;
-
-    U8 Flag : 4, Iteration : 4;
-} HashDataS; // 8 bytes
-
-typedef union {
-    U64 RawData;
-
-    HashDataS Data;
-} HashDataU; // 8 bytes
-
-typedef struct {
-    U64 KeyValue;
-
-    HashDataU Value;
-} HashItem; // 16 bytes
-
-struct {
-    U64 Size;
-    U64 Mask;
-
-    U8 Iteration; // 4 bits
-
-    HashItem* Item;
-} HashStore;
-
-U64 PieceHash[2][6][64]; // [Color][Piece][Square]
+U64 PieceHash[2][6][64];    // [Color][Piece][Square]
 U64 ColorHash;
-U64 PassantHash[64]; // [Square]
+U64 PassantHash[64];        // [Square]
 
-void InitHashTable(const int SizeInMb) // Xiphos
+BOOL InitHashTable(const int SizeInMb) // Xiphos
 {
     U64 Items;
     U64 RoundItems = 1;
@@ -66,16 +36,14 @@ void InitHashTable(const int SizeInMb) // Xiphos
     HashItemPointer = (HashItem*)realloc(HashStore.Item, HashStore.Size);
 
     if (HashItemPointer == NULL) { // Allocate memory error
-        free(HashStore.Item); // Free previously allocated memory (if was allocated)
-
         printf("Allocate memory to hash table error!\n");
 
-        Sleep(3000);
-
-        exit(0);
+        return FALSE;
     }
 
     HashStore.Item = HashItemPointer;
+
+    return TRUE;
 }
 
 void InitHashBoards(void)

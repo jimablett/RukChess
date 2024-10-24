@@ -481,6 +481,7 @@ NextMove:
 #ifdef SINGULAR_EXTENSION
         if (
             !Extension
+            && !SkipMove
             && Ply > 0
             && Depth >= 8
             && MoveList[MoveNumber].Move == HashMove

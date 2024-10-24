@@ -12,12 +12,6 @@
 #include "Types.h"
 #include "Utils.h"
 
-typedef struct {
-    char* Fen;
-    int Depth;
-    U64 Nodes[10];
-} GeneratorTestItem;
-
 /*
     Tests 1-6 (https://www.chessprogramming.org/Perft_Results)
     Test 7 (http://www.rocechess.ch/perft.html)

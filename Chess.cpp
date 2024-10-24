@@ -17,6 +17,8 @@
 
 int main(int argc, char** argv)
 {
+    BOOL InitHashTableResult;
+
     char Buf[10];
 
     int Choice;
@@ -70,7 +72,14 @@ int main(int argc, char** argv)
 
     // Initialize hash table
 
-    InitHashTable(DEFAULT_HASH_TABLE_SIZE);
+    InitHashTableResult = InitHashTable(DEFAULT_HASH_TABLE_SIZE);
+
+    if (!InitHashTableResult) { // Init hash table error
+        Sleep(3000);
+
+        goto Done;
+    }
+
     ClearHash();
 
     printf("\n");
@@ -134,14 +143,14 @@ int main(int argc, char** argv)
 
     fgets(Buf, sizeof(Buf), stdin);
 
-    if (!strncmp(Buf, "uci", 3)) {
-        // UCI
-
+    if (!strncmp(Buf, "uci", 3)) { // UCI
         PrintMode = PRINT_MODE_UCI;
 
         UCI();
 
-        return 0;
+        PrintMode = PRINT_MODE_NORMAL;
+
+        goto Done;
     }
 
     // Console interface
@@ -151,7 +160,7 @@ int main(int argc, char** argv)
 
         Sleep(3000);
 
-        return 0;
+        goto Done;
     }
 
     while (TRUE) {
@@ -252,11 +261,19 @@ int main(int argc, char** argv)
                 break;
 
             case 15: // Exit
-                return 0;
+                goto Done;
         } // switch
 
         printf("\n");
     } // while
+
+Done:
+
+    if (BookFileLoaded) {
+        free(BookStore.Item);
+    }
+
+    free(HashStore.Item);
 
     return 0;
 }

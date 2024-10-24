@@ -63,10 +63,14 @@ void InitThreadNode(void)
 
     // First call to get ReturnLength. We expect it to fail due to null buffer
     if (GetLogicalProcessorInformationEx(RelationAll, NULL, &ReturnedLength)) {
+        printf("Get logical processor information error!\n");
+
         return;
     }
 
     if (GetLastError() != ERROR_INSUFFICIENT_BUFFER) {
+        printf("Get logical processor information error!\n");
+
         return;
     }
 
@@ -81,6 +85,8 @@ void InitThreadNode(void)
 
     // Second call, now we expect to succeed
     if (!GetLogicalProcessorInformationEx(RelationAll, Buffer, &ReturnedLength)) {
+        printf("Get logical processor information error!\n");
+
         free(Buffer);
 
         return;

@@ -708,9 +708,7 @@ void LoadGame(BoardItem* Board)
     if (File == NULL) { // File open error
         printf("File 'chess.fen' open error!\n");
 
-        Sleep(3000);
-
-        exit(0);
+        return;
     }
 
     fgets(Fen, sizeof(Fen), File);
@@ -731,9 +729,7 @@ void SaveGame(const BoardItem* Board)
     if (File == NULL) { // File create (open) error
         printf("File 'chess.fen' create (open) error!\n");
 
-        Sleep(3000);
-
-        exit(0);
+        return;
     }
 
     GetFen(Board, Fen);
