@@ -19,7 +19,7 @@ int main(int argc, char** argv)
 {
     BOOL InitHashTableResult;
 
-    char Buf[10];
+    char Buf[64];
 
     int Choice;
 
@@ -143,7 +143,7 @@ int main(int argc, char** argv)
 
     fgets(Buf, sizeof(Buf), stdin);
 
-    if (!strncmp(Buf, "uci", 3)) { // UCI
+    if (strncmp(Buf, "uci", 3) == 0) { // UCI
         PrintMode = PRINT_MODE_UCI;
 
         UCI();

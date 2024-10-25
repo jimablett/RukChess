@@ -118,7 +118,7 @@ void GenerateBook(void)
     int Stage;
 
     char Buf[4096];
-    const char* Part;
+    char* Part;
 
     char FenString[MAX_FEN_LENGTH];
     char* Fen;
@@ -231,6 +231,8 @@ void GenerateBook(void)
 
                     printf("Game number = %d\n", GameNumber - 1);
 
+                    printf("\n");
+
                     printf("  White = %d Black = %d Draw = %d Total = %d\n", RootNode->White, RootNode->Black, RootNode->Draw, RootNode->Total);
                     printf("  White = %.1f%% Black = %.1f%% Draw = %.1f%%\n", 100.0 * (double)RootNode->White / (double)RootNode->Total, 100.0 * (double)RootNode->Black / (double)RootNode->Total, 100.0 * (double)RootNode->Draw / (double)RootNode->Total);
                     printf("  White score = %.1f%%\n", 100.0 * ((double)RootNode->White + (double)RootNode->Draw / 2.0) / (double)RootNode->Total);
@@ -239,22 +241,22 @@ void GenerateBook(void)
                 Stage = STAGE_TAG;
             }
 
-            if (!strncmp(Part, "[Result \"1-0\"]", 14)) { // Result 1-0
+            if (strncmp(Part, "[Result \"1-0\"]", 14) == 0) { // Result 1-0
                 Result = 1; // White win
 
 //                printf("Result = %d\n", Result);
             }
-            else if (!strncmp(Part, "[Result \"1/2-1/2\"]", 18)) { // Result 1/2-1/2
+            else if (strncmp(Part, "[Result \"1/2-1/2\"]", 18) == 0) { // Result 1/2-1/2
                 Result = 0; // Draw
 
 //                printf("Result = %d\n", Result);
             }
-            else if (!strncmp(Part, "[Result \"0-1\"]", 14)) { // Result 0-1
+            else if (strncmp(Part, "[Result \"0-1\"]", 14) == 0) { // Result 0-1
                 Result = -1; // Black win
 
 //                printf("Result = %d\n", Result);
             }
-            else if (!strncmp(Part, "[FEN \"", 6)) { // FEN
+            else if (strncmp(Part, "[FEN \"", 6) == 0) { // FEN
                 Part += 6;
 
                 Fen = FenString;
@@ -269,7 +271,7 @@ void GenerateBook(void)
 
                 SetFen(&CurrentBoard, FenString);
             }
-            else if (!strncmp(Part, "[WhiteElo \"", 11)) { // WhiteElo
+            else if (strncmp(Part, "[WhiteElo \"", 11) == 0) { // WhiteElo
                 Part += 11;
 
                 Elo = atoi(Part);
@@ -278,7 +280,7 @@ void GenerateBook(void)
 
 //                printf("WhiteElo = %d MinElo = %d\n", Elo, MinElo);
             }
-            else if (!strncmp(Part, "[BlackElo \"", 11)) { // BlackElo
+            else if (strncmp(Part, "[BlackElo \"", 11) == 0) { // BlackElo
                 Part += 11;
 
                 Elo = atoi(Part);
@@ -327,11 +329,11 @@ void GenerateBook(void)
 
             if (Stage == STAGE_NOTATION) {
                 if (strchr(MoveFirstChar, *Part) != NULL) {
+                    Stage = STAGE_MOVE;
+
                     Move = MoveString;
 
                     *Move++ = *Part; // Copy move (first char)
-
-                    Stage = STAGE_MOVE;
                 }
             }
             else if (Stage == STAGE_MOVE) {
@@ -359,7 +361,7 @@ void GenerateBook(void)
                     for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
                         NotateMove(&CurrentBoard, MoveList[MoveNumber], NotateMoveStr);
 
-                        if (!strcmp(MoveString, NotateMoveStr)) {
+                        if (strcmp(MoveString, NotateMoveStr) == 0) {
                             MakeMove(&CurrentBoard, MoveList[MoveNumber]);
 
                             if (IsInCheck(&CurrentBoard, CHANGE_COLOR(CurrentBoard.CurrentColor))) { // Illegal move
@@ -470,6 +472,8 @@ void GenerateBook(void)
 
     printf("Game number = %d\n", GameNumber - 1);
 
+    printf("\n");
+
     printf("  White = %d Black = %d Draw = %d Total = %d\n", RootNode->White, RootNode->Black, RootNode->Draw, RootNode->Total);
     printf("  White = %.1f%% Black = %.1f%% Draw = %.1f%%\n", 100.0 * (double)RootNode->White / (double)RootNode->Total, 100.0 * (double)RootNode->Black / (double)RootNode->Total, 100.0 * (double)RootNode->Draw / (double)RootNode->Total);
     printf("  White score = %.1f%%\n", 100.0 * ((double)RootNode->White + (double)RootNode->Draw / 2.0) / (double)RootNode->Total);
@@ -510,12 +514,12 @@ BOOL LoadBook(const char* BookFileName)
 {
     FILE* File;
 
-    char Buf[512];
-    const char* Part;
+    char Buf[256];
+    char* Part;
 
     int PositionNumber;
 
-    char HashString[256];
+    char HashString[64];
     char* HashPointer;
 
     U64 Hash;

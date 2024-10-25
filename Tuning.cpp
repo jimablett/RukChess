@@ -37,7 +37,7 @@ void Pgn2Fen(void)
     int Stage;
 
     char Buf[4096];
-    const char* Part;
+    char* Part;
 
     char FenString[MAX_FEN_LENGTH];
     char* Fen;
@@ -136,22 +136,22 @@ void Pgn2Fen(void)
                 Stage = STAGE_TAG;
             }
 
-            if (!strncmp(Part, "[Result \"1-0\"]", 14)) { // Result 1-0
+            if (strncmp(Part, "[Result \"1-0\"]", 14) == 0) { // Result 1-0
                 Result = 1.0;
 
 //                printf("Result = %.1f\n", Result);
             }
-            else if (!strncmp(Part, "[Result \"1/2-1/2\"]", 18)) { // Result 1/2-1/2
+            else if (strncmp(Part, "[Result \"1/2-1/2\"]", 18) == 0) { // Result 1/2-1/2
                 Result = 0.5;
 
 //                printf("Result = %.1f\n", Result);
             }
-            else if (!strncmp(Part, "[Result \"0-1\"]", 14)) { // Result 0-1
+            else if (strncmp(Part, "[Result \"0-1\"]", 14) == 0) { // Result 0-1
                 Result = 0.0;
 
 //                printf("Result = %.1f\n", Result);
             }
-            else if (!strncmp(Part, "[FEN \"", 6)) { // FEN
+            else if (strncmp(Part, "[FEN \"", 6) == 0) { // FEN
                 Part += 6;
 
                 Fen = FenString;
@@ -194,11 +194,11 @@ void Pgn2Fen(void)
 
             if (Stage == STAGE_NOTATION) {
                 if (strchr(MoveFirstChar, *Part) != NULL) {
+                    Stage = STAGE_MOVE;
+
                     Move = MoveString;
 
                     *Move++ = *Part; // Copy move (first char)
-
-                    Stage = STAGE_MOVE;
                 }
             }
             else if (Stage == STAGE_MOVE) {
@@ -226,7 +226,7 @@ void Pgn2Fen(void)
                     for (int MoveNumber = 0; MoveNumber < GenMoveCount; ++MoveNumber) {
                         NotateMove(&CurrentBoard, MoveList[MoveNumber], NotateMoveStr);
 
-                        if (!strcmp(MoveString, NotateMoveStr)) {
+                        if (strcmp(MoveString, NotateMoveStr) == 0) {
                             MakeMove(&CurrentBoard, MoveList[MoveNumber]);
 
                             if (IsInCheck(&CurrentBoard, CHANGE_COLOR(CurrentBoard.CurrentColor))) { // Illegal move

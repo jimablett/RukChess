@@ -215,6 +215,14 @@ void NotateMove(BoardItem* Board, const MoveItem Move, char* Result)
 
     MakeMove(Board, Move);
 
+    if (IsInCheck(Board, CHANGE_COLOR(Board->CurrentColor))) { // Illegal move
+        UnmakeMove(Board);
+
+        strcpy_s(Result, 7, "(none)\0");
+
+        return;
+    }
+
     GiveCheck = IsInCheck(Board, Board->CurrentColor);
 
     if (GiveCheck) {

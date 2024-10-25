@@ -18,7 +18,7 @@
 void UCI(void)
 {
     char Buf[4096];
-    const char* Part;
+    char* Part;
 
     int File;
     int Rank;
@@ -38,10 +38,10 @@ void UCI(void)
     int HashSize;
     int Threads;
 
-    char BookFileNameString[255];
+    char BookFileNameString[256];
     char* BookFileName;
 
-    char NnueFileNameString[255];
+    char NnueFileNameString[256];
     char* NnueFileName;
 
     U64 WTime;
@@ -78,15 +78,15 @@ void UCI(void)
 
         Part = Buf;
 
-        if (!strncmp(Part, "isready", 7)) {
+        if (strncmp(Part, "isready", 7) == 0) {
             printf("readyok\n");
         }
-        else if (!strncmp(Part, "ucinewgame", 10)) {
+        else if (strncmp(Part, "ucinewgame", 10) == 0) {
             SetFen(&CurrentBoard, StartFen);
 
             ClearHash();
         }
-        else if (!strncmp(Part, "setoption name Hash value ", 26)) {
+        else if (strncmp(Part, "setoption name Hash value ", 26) == 0) {
             Part += 26;
 
             HashSize = atoi(Part);
@@ -96,7 +96,7 @@ void UCI(void)
             InitHashTable(HashSize);
             ClearHash();
         }
-        else if (!strncmp(Part, "setoption name Threads value ", 29)) {
+        else if (strncmp(Part, "setoption name Threads value ", 29) == 0) {
             Part += 29;
 
             Threads = atoi(Part);
@@ -105,7 +105,7 @@ void UCI(void)
 
             omp_set_num_threads(Threads);
         }
-        else if (!strncmp(Part, "setoption name BookFile value ", 30)) {
+        else if (strncmp(Part, "setoption name BookFile value ", 30) == 0) {
             Part += 30;
 
             BookFileName = BookFileNameString;
@@ -118,7 +118,7 @@ void UCI(void)
 
             BookFileLoaded = LoadBook(BookFileNameString);
         }
-        else if (!strncmp(Part, "setoption name NnueFile value ", 30)) {
+        else if (strncmp(Part, "setoption name NnueFile value ", 30) == 0) {
             Part += 30;
 
             NnueFileName = NnueFileNameString;
@@ -131,15 +131,15 @@ void UCI(void)
 
             NnueFileLoaded = LoadNetwork(NnueFileNameString);
         }
-        else if (!strncmp(Part, "position ", 9)) {
+        else if (strncmp(Part, "position ", 9) == 0) {
             Part += 9;
 
-            if (!strncmp(Part, "startpos", 8)) {
+            if (strncmp(Part, "startpos", 8) == 0) {
                 Part += 8;
 
                 SetFen(&CurrentBoard, StartFen);
             }
-            else if (!strncmp(Part, "fen ", 4)) {
+            else if (strncmp(Part, "fen ", 4) == 0) {
                 Part += 4;
 
                 Part += SetFen(&CurrentBoard, Part);
@@ -149,7 +149,7 @@ void UCI(void)
                 ++Part; // Space
             }
 
-            if (!strncmp(Part, "moves ", 6)) {
+            if (strncmp(Part, "moves ", 6) == 0) {
                 Part += 6;
 
                 while (*Part != '\r' && *Part != '\n' && *Part != '\0') {
@@ -229,7 +229,7 @@ void UCI(void)
                 } // while
             } // if
         }
-        else if (!strncmp(Part, "go ", 3)) {
+        else if (strncmp(Part, "go ", 3) == 0) {
             Part += 3;
 
             WTime = 0ULL;
@@ -249,49 +249,49 @@ void UCI(void)
             memset(TargetTime, 0, sizeof(TargetTime));
 
             while (*Part != '\r' && *Part != '\n' && *Part != '\0') {
-                if (!strncmp(Part, "wtime ", 6)) {
+                if (strncmp(Part, "wtime ", 6) == 0) {
                     Part += 6;
 
                     WTime = (U64)atoi(Part);
                 }
-                else if (!strncmp(Part, "btime ", 6)) {
+                else if (strncmp(Part, "btime ", 6) == 0) {
                     Part += 6;
 
                     BTime = (U64)atoi(Part);
                 }
-                else if (!strncmp(Part, "winc ", 5)) {
+                else if (strncmp(Part, "winc ", 5) == 0) {
                     Part += 5;
 
                     WInc = (U64)atoi(Part);
                 }
-                else if (!strncmp(Part, "binc ", 5)) {
+                else if (strncmp(Part, "binc ", 5) == 0) {
                     Part += 5;
 
                     BInc = (U64)atoi(Part);
                 }
-                else if (!strncmp(Part, "movestogo ", 10)) {
+                else if (strncmp(Part, "movestogo ", 10) == 0) {
                     Part += 10;
 
                     MovesToGo = atoi(Part);
                 }
-                else if (!strncmp(Part, "depth ", 6)) {
+                else if (strncmp(Part, "depth ", 6) == 0) {
                     Part += 6;
 
                     MaxDepth = atoi(Part);
                 }
-                else if (!strncmp(Part, "mate ", 5)) {
+                else if (strncmp(Part, "mate ", 5) == 0) {
                     Part += 5;
 
                     Mate = atoi(Part);
 
                     MaxDepth = Mate * 2 - 1;
                 }
-                else if (!strncmp(Part, "movetime ", 9)) {
+                else if (strncmp(Part, "movetime ", 9) == 0) {
                     Part += 9;
 
                     MaxTime = (U64)atoi(Part);
                 }
-                else if (!strncmp(Part, "infinite", 8)) {
+                else if (strncmp(Part, "infinite", 8) == 0) {
                     Part += 8;
 
                     MaxTime = 0ULL;
@@ -365,10 +365,10 @@ void UCI(void)
 
             _beginthread(ComputerMoveThread, 0, NULL);
         }
-        else if (!strncmp(Part, "stop", 4)) {
+        else if (strncmp(Part, "stop", 4) == 0) {
             StopSearch = TRUE;
         }
-        else if (!strncmp(Part, "quit", 4)) {
+        else if (strncmp(Part, "quit", 4) == 0) {
             return;
         }
         else {

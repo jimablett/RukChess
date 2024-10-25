@@ -475,7 +475,7 @@ void ComputerMoveThread(void* ignored)
 
 BOOL HumanMove(void)
 {
-    char ReadStr[10];
+    char ReadStr[64];
 
     int File;
     int Rank;
@@ -505,7 +505,7 @@ BOOL HumanMove(void)
         scanf_s("%9s", ReadStr, (unsigned)_countof(ReadStr));
 
         if (
-            !strcmp(ReadStr, "undo")
+            strcmp(ReadStr, "undo") == 0
             && CurrentBoard.HalfMoveNumber >= 2
             && CurrentBoard.MoveTable[CurrentBoard.HalfMoveNumber - 1].Hash
             && CurrentBoard.MoveTable[CurrentBoard.HalfMoveNumber - 2].Hash
@@ -523,13 +523,13 @@ BOOL HumanMove(void)
             continue; // Next string
         }
 
-        if (!strcmp(ReadStr, "save")) {
+        if (strcmp(ReadStr, "save") == 0) {
             SaveGame(&CurrentBoard);
 
             continue; // Next string
         }
 
-        if (!strcmp(ReadStr, "exit")) {
+        if (strcmp(ReadStr, "exit") == 0) {
             return FALSE;
         }
 
