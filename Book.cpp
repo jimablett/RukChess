@@ -21,7 +21,7 @@
 
 #define MAX_BOOK_PLY    24 // 12 moves
 #define MIN_BOOK_ELO    0
-#define MIN_BOOK_GAMES  20
+#define MIN_BOOK_GAMES  30
 
 BookStoreItem BookStore;
 

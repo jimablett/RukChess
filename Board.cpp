@@ -98,8 +98,6 @@ BOOL IsInCheck(const BoardItem* Board, const int Color)
 
     int KingSquare = LSB(Board->BB_Pieces[Color][KING]);
 
-    assert(KingSquare >= 0 && KingSquare <= 63);
-
     return IsSquareAttacked(Board, KingSquare, Color);
 }
 

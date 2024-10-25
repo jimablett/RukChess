@@ -32,7 +32,7 @@
 28. Changed time control from 65535 to 32767 nodes
 29. Corrected killer move
 30. Corrected aspiration window search
-31. Changed MIN_BOOK_GAMES from 50 to 20
+31. Changed MIN_BOOK_GAMES from 50 to 30
 32.
 33.
 34.
@@ -40,6 +40,8 @@
 36.
 37.
 38. Corrected the code
+39.
+40. New book file (587604 positions)
 
 ## RukChess 3.0.19 (08.05.2024)
 

@@ -245,12 +245,12 @@ void MakeMove(BoardItem* Board, const MoveItem Move)
     Board->Hash ^= ColorHash;
 
 #ifdef DEBUG_HASH
-    U64 OldBoardHash = Board->Hash;
+    U64 OriginalHash = Board->Hash;
 
     InitHash(Board);
 
-    if (Board->Hash != OldBoardHash) {
-        printf("-- Board hash error! BoardHash = 0x%016llx OldBoardHash = 0x%016llx\n", Board->Hash, OldBoardHash);
+    if (Board->Hash != OriginalHash) {
+        printf("-- Board hash error! BoardHash = 0x%016llx OriginalHash = 0x%016llx\n", Board->Hash, OriginalHash);
     }
 #endif // DEBUG_HASH
 
@@ -465,18 +465,14 @@ void MakeNullMove(BoardItem* Board)
     Board->Hash ^= ColorHash;
 
 #ifdef DEBUG_HASH
-    U64 OldBoardHash = Board->Hash;
+    U64 OriginalHash = Board->Hash;
 
     InitHash(Board);
 
-    if (Board->Hash != OldBoardHash) {
-        printf("-- Board hash error! BoardHash = 0x%016llx OldBoardHash = 0x%016llx\n", Board->Hash, OldBoardHash);
+    if (Board->Hash != OriginalHash) {
+        printf("-- Board hash error! BoardHash = 0x%016llx OriginalHash = 0x%016llx\n", Board->Hash, OriginalHash);
     }
 #endif // DEBUG_HASH
-
-//#ifdef USE_NNUE_UPDATE
-//    Board->Accumulator.AccumulationComputed = FALSE;
-//#endif // USE_NNUE_UPDATE
 }
 
 void UnmakeNullMove(BoardItem* Board)
