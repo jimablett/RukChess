@@ -636,7 +636,7 @@ BOOL LoadBook(const char* BookFileName)
 
         Total = atoi(Part);
 
-        BookItemPointer = &BookStore.Item[PositionNumber];
+        BookItemPointer = &BookStore.Item[PositionNumber++];
 
         BookItemPointer->Hash = Hash;
 
@@ -644,8 +644,6 @@ BOOL LoadBook(const char* BookFileName)
         BookItemPointer->To = To;
 
         BookItemPointer->Total = Total;
-
-        ++PositionNumber;
     } // while
 
     qsort(BookStore.Item, BookStore.Count, sizeof(BookItem), HashCompare); // TODO: move to GenerateBook
@@ -656,19 +654,9 @@ BOOL LoadBook(const char* BookFileName)
         printf("0x%016llx %s %s %d\n", BookItemPointer->Hash, BoardName[BookItemPointer->From], BoardName[BookItemPointer->To], BookItemPointer->Total);
     }
 */
-    if (PositionNumber != BookStore.Count) {
-        printf("Read book error!\n");
-
-        free(BookStore.Item);
-
-        fclose(File);
-
-        return FALSE;
-    }
-
     fclose(File);
 
-    printf("Load book...DONE (%d)\n", PositionNumber);
+    printf("Load book...DONE (%d)\n", BookStore.Count);
 
     return TRUE;
 }
