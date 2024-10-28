@@ -20,7 +20,9 @@ int QuiescenceSearch(BoardItem* Board, int Alpha, int Beta, const int Depth, con
 {
     assert(Alpha >= -INF);
     assert(Beta <= INF);
+    assert(Alpha < Beta);
     assert(Ply >= 0 && Ply <= MAX_PLY);
+    assert(InCheck == IsInCheck(Board, Board->CurrentColor));
 
     int GenMoveCount;
     MoveItem MoveList[MAX_GEN_MOVES];

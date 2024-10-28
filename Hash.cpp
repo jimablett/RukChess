@@ -74,33 +74,37 @@ void InitHash(BoardItem* Board)
     U64 Hash = 0ULL;
 
     // White pieces
+
     Pieces = Board->BB_WhitePieces;
 
     while (Pieces) {
         Square = LSB(Pieces);
 
-        Hash ^= PieceHash[WHITE][PIECE(Board->Pieces[Square])][Square];
+        Hash ^= PieceHash[WHITE][PIECE_TYPE(Board->Pieces[Square])][Square];
 
         Pieces &= Pieces - 1;
     }
 
     // Black pieces
+
     Pieces = Board->BB_BlackPieces;
 
     while (Pieces) {
         Square = LSB(Pieces);
 
-        Hash ^= PieceHash[BLACK][PIECE(Board->Pieces[Square])][Square];
+        Hash ^= PieceHash[BLACK][PIECE_TYPE(Board->Pieces[Square])][Square];
 
         Pieces &= Pieces - 1;
     }
 
     // Color
+
     if (Board->CurrentColor == BLACK) {
         Hash ^= ColorHash;
     }
 
     // En passant
+
     if (Board->PassantSquare != -1) {
         Hash ^= PassantHash[Board->PassantSquare];
     }

@@ -42,7 +42,7 @@
     (h1)                         (a8)
 */
 
-// Piece type and color: 4 bits = Piece color (1 bit) + Piece type (3 bits)
+// Piece: 4 bits = Piece color (1 bit) + Piece type (3 bits)
 
 // Piece type (3 bits)
 
@@ -58,31 +58,27 @@
 #define WHITE           0
 #define BLACK           1
 
-// No piece
+#define NO_PIECE        15
 
-#define NO_PIECE        7   // 3 bits
+#define PIECE_TYPE(Piece)                       ((Piece) & 7)
+#define PIECE_COLOR(Piece)                      ((Piece) >> 3)
 
-// Empty square
-
-#define EMPTY_SQUARE    15  // 4 bits
-
-#define PIECE(PieceAndColor)                    ((PieceAndColor) & 7)
-#define COLOR(PieceAndColor)                    ((PieceAndColor) >> 3)
-
-#define PIECE_AND_COLOR(Piece, Color)           (((Color) << 3) | (Piece))
+#define PIECE_CREATE(PieceType, PieceColor)     (((PieceColor) << 3) | (PieceType))
 
 #define CHANGE_COLOR(Color)                     ((Color) ^ 1)
+
+// Square of board: 6 bits = Rank (3 bits) + File (3 bits)
 
 #define FILE(Square)                            ((Square) & 7)
 #define RANK(Square)                            ((Square) >> 3)
 
-#define SQUARE(Rank, File)                      (((Rank) << 3) | (File))
+#define SQUARE_CREATE(File, Rank)               (((Rank) << 3) | (File))
 
-// Move: 16 bits = Promote piece (4 bits) + From (6 bits) + To (6 bits)
+// Move: 15 bits = Promote piece (3 bits) + From (6 bits) + To (6 bits)
 
-#define MOVE_PROMOTE_PIECE(Move)                ((Move) >> 12)
 #define MOVE_FROM(Move)                         (((Move) >> 6) & 63)
 #define MOVE_TO(Move)                           ((Move) & 63)
+#define MOVE_PROMOTE_PIECE(Move)                ((Move) >> 12)
 
 #define MOVE_CREATE(From, To, PromotePiece)     (((PromotePiece) << 12) | ((From) << 6) | (To))
 

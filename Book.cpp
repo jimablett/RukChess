@@ -136,7 +136,7 @@ void GenerateBook(void)
 
     printf("Generate book file from PGN file...\n");
 
-    RootNode = CreateNode((MoveItem) { 0, 0, 0 });
+    RootNode = CreateNode((MoveItem){ 0, 0, 0 });
 
     if (RootNode == NULL) { // Create node error
         return;

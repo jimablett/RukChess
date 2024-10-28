@@ -220,18 +220,18 @@ int CalculateWeightIndex(const int Perspective, const int Square, const int Piec
     int WeightIndex;
 
     if (Perspective == WHITE) {
-        PieceIndex = PIECE(PieceWithColor) + 6 * COLOR(PieceWithColor);
+        PieceIndex = PIECE_TYPE(PieceWithColor) + 6 * PIECE_COLOR(PieceWithColor);
 
         WeightIndex = (PieceIndex << 6) + Square;
     }
     else { // BLACK
-        PieceIndex = PIECE(PieceWithColor) + 6 * CHANGE_COLOR(COLOR(PieceWithColor));
+        PieceIndex = PIECE_TYPE(PieceWithColor) + 6 * CHANGE_COLOR(PIECE_COLOR(PieceWithColor));
 
         WeightIndex = (PieceIndex << 6) + (Square ^ 56);
     }
 
 #ifdef PRINT_WEIGHT_INDEX
-    printf("Perspective = %d Square = %d Piece = %d Color = %d PieceIndex = %d WeightIndex = %d\n", Perspective, Square, PIECE(PieceWithColor), COLOR(PieceWithColor), PieceIndex, WeightIndex);
+    printf("Perspective = %d Square = %d Piece = %d Color = %d PieceIndex = %d WeightIndex = %d\n", Perspective, Square, PIECE_TYPE(PieceWithColor), PIECE_COLOR(PieceWithColor), PieceIndex, WeightIndex);
 #endif // PRINT_WEIGHT_INDEX
 
     return WeightIndex;
@@ -345,7 +345,7 @@ BOOL UpdateAccumulator(BoardItem* Board)
     for (int Perspective = 0; Perspective < 2; ++Perspective) { // White/Black
         // Delete piece (from)
 
-        PieceWithColor = PIECE_AND_COLOR(Info->PieceFrom, CHANGE_COLOR(Board->CurrentColor));
+        PieceWithColor = PIECE_CREATE(Info->PieceFrom, CHANGE_COLOR(Board->CurrentColor));
 
         WeightIndex = CalculateWeightIndex(Perspective, Info->From, PieceWithColor);
 
@@ -354,14 +354,14 @@ BOOL UpdateAccumulator(BoardItem* Board)
         // Delete piece (captured)
 
         if (Info->Type & MOVE_PAWN_PASSANT) {
-            PieceWithColor = PIECE_AND_COLOR(PAWN, Board->CurrentColor);
+            PieceWithColor = PIECE_CREATE(PAWN, Board->CurrentColor);
 
             WeightIndex = CalculateWeightIndex(Perspective, Info->EatPawnSquare, PieceWithColor);
 
             AccumulatorSub(Board, Perspective, WeightIndex);
         }
         else if (Info->Type & MOVE_CAPTURE) {
-            PieceWithColor = PIECE_AND_COLOR(Info->PieceTo, Board->CurrentColor);
+            PieceWithColor = PIECE_CREATE(Info->PieceTo, Board->CurrentColor);
 
             WeightIndex = CalculateWeightIndex(Perspective, Info->To, PieceWithColor);
 
@@ -371,14 +371,14 @@ BOOL UpdateAccumulator(BoardItem* Board)
         // Add piece (to)
 
         if (Info->Type & MOVE_PAWN_PROMOTE) {
-            PieceWithColor = PIECE_AND_COLOR(Info->PromotePiece, CHANGE_COLOR(Board->CurrentColor));
+            PieceWithColor = PIECE_CREATE(Info->PromotePiece, CHANGE_COLOR(Board->CurrentColor));
 
             WeightIndex = CalculateWeightIndex(Perspective, Info->To, PieceWithColor);
 
             AccumulatorAdd(Board, Perspective, WeightIndex);
         }
         else {
-            PieceWithColor = PIECE_AND_COLOR(Info->PieceFrom, CHANGE_COLOR(Board->CurrentColor));
+            PieceWithColor = PIECE_CREATE(Info->PieceFrom, CHANGE_COLOR(Board->CurrentColor));
 
             WeightIndex = CalculateWeightIndex(Perspective, Info->To, PieceWithColor);
 

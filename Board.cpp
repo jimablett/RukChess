@@ -135,7 +135,7 @@ void NotateMove(BoardItem* Board, const MoveItem Move, char* Result)
     int From = MOVE_FROM(Move.Move);
     int To = MOVE_TO(Move.Move);
 
-    int PieceFrom = PIECE(Board->Pieces[From]);
+    int PieceFrom = PIECE_TYPE(Board->Pieces[From]);
 
     int GenMoveCount;
     MoveItem MoveList[MAX_GEN_MOVES];
@@ -166,7 +166,7 @@ void NotateMove(BoardItem* Board, const MoveItem Move, char* Result)
             continue; // Next move
         }
 
-        if (PIECE(Board->Pieces[MOVE_FROM(MoveList[MoveNumber].Move)]) != PieceFrom) {
+        if (PIECE_TYPE(Board->Pieces[MOVE_FROM(MoveList[MoveNumber].Move)]) != PieceFrom) {
             continue; // Next move
         }
 
@@ -375,14 +375,14 @@ void PrintBoard(BoardItem* Board)
             printf(" %d |", 8 - Square / 8);
         }
 
-        if (Board->Pieces[Square] == EMPTY_SQUARE) {
+        if (Board->Pieces[Square] == NO_PIECE) {
             printf("   |");
         }
-        else if (COLOR(Board->Pieces[Square]) == WHITE) {
-            printf(" %c |", PiecesCharWhite[PIECE(Board->Pieces[Square])]);
+        else if (PIECE_COLOR(Board->Pieces[Square]) == WHITE) {
+            printf(" %c |", PiecesCharWhite[PIECE_TYPE(Board->Pieces[Square])]);
         }
         else { // BLACK
-            printf(" %c |", PiecesCharBlack[PIECE(Board->Pieces[Square])]);
+            printf(" %c |", PiecesCharBlack[PIECE_TYPE(Board->Pieces[Square])]);
         }
 
         if ((Square + 1) % 8 == 0) {
@@ -434,7 +434,7 @@ int SetFen(BoardItem* Board, const char* Fen)
     // Clear board
 
     for (Square = 0; Square < 64; ++Square) {
-        Board->Pieces[Square] = EMPTY_SQUARE;
+        Board->Pieces[Square] = NO_PIECE;
     }
 
     Board->BB_WhitePieces = 0ULL;
@@ -452,7 +452,7 @@ int SetFen(BoardItem* Board, const char* Fen)
 
     while (*Part != ' ') {
         if (*Part == 'P') { // White pawn
-            Board->Pieces[Square] = PIECE_AND_COLOR(PAWN, WHITE);
+            Board->Pieces[Square] = PIECE_CREATE(PAWN, WHITE);
 
             Board->BB_WhitePieces |= BB_SQUARE(Square);
             Board->BB_Pieces[WHITE][PAWN] |= BB_SQUARE(Square);
@@ -460,7 +460,7 @@ int SetFen(BoardItem* Board, const char* Fen)
             ++Square;
         }
         else if (*Part == 'p') { // Black pawn
-            Board->Pieces[Square] = PIECE_AND_COLOR(PAWN, BLACK);
+            Board->Pieces[Square] = PIECE_CREATE(PAWN, BLACK);
 
             Board->BB_BlackPieces |= BB_SQUARE(Square);
             Board->BB_Pieces[BLACK][PAWN] |= BB_SQUARE(Square);
@@ -468,7 +468,7 @@ int SetFen(BoardItem* Board, const char* Fen)
             ++Square;
         }
         else if (*Part == 'N') { // White knight
-            Board->Pieces[Square] = PIECE_AND_COLOR(KNIGHT, WHITE);
+            Board->Pieces[Square] = PIECE_CREATE(KNIGHT, WHITE);
 
             Board->BB_WhitePieces |= BB_SQUARE(Square);
             Board->BB_Pieces[WHITE][KNIGHT] |= BB_SQUARE(Square);
@@ -476,7 +476,7 @@ int SetFen(BoardItem* Board, const char* Fen)
             ++Square;
         }
         else if (*Part == 'n') { // Black knight
-            Board->Pieces[Square] = PIECE_AND_COLOR(KNIGHT, BLACK);
+            Board->Pieces[Square] = PIECE_CREATE(KNIGHT, BLACK);
 
             Board->BB_BlackPieces |= BB_SQUARE(Square);
             Board->BB_Pieces[BLACK][KNIGHT] |= BB_SQUARE(Square);
@@ -484,7 +484,7 @@ int SetFen(BoardItem* Board, const char* Fen)
             ++Square;
         }
         else if (*Part == 'B') { // White bishop
-            Board->Pieces[Square] = PIECE_AND_COLOR(BISHOP, WHITE);
+            Board->Pieces[Square] = PIECE_CREATE(BISHOP, WHITE);
 
             Board->BB_WhitePieces |= BB_SQUARE(Square);
             Board->BB_Pieces[WHITE][BISHOP] |= BB_SQUARE(Square);
@@ -492,7 +492,7 @@ int SetFen(BoardItem* Board, const char* Fen)
             ++Square;
         }
         else if (*Part == 'b') { // Black bishop
-            Board->Pieces[Square] = PIECE_AND_COLOR(BISHOP, BLACK);
+            Board->Pieces[Square] = PIECE_CREATE(BISHOP, BLACK);
 
             Board->BB_BlackPieces |= BB_SQUARE(Square);
             Board->BB_Pieces[BLACK][BISHOP] |= BB_SQUARE(Square);
@@ -500,7 +500,7 @@ int SetFen(BoardItem* Board, const char* Fen)
             ++Square;
         }
         else if (*Part == 'R') { // White rook
-            Board->Pieces[Square] = PIECE_AND_COLOR(ROOK, WHITE);
+            Board->Pieces[Square] = PIECE_CREATE(ROOK, WHITE);
 
             Board->BB_WhitePieces |= BB_SQUARE(Square);
             Board->BB_Pieces[WHITE][ROOK] |= BB_SQUARE(Square);
@@ -508,7 +508,7 @@ int SetFen(BoardItem* Board, const char* Fen)
             ++Square;
         }
         else if (*Part == 'r') { // Black rook
-            Board->Pieces[Square] = PIECE_AND_COLOR(ROOK, BLACK);
+            Board->Pieces[Square] = PIECE_CREATE(ROOK, BLACK);
 
             Board->BB_BlackPieces |= BB_SQUARE(Square);
             Board->BB_Pieces[BLACK][ROOK] |= BB_SQUARE(Square);
@@ -516,7 +516,7 @@ int SetFen(BoardItem* Board, const char* Fen)
             ++Square;
         }
         else if (*Part == 'Q') { // White queen
-            Board->Pieces[Square] = PIECE_AND_COLOR(QUEEN, WHITE);
+            Board->Pieces[Square] = PIECE_CREATE(QUEEN, WHITE);
 
             Board->BB_WhitePieces |= BB_SQUARE(Square);
             Board->BB_Pieces[WHITE][QUEEN] |= BB_SQUARE(Square);
@@ -524,7 +524,7 @@ int SetFen(BoardItem* Board, const char* Fen)
             ++Square;
         }
         else if (*Part == 'q') { // Black queen
-            Board->Pieces[Square] = PIECE_AND_COLOR(QUEEN, BLACK);
+            Board->Pieces[Square] = PIECE_CREATE(QUEEN, BLACK);
 
             Board->BB_BlackPieces |= BB_SQUARE(Square);
             Board->BB_Pieces[BLACK][QUEEN] |= BB_SQUARE(Square);
@@ -532,7 +532,7 @@ int SetFen(BoardItem* Board, const char* Fen)
             ++Square;
         }
         else if (*Part == 'K') { // White king
-            Board->Pieces[Square] = PIECE_AND_COLOR(KING, WHITE);
+            Board->Pieces[Square] = PIECE_CREATE(KING, WHITE);
 
             Board->BB_WhitePieces |= BB_SQUARE(Square);
             Board->BB_Pieces[WHITE][KING] |= BB_SQUARE(Square);
@@ -540,7 +540,7 @@ int SetFen(BoardItem* Board, const char* Fen)
             ++Square;
         }
         else if (*Part == 'k') { // Black king
-            Board->Pieces[Square] = PIECE_AND_COLOR(KING, BLACK);
+            Board->Pieces[Square] = PIECE_CREATE(KING, BLACK);
 
             Board->BB_BlackPieces |= BB_SQUARE(Square);
             Board->BB_Pieces[BLACK][KING] |= BB_SQUARE(Square);
@@ -610,7 +610,7 @@ int SetFen(BoardItem* Board, const char* Fen)
         File = Part[0] - 'a';
         Rank = 7 - (Part[1] - '1');
 
-        Board->PassantSquare = SQUARE(Rank, File);
+        Board->PassantSquare = SQUARE_CREATE(File, Rank);
 
         Part += 2;
     }
@@ -665,7 +665,7 @@ void GetFen(const BoardItem* Board, char* Fen)
             *Fen++ = '/';
         }
 
-        if (Board->Pieces[Square] == EMPTY_SQUARE) {
+        if (Board->Pieces[Square] == NO_PIECE) {
             ++EmptyCount;
 
             continue; // Next square
@@ -677,11 +677,11 @@ void GetFen(const BoardItem* Board, char* Fen)
             EmptyCount = 0;
         }
 
-        if (COLOR(Board->Pieces[Square]) == WHITE) {
-            Fen += sprintf_s(Fen, MAX_FEN_LENGTH, "%c", PiecesCharWhite[PIECE(Board->Pieces[Square])]);
+        if (PIECE_COLOR(Board->Pieces[Square]) == WHITE) {
+            Fen += sprintf_s(Fen, MAX_FEN_LENGTH, "%c", PiecesCharWhite[PIECE_TYPE(Board->Pieces[Square])]);
         }
         else { // BLACK
-            Fen += sprintf_s(Fen, MAX_FEN_LENGTH, "%c", PiecesCharBlack[PIECE(Board->Pieces[Square])]);
+            Fen += sprintf_s(Fen, MAX_FEN_LENGTH, "%c", PiecesCharBlack[PIECE_TYPE(Board->Pieces[Square])]);
         }
     }
 

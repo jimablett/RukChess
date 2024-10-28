@@ -41,7 +41,7 @@ int CaptureSEE(const BoardItem* Board, const int From, const int To, const int P
 {
     int Gain[32];
 
-    int Piece = PIECE(Board->Pieces[From]);
+    int Piece = PIECE_TYPE(Board->Pieces[From]);
 
     U64 BB_From = BB_SQUARE(From);
 
@@ -72,7 +72,7 @@ int CaptureSEE(const BoardItem* Board, const int From, const int To, const int P
         }
     }
     else if (MoveType & MOVE_CAPTURE) {
-        Gain[0] = PiecesScoreSEE[PIECE(Board->Pieces[To])];
+        Gain[0] = PiecesScoreSEE[PIECE_TYPE(Board->Pieces[To])];
     }
     else {
         Gain[0] = 0;
@@ -132,15 +132,10 @@ int CaptureSEE(const BoardItem* Board, const int From, const int To, const int P
 
         Attackers &= Occupied;
 
-        if (Piece == PAWN) {
-            if (
-                (Color == WHITE && RANK(To) == 0) // White pawn promote
-                || (Color == BLACK && RANK(To) == 7) // Black pawn promote
-            ) {
-                Piece = QUEEN;
+        if (Piece == PAWN && (RANK(To) == 0 || RANK(To) == 7)) { // Pawn promote
+            Piece = QUEEN;
 
-                Gain[Depth] += PiecesScoreSEE[QUEEN] - PiecesScoreSEE[PAWN];
-            }
+            Gain[Depth] += PiecesScoreSEE[QUEEN] - PiecesScoreSEE[PAWN];
         }
     } // while
 

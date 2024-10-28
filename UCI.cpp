@@ -158,12 +158,12 @@ void UCI(void)
                     File = Part[0] - 'a';
                     Rank = 7 - (Part[1] - '1');
 
-                    From = SQUARE(Rank, File);
+                    From = SQUARE_CREATE(File, Rank);
 
                     File = Part[2] - 'a';
                     Rank = 7 - (Part[3] - '1');
 
-                    To = SQUARE(Rank, File);
+                    To = SQUARE_CREATE(File, Rank);
 
                     if (Part[4] == 'N' || Part[4] == 'n') {
                         PromotePiece = KNIGHT;

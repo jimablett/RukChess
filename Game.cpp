@@ -537,12 +537,12 @@ BOOL HumanMove(void)
             File = ReadStr[0] - 'a';
             Rank = 7 - (ReadStr[1] - '1');
 
-            From = SQUARE(Rank, File);
+            From = SQUARE_CREATE(File, Rank);
 
             File = ReadStr[2] - 'a';
             Rank = 7 - (ReadStr[3] - '1');
 
-            To = SQUARE(Rank, File);
+            To = SQUARE_CREATE(File, Rank);
 
             if (ReadStr[4] == 'N' || ReadStr[4] == 'n') {
                 PromotePiece = KNIGHT;

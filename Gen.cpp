@@ -52,20 +52,20 @@ void AddMove(const BoardItem* Board, int** CMH_Pointer, MoveItem* MoveList, int*
                 MoveList[*GenMoveCount].SortValue = SORT_CAPTURE_MOVE_BONUS + ((PAWN + 1) << 3) - (PAWN + 1);
             }
             else {
-                MoveList[*GenMoveCount].SortValue = SORT_CAPTURE_MOVE_BONUS + ((PIECE(Board->Pieces[To]) + 1) << 3) - (PIECE(Board->Pieces[From]) + 1);
+                MoveList[*GenMoveCount].SortValue = SORT_CAPTURE_MOVE_BONUS + ((PIECE_TYPE(Board->Pieces[To]) + 1) << 3) - (PIECE_TYPE(Board->Pieces[From]) + 1);
             }
         }
         else {
-            MoveList[*GenMoveCount].SortValue = Board->HeuristicTable[Board->CurrentColor][PIECE(Board->Pieces[From])][To];
+            MoveList[*GenMoveCount].SortValue = Board->HeuristicTable[Board->CurrentColor][PIECE_TYPE(Board->Pieces[From])][To];
 
 #ifdef COUNTER_MOVE_HISTORY
             if (CMH_Pointer) {
                 if (CMH_Pointer[0]) {
-                    MoveList[*GenMoveCount].SortValue += CMH_Pointer[0][(PIECE(Board->Pieces[From]) << 6) + To];
+                    MoveList[*GenMoveCount].SortValue += CMH_Pointer[0][(PIECE_TYPE(Board->Pieces[From]) << 6) + To];
                 }
 
                 if (CMH_Pointer[1]) {
-                    MoveList[*GenMoveCount].SortValue += CMH_Pointer[1][(PIECE(Board->Pieces[From]) << 6) + To];
+                    MoveList[*GenMoveCount].SortValue += CMH_Pointer[1][(PIECE_TYPE(Board->Pieces[From]) << 6) + To];
                 }
             }
 #endif // COUNTER_MOVE_HISTORY
@@ -338,7 +338,7 @@ void GenerateAllMoves(const BoardItem* Board, int** CMH_Pointer, MoveItem* MoveL
     if (Board->CurrentColor == WHITE) {
         if (
             (Board->CastleFlags & CASTLE_WHITE_KING)
-            && Board->Pieces[SQ_F1] == EMPTY_SQUARE && Board->Pieces[SQ_G1] == EMPTY_SQUARE
+            && Board->Pieces[SQ_F1] == NO_PIECE && Board->Pieces[SQ_G1] == NO_PIECE
             && !IsSquareAttacked(Board, SQ_E1, Board->CurrentColor) && !IsSquareAttacked(Board, SQ_F1, Board->CurrentColor) && !IsSquareAttacked(Board, SQ_G1, Board->CurrentColor)
         ) { // White O-O
             AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, SQ_E1, SQ_G1, MOVE_CASTLE_KING);
@@ -346,7 +346,7 @@ void GenerateAllMoves(const BoardItem* Board, int** CMH_Pointer, MoveItem* MoveL
 
         if (
             (Board->CastleFlags & CASTLE_WHITE_QUEEN)
-            && Board->Pieces[SQ_D1] == EMPTY_SQUARE && Board->Pieces[SQ_C1] == EMPTY_SQUARE && Board->Pieces[SQ_B1] == EMPTY_SQUARE
+            && Board->Pieces[SQ_D1] == NO_PIECE && Board->Pieces[SQ_C1] == NO_PIECE && Board->Pieces[SQ_B1] == NO_PIECE
             && !IsSquareAttacked(Board, SQ_E1, Board->CurrentColor) && !IsSquareAttacked(Board, SQ_D1, Board->CurrentColor) && !IsSquareAttacked(Board, SQ_C1, Board->CurrentColor)
         ) { // White O-O-O
             AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, SQ_E1, SQ_C1, MOVE_CASTLE_QUEEN);
@@ -355,7 +355,7 @@ void GenerateAllMoves(const BoardItem* Board, int** CMH_Pointer, MoveItem* MoveL
     else { // BLACK
         if (
             (Board->CastleFlags & CASTLE_BLACK_KING)
-            && Board->Pieces[SQ_F8] == EMPTY_SQUARE && Board->Pieces[SQ_G8] == EMPTY_SQUARE
+            && Board->Pieces[SQ_F8] == NO_PIECE && Board->Pieces[SQ_G8] == NO_PIECE
             && !IsSquareAttacked(Board, SQ_E8, Board->CurrentColor) && !IsSquareAttacked(Board, SQ_F8, Board->CurrentColor) && !IsSquareAttacked(Board, SQ_G8, Board->CurrentColor)
         ) { // Black O-O
             AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, SQ_E8, SQ_G8, MOVE_CASTLE_KING);
@@ -363,7 +363,7 @@ void GenerateAllMoves(const BoardItem* Board, int** CMH_Pointer, MoveItem* MoveL
 
         if (
             (Board->CastleFlags & CASTLE_BLACK_QUEEN)
-            && Board->Pieces[SQ_D8] == EMPTY_SQUARE && Board->Pieces[SQ_C8] == EMPTY_SQUARE && Board->Pieces[SQ_B8] == EMPTY_SQUARE
+            && Board->Pieces[SQ_D8] == NO_PIECE && Board->Pieces[SQ_C8] == NO_PIECE && Board->Pieces[SQ_B8] == NO_PIECE
             && !IsSquareAttacked(Board, SQ_E8, Board->CurrentColor) && !IsSquareAttacked(Board, SQ_D8, Board->CurrentColor) && !IsSquareAttacked(Board, SQ_C8, Board->CurrentColor)
         ) { // Black O-O-O
             AddMove(Board, CMH_Pointer, MoveList, GenMoveCount, SQ_E8, SQ_C8, MOVE_CASTLE_QUEEN);

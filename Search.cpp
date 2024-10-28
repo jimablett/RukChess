@@ -43,7 +43,9 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
 {
     assert(Alpha >= -INF);
     assert(Beta <= INF);
+    assert(Alpha < Beta);
     assert(Ply >= 0 && Ply <= MAX_PLY);
+    assert(InCheck == IsInCheck(Board, Board->CurrentColor));
 
     int GenMoveCount;
     MoveItem MoveList[MAX_GEN_MOVES];
@@ -188,9 +190,9 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
                 ) {
                     if (HashMove) {
                         if (
-                            Board->Pieces[MOVE_TO(HashMove)] == EMPTY_SQUARE
+                            Board->Pieces[MOVE_TO(HashMove)] == NO_PIECE
                             && (
-                                PIECE(Board->Pieces[MOVE_FROM(HashMove)]) != PAWN
+                                PIECE_TYPE(Board->Pieces[MOVE_FROM(HashMove)]) != PAWN
                                 || (
                                     MOVE_TO(HashMove) != Board->PassantSquare
                                     && RANK(MOVE_TO(HashMove)) != 0
