@@ -318,7 +318,7 @@ int Search(BoardItem* Board, int Alpha, int Beta, int Depth, const int Ply, Move
                     continue; // Next move
                 }
 
-                if (CaptureSEE(Board, MOVE_FROM(MoveList[MoveNumber].Move), MOVE_TO(MoveList[MoveNumber].Move), MOVE_PROMOTE_PIECE(MoveList[MoveNumber].Move), MoveList[MoveNumber].Type) < BetaCut - StaticScore) {
+                if (CaptureSEE(Board, MoveList[MoveNumber]) < BetaCut - StaticScore) {
                     continue; // Next move
                 }
 
@@ -427,7 +427,7 @@ NextMove:
             && MoveList[MoveNumber].SortValue >= 0
             && MoveList[MoveNumber].Move != HashMove
         ) {
-            SEE_Value = CaptureSEE(Board, MOVE_FROM(MoveList[MoveNumber].Move), MOVE_TO(MoveList[MoveNumber].Move), MOVE_PROMOTE_PIECE(MoveList[MoveNumber].Move), MoveList[MoveNumber].Type);
+            SEE_Value = CaptureSEE(Board, MoveList[MoveNumber]);
 
             if (SEE_Value < 0) { // Bad capture move
                 MoveList[MoveNumber].SortValue = SEE_Value - SORT_CAPTURE_MOVE_BONUS; // Search move later
@@ -541,7 +541,7 @@ NextMove:
 #else
                 UnmakeMove(Board);
 
-                if (CaptureSEE(Board, MOVE_FROM(MoveList[MoveNumber].Move), MOVE_TO(MoveList[MoveNumber].Move), MOVE_PROMOTE_PIECE(MoveList[MoveNumber].Move), MoveList[MoveNumber].Type) < -100 * Depth) { // Bad capture move (Xiphos)
+                if (CaptureSEE(Board, MoveList[MoveNumber]) < -100 * Depth) { // Bad capture move (Xiphos)
                     continue; // Next move
                 }
 
@@ -574,7 +574,7 @@ NextMove:
                 if (Depth <= 3) { // Hakkapeliitta
                     UnmakeMove(Board);
 
-                    if (CaptureSEE(Board, MOVE_FROM(MoveList[MoveNumber].Move), MOVE_TO(MoveList[MoveNumber].Move), MOVE_PROMOTE_PIECE(MoveList[MoveNumber].Move), MoveList[MoveNumber].Type) < 0) { // Bad quiet move
+                    if (CaptureSEE(Board, MoveList[MoveNumber]) < 0) { // Bad quiet move
                         continue; // Next move
                     }
 
