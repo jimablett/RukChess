@@ -37,15 +37,15 @@ U64 AttackTo(const BoardItem* Board, const int Square, const U64 Occupied)
     return Attackers;
 }
 
-int CaptureSEE(const BoardItem* Board, const MoveItem Move)
+int CaptureSEE(const BoardItem* Board, const MoveItem* Move)
 {
     int Gain[32];
 
-    const int MoveType = Move.Type;
+    const int MoveType = Move->Type;
 
-    const int From = MOVE_FROM(Move.Move);
-    const int To = MOVE_TO(Move.Move);
-    const int PromotePiece = MOVE_PROMOTE_PIECE(Move.Move);
+    const int From = MOVE_FROM(Move->Move);
+    const int To = MOVE_TO(Move->Move);
+    const int PromotePiece = MOVE_PROMOTE_PIECE(Move->Move);
 
     int Piece = PIECE_TYPE(Board->Pieces[From]);
 
