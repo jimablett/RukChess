@@ -32,7 +32,7 @@ void MakeMove(BoardItem* Board, const MoveItem Move)
 
     assert((Info->PieceTo >= PAWN && Info->PieceTo <= QUEEN) || Info->PieceTo == PIECE_TYPE(NO_PIECE));
 
-    Info->PromotePiece = MOVE_PROMOTE_PIECE(Move.Move);
+    Info->PromotePiece = MOVE_PROMOTE_PIECE_TYPE(Move.Move);
 
     assert((Info->PromotePiece >= KNIGHT && Info->PromotePiece <= QUEEN) || Info->PromotePiece == 0);
 

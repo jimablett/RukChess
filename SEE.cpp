@@ -41,11 +41,10 @@ int CaptureSEE(const BoardItem* Board, const int MoveType, const int Move)
 {
     int Gain[32];
 
-    const int From = MOVE_FROM(Move);
-    const int To = MOVE_TO(Move);
-    const int PromotePiece = MOVE_PROMOTE_PIECE(Move);
+    int From = MOVE_FROM(Move);
+    int To = MOVE_TO(Move);
 
-    int Piece = PIECE_TYPE(Board->Pieces[From]);
+    int Piece;
 
     U64 BB_From = BB_SQUARE(From);
 
@@ -83,9 +82,12 @@ int CaptureSEE(const BoardItem* Board, const int MoveType, const int Move)
     }
 
     if (MoveType & MOVE_PAWN_PROMOTE) {
-        Piece = PromotePiece;
+        Piece = MOVE_PROMOTE_PIECE_TYPE(Move);
 
-        Gain[0] += PiecesScoreSEE[PromotePiece] - PiecesScoreSEE[PAWN];
+        Gain[0] += PiecesScoreSEE[Piece] - PiecesScoreSEE[PAWN];
+    }
+    else {
+        Piece = PIECE_TYPE(Board->Pieces[From]);
     }
 
     Occupied &= ~BB_From;
@@ -128,10 +130,10 @@ int CaptureSEE(const BoardItem* Board, const int MoveType, const int Move)
 
         Occupied &= ~BB_From;
 
-        // Bishops or Queens (Add X-ray attacks)
+        // Add X-ray attacks: bishops or queens
         Attackers |= BishopAttacks(To, Occupied) & BishopsOrQueens;
 
-        // Rooks or Queens (Add X-ray attacks)
+        // Add X-ray attacks: rooks or queens
         Attackers |= RookAttacks(To, Occupied) & RooksOrQueens;
 
         Attackers &= Occupied;

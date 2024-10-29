@@ -77,7 +77,7 @@ void PrintBestMoves(const BoardItem* Board, const int Depth, const MoveItem* Bes
         printf(" %s%s", BoardName[MOVE_FROM(BestMoves[Ply].Move)], BoardName[MOVE_TO(BestMoves[Ply].Move)]);
 
         if (BestMoves[Ply].Type & MOVE_PAWN_PROMOTE) {
-            printf("%c", PiecesCharBlack[MOVE_PROMOTE_PIECE(BestMoves[Ply].Move)]);
+            printf("%c", PiecesCharBlack[MOVE_PROMOTE_PIECE_TYPE(BestMoves[Ply].Move)]);
         }
     }
 
@@ -118,14 +118,14 @@ BOOL PrintResult(const BOOL InCheck, const MoveItem BestMove, const MoveItem Pon
             printf("bestmove %s%s", BoardName[MOVE_FROM(BestMove.Move)], BoardName[MOVE_TO(BestMove.Move)]);
 
             if (BestMove.Type & MOVE_PAWN_PROMOTE) {
-                printf("%c", PiecesCharBlack[MOVE_PROMOTE_PIECE(BestMove.Move)]);
+                printf("%c", PiecesCharBlack[MOVE_PROMOTE_PIECE_TYPE(BestMove.Move)]);
             }
 
             if (PonderMove.Move) {
                 printf(" ponder %s%s", BoardName[MOVE_FROM(PonderMove.Move)], BoardName[MOVE_TO(PonderMove.Move)]);
 
                 if (PonderMove.Type & MOVE_PAWN_PROMOTE) {
-                    printf("%c", PiecesCharBlack[MOVE_PROMOTE_PIECE(PonderMove.Move)]);
+                    printf("%c", PiecesCharBlack[MOVE_PROMOTE_PIECE_TYPE(PonderMove.Move)]);
                 }
             }
         }
@@ -178,7 +178,7 @@ BOOL PrintResult(const BOOL InCheck, const MoveItem BestMove, const MoveItem Pon
         }
 
         if (BestMove.Type & MOVE_PAWN_PROMOTE) {
-            printf("%c", PiecesCharBlack[MOVE_PROMOTE_PIECE(BestMove.Move)]);
+            printf("%c", PiecesCharBlack[MOVE_PROMOTE_PIECE_TYPE(BestMove.Move)]);
         }
 
         printf(" (%s)\n", NotateMoveStr);
@@ -586,7 +586,7 @@ BOOL HumanMove(void)
                     }
 
                     if (MoveList[MoveNumber].Type & MOVE_PAWN_PROMOTE) {
-                        printf("%c", PiecesCharBlack[MOVE_PROMOTE_PIECE(MoveList[MoveNumber].Move)]);
+                        printf("%c", PiecesCharBlack[MOVE_PROMOTE_PIECE_TYPE(MoveList[MoveNumber].Move)]);
                     }
 
                     printf(" (%s)\n", NotateMoveStr);

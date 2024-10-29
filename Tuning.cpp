@@ -271,7 +271,7 @@ void Pgn2Fen(void)
                             printf(" %s%s", BoardName[MOVE_FROM(MoveList[MoveNumber].Move)], BoardName[MOVE_TO(MoveList[MoveNumber].Move)]);
 
                             if (MoveList[MoveNumber].Type & MOVE_PAWN_PROMOTE) {
-                                printf("%c", PiecesCharBlack[MOVE_PROMOTE_PIECE(MoveList[MoveNumber].Move)]);
+                                printf("%c", PiecesCharBlack[MOVE_PROMOTE_PIECE_TYPE(MoveList[MoveNumber].Move)]);
                             }
 
                             printf(" (%s)", NotateMoveStr);

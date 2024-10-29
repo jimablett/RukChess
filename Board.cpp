@@ -170,7 +170,7 @@ void NotateMove(BoardItem* Board, const MoveItem Move, char* Result)
             continue; // Next move
         }
 
-        if ((MoveList[MoveNumber].Type & MOVE_PAWN_PROMOTE) && MOVE_PROMOTE_PIECE(MoveList[MoveNumber].Move) != QUEEN) {
+        if ((MoveList[MoveNumber].Type & MOVE_PAWN_PROMOTE) && MOVE_PROMOTE_PIECE_TYPE(MoveList[MoveNumber].Move) != QUEEN) {
             continue; // Next move
         }
 
@@ -278,7 +278,7 @@ void NotateMove(BoardItem* Board, const MoveItem Move, char* Result)
         if (Move.Type & MOVE_PAWN_PROMOTE) {
             *Result++ = '=';
 
-            switch (MOVE_PROMOTE_PIECE(Move.Move)) {
+            switch (MOVE_PROMOTE_PIECE_TYPE(Move.Move)) {
                 case KNIGHT:
                     *Result++ = 'N';
                     break;
