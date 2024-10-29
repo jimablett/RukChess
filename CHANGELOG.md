@@ -35,7 +35,7 @@
 31. Changed MIN_BOOK_GAMES from 50 to 30
 32. Null move bugfix
 33. ProbCut bugfix
-34. Corrected singular extension
+34. Corrected singular extension (added condition !SkipMove)
 35. Corrected the code
 36. New book file (587604 positions)
 
