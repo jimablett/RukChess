@@ -245,12 +245,12 @@ void MakeMove(BoardItem* Board, const MoveItem Move)
     Board->Hash ^= ColorHash;
 
 #ifdef DEBUG_HASH
-    U64 OriginalHash = Board->Hash;
+    U64 PreviousHash = Board->Hash;
 
     InitHash(Board);
 
-    if (Board->Hash != OriginalHash) {
-        printf("-- Board hash error! BoardHash = 0x%016llx OriginalHash = 0x%016llx\n", Board->Hash, OriginalHash);
+    if (Board->Hash != PreviousHash) {
+        printf("-- Board hash error! BoardHash = 0x%016llx PreviousHash = 0x%016llx\n", Board->Hash, PreviousHash);
     }
 #endif // DEBUG_HASH
 
@@ -465,12 +465,12 @@ void MakeNullMove(BoardItem* Board)
     Board->Hash ^= ColorHash;
 
 #ifdef DEBUG_HASH
-    U64 OriginalHash = Board->Hash;
+    U64 PreviousHash = Board->Hash;
 
     InitHash(Board);
 
-    if (Board->Hash != OriginalHash) {
-        printf("-- Board hash error! BoardHash = 0x%016llx OriginalHash = 0x%016llx\n", Board->Hash, OriginalHash);
+    if (Board->Hash != PreviousHash) {
+        printf("-- Board hash error! BoardHash = 0x%016llx PreviousHash = 0x%016llx\n", Board->Hash, PreviousHash);
     }
 #endif // DEBUG_HASH
 }

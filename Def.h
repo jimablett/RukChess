@@ -74,7 +74,7 @@
 // Program name, program version, evaluation function name and copyright information
 
 #define PROGRAM_NAME                            "RukChess"
-#define PROGRAM_VERSION                         "4.0.0dev"
+#define PROGRAM_VERSION                         "4.0.0"
 
 /*
     https://github.com/Ilya-Ruk/RukChessTrainer

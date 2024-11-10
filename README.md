@@ -1,33 +1,25 @@
 # RukChess
-Chess engine with console interface, UCI support and several evaluation functions (including NNUE).
+Chess engine with console interface, UCI support and NNUE evaluation function.
 
 # Inspiration
-In 1999, I came across the source code for a chess program (which is now available at https://www.ioccc.org/years.html#1992_vern) and I became interested in understanding how a computer could play chess. More than 20 years have passed since then, but in my code you can still find a line of code from that program:
+In 1999, I came across the source code of a chess program (now available at https://www.ioccc.org/years.html#1992_vern) and became interested in understanding how a computer could play chess. More than 25 years have passed since then, and many new things have appeared, including NNUE.
 
-original code (vern.orig.c, line 175)
-
-    s{ } ?"!":">"
-
-current implementation (Game.cpp, line 956)
-
-    InCheck ? '!' : '>'
-
-# Console (terminal) User Interface (TUI)
-
+# Console (Terminal) User Interface (TUI)
 ![print_screen_1](resources/print_screen_1.jpg)
 ![print_screen_2](resources/print_screen_2.jpg)
 ![print_screen_3](resources/print_screen_3.jpg)
 ![print_screen_4](resources/print_screen_4.jpg)
+![print_screen_5](resources/print_screen_5.jpg)
 
 # Graphical User Interface (GUI)
 1. [Arena Chess GUI](http://www.playwitharena.de/)
 2. [Cute Chess](https://cutechess.com/)
 
-# Web User Interface (Web UI)
+# Web User Interface (WebUI)
 1. [RukChessWeb](https://github.com/Ilya-Ruk/RukChessWeb)
 
 # Strength
-For RukChess 3.0.18 PVS NNUE2 with the net-7cf57d4dc994.nnue (in release) the strength is approximately 3237 ELO.
+For RukChess 3.0.19 PVS NNUE2 with the net-7cf57d4dc994.nnue (in release) the strength is approximately 3262 ELO.
 
 # Rating
 https://computerchess.org.uk/ccrl/4040/cgi/compare_engines.cgi?family=RukChess&print=Rating+list&print=Results+table&print=LOS+table&print=Ponder+hit+table&print=Eval+difference+table&print=Comopp+gamenum+table&print=Overlap+table&print=Score+with+common+opponents
