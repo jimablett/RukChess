@@ -18,11 +18,27 @@ In 1999, I came across the source code of a chess program (now available at http
 # Web User Interface (WebUI)
 1. [RukChessWeb](https://github.com/Ilya-Ruk/RukChessWeb)
 
-# Strength
-For RukChess 3.0.19 PVS NNUE2 with the net-7cf57d4dc994.nnue (in release) the strength is approximately 3262 ELO.
+# [Rating](https://computerchess.org.uk/ccrl/)
 
-# Rating
-https://computerchess.org.uk/ccrl/4040/cgi/compare_engines.cgi?family=RukChess&print=Rating+list&print=Results+table&print=LOS+table&print=Ponder+hit+table&print=Eval+difference+table&print=Comopp+gamenum+table&print=Overlap+table&print=Score+with+common+opponents
+## CCRL Blitz (11.11.2024)
+
+|Version|Net|ELO|
+|-------|---|---|
+|3.0 NNUE2|[Net 001, Epoch 040, Hash 0x71eb63511cb1](https://github.com/Ilya-Ruk/RukChessNets/blob/master/Nets%20001/rukchess_040.nnue)|3256|
+|3.0.15 NNUE2|[Net 070, Epoch 120, Hash 0x755b16a94877](https://github.com/Ilya-Ruk/RukChessNets/blob/master/Nets%20070/rukchess_120.nnue)|3274|
+|3.0.17 NNUE2|[Net 110, Epoch 022, Hash 0x6e5001eb7720](https://github.com/Ilya-Ruk/RukChessNets/blob/master/Nets%20110/rukchess_022.nnue)|3270|
+
+## CCRL 40/15 (10.11.2024)
+
+|Version|Net|ELO|
+|-------|---|---|
+|3.0 NNUE2|[Net 001, Epoch 040, Hash 0x71eb63511cb1](https://github.com/Ilya-Ruk/RukChessNets/blob/master/Nets%20001/rukchess_040.nnue)|3216|
+|3.0.12 NNUE2|[Net 001, Epoch 040, Hash 0x71eb63511cb1](https://github.com/Ilya-Ruk/RukChessNets/blob/master/Nets%20001/rukchess_040.nnue)|3215|
+|3.0.15 NNUE2|[Net 070, Epoch 120, Hash 0x755b16a94877](https://github.com/Ilya-Ruk/RukChessNets/blob/master/Nets%20070/rukchess_120.nnue)|3227|
+|3.0.15 NNUE2 (4 CPU)|[Net 070, Epoch 120, Hash 0x755b16a94877](https://github.com/Ilya-Ruk/RukChessNets/blob/master/Nets%20070/rukchess_120.nnue)|3305|
+|3.0.17 NNUE2|[Net 110, Epoch 022, Hash 0x6e5001eb7720](https://github.com/Ilya-Ruk/RukChessNets/blob/master/Nets%20110/rukchess_022.nnue)|3209|
+|3.0.18 NNUE2|[Net 122, Epoch 081, Hash 0x7cf57d4dc994](https://github.com/Ilya-Ruk/RukChessNets/blob/master/Nets%20122/rukchess_081.nnue)|3231|
+|3.0.19 NNUE2|[Net 122, Epoch 081, Hash 0x7cf57d4dc994](https://github.com/Ilya-Ruk/RukChessNets/blob/master/Nets%20122/rukchess_081.nnue)|3263|
 
 # Chess programs (source codes)
 1. https://www.ioccc.org/years.html#1992_vern
@@ -66,6 +82,3 @@ https://computerchess.org.uk/ccrl/4040/cgi/compare_engines.cgi?family=RukChess&p
 4. https://github.com/amanjpro/zahak-trainer
 5. https://github.com/Aryan1508/Trainer
 6. https://prng.di.unimi.it/splitmix64.c
-
-# Rating lists of chess engines
-https://computerchess.org.uk/ccrl/
