@@ -40,7 +40,7 @@ In 1999, I came across the source code of a chess program (now available at http
 |3.0.18 NNUE2|[Net 122, Epoch 081, Hash 0x7cf57d4dc994](https://github.com/Ilya-Ruk/RukChessNets/blob/master/Nets%20122/rukchess_081.nnue)|3231|
 |3.0.19 NNUE2|[Net 122, Epoch 081, Hash 0x7cf57d4dc994](https://github.com/Ilya-Ruk/RukChessNets/blob/master/Nets%20122/rukchess_081.nnue)|3263|
 
-# Chess programs (source codes)
+# Chess programs
 1. https://www.ioccc.org/years.html#1992_vern
 2. http://www.tckerrigan.com/Chess/TSCP/
 3. https://github.com/vancezuo/parallel-chess
@@ -75,7 +75,7 @@ In 1999, I came across the source code of a chess program (now available at http
 13. https://arxiv.org/abs/1704.08863
 14. https://arxiv.org/abs/1712.01815
 
-# Additional resources (source codes)
+# Additional resources
 1. https://github.com/zamar/spsa
 2. https://github.com/cutechess/cutechess
 3. https://github.com/jhonnold/berserk-trainer
