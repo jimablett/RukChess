@@ -20,7 +20,7 @@ In 1999, I came across the source code of a chess program (now available at http
 
 # [Rating](https://computerchess.org.uk/ccrl/)
 
-## CCRL Blitz (11.11.2024)
+## [CCRL Blitz](https://computerchess.org.uk/ccrl/404/) (11.11.2024)
 
 |Version|Net|ELO|
 |-------|---|---|
@@ -28,7 +28,7 @@ In 1999, I came across the source code of a chess program (now available at http
 |3.0.15 NNUE2|[Net 070, Epoch 120, Hash 0x755b16a94877](https://github.com/Ilya-Ruk/RukChessNets/blob/master/Nets%20070/rukchess_120.nnue)|3274|
 |3.0.17 NNUE2|[Net 110, Epoch 022, Hash 0x6e5001eb7720](https://github.com/Ilya-Ruk/RukChessNets/blob/master/Nets%20110/rukchess_022.nnue)|3270|
 
-## CCRL 40/15 (10.11.2024)
+## [CCRL 40/15](https://computerchess.org.uk/ccrl/4040/) (10.11.2024)
 
 |Version|Net|ELO|
 |-------|---|---|
