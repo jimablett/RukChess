@@ -4,7 +4,7 @@ Chess engine with console interface, UCI support and NNUE evaluation function.
 # Inspiration
 In 1999, I came across the source code of a chess program (now available at https://www.ioccc.org/years.html#1992_vern) and became interested in understanding how a computer could play chess. More than 25 years have passed since then, and many new things have appeared, including NNUE.
 
-# Console (Terminal) User Interface (TUI)
+# Terminal User Interface (TUI)
 ![print_screen_1](resources/print_screen_1.jpg)
 ![print_screen_2](resources/print_screen_2.jpg)
 ![print_screen_3](resources/print_screen_3.jpg)
@@ -17,6 +17,19 @@ In 1999, I came across the source code of a chess program (now available at http
 
 # Web User Interface (WebUI)
 1. [RukChessWeb](https://github.com/Ilya-Ruk/RukChessWeb)
+
+# Architecture of efficiently updatable neural network (NNUE)
+
+((768 input layer x 512 hidden layer) x 2 perspectives) x 1 output layer
+
+Input layer: 2 colors x 6 pieces x 64 squares = 768
+Hidden layer (ReLU): 512 x 2 perspectives = 1024
+Output layer: 1
+
+Net file size: 4 bytes (magic) + 8 bytes (hash) + ((768 x 512) input weights + 512 input biases + (512 x 2) output weights + 1 output bias) x 4 bytes (float) = 1579024 bytes
+
+Quantization precision (input): 64
+Quantization precision (output): 512
 
 # [Rating](https://computerchess.org.uk/ccrl/)
 
