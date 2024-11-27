@@ -22,13 +22,13 @@ In 1999, I came across the source code of a chess program (now available at http
 
 ((768 input layer x 512 hidden layer) x 2 perspectives) x 1 output layer
 
-Input layer: 2 colors x 6 pieces x 64 squares = 768
-Hidden layer (ReLU): 512 x 2 perspectives = 1024
+Input layer: 2 colors x 6 pieces x 64 squares = 768  
+Hidden layer (ReLU): 512 x 2 perspectives = 1024  
 Output layer: 1
 
 Net file size: 4 bytes (magic) + 8 bytes (hash) + ((768 x 512) input weights + 512 input biases + (512 x 2) output weights + 1 output bias) x 4 bytes (float) = 1579024 bytes
 
-Quantization precision (input): 64
+Quantization precision (input): 64  
 Quantization precision (output): 512
 
 # [Rating](https://computerchess.org.uk/ccrl/)
@@ -86,7 +86,9 @@ Quantization precision (output): 512
 11. https://arxiv.org/abs/1509.01549
 12. https://arxiv.org/abs/1609.04747
 13. https://arxiv.org/abs/1704.08863
-14. https://arxiv.org/abs/1712.01815
+14. https://arxiv.org/abs/1711.05101
+15. https://arxiv.org/abs/1712.01815
+16. https://arxiv.org/abs/1904.09237
 
 # Additional resources
 1. https://github.com/zamar/spsa
