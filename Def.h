@@ -104,7 +104,7 @@
 #define MAX_THREADS                             64
 
 #define DEFAULT_BOOK_FILE_NAME                  "book.txt"
-#define DEFAULT_NNUE_FILE_NAME                  "net-7cf57d4dc994.nnue" // 09.12.2023
+#define DEFAULT_NNUE_FILE_NAME                  "net-3ba7af1fe396.nnue" // 05.12.2024
 
 // Time management (Xiphos)
 

@@ -20,13 +20,13 @@ In 1999, I came across the source code of a chess program (now available at http
 
 # Architecture of efficiently updatable neural network (NNUE)
 
-((768 input layer x 512 hidden layer) x 2 perspectives) x 1 output layer
+((768 input layer x 256 hidden layer) x 2 perspectives) x 1 output layer
 
 Input layer: 2 colors x 6 pieces x 64 squares = 768  
-Hidden layer (ReLU): 512 x 2 perspectives = 1024  
+Hidden layer (ReLU): 256 hidden layer x 2 perspectives = 512  
 Output layer: 1
 
-Net file size: 4 bytes (magic) + 8 bytes (hash) + ((768 x 512) input weights + 512 input biases + (512 x 2) output weights + 1 output bias) x 4 bytes (float) = 1579024 bytes
+Net file size: 4 bytes (magic) + 8 bytes (hash) + ((768 x 256) input weights + 256 input biases + (256 x 2) output weights + 1 output bias) x 4 bytes (float) = 789520 bytes
 
 Quantization precision (input): 64  
 Quantization precision (output): 512
