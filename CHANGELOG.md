@@ -21,24 +21,23 @@
 17. Deleted PVS sorting
 18. Deleted LAST_LAYER_AS_FLOAT
 19. Deleted MCTS
-20. Change align from 64 to 32 (256 / 8)
-21. Mate distance pruning after draw conditions and if not root node
-22. Added built-in performance test NNUE
-23. Save best moves only in master thread (function Search)
-24. Deleted use SaveBestMoves function from function QuiescenceSearch
-25. Changed MAX_THREADS from 128 to 64
-26. Corrected ComputerMove function
-27. Added allocate memory error check
-28. Changed time control from 65535 to 32767 nodes
-29. Corrected killer move
-30. Corrected aspiration window search
-31. Changed MIN_BOOK_GAMES from 50 to 30
-32. Null move bugfix
-33. ProbCut bugfix
-34. Corrected singular extension (added condition !SkipMove)
-35. Corrected the code
-36. New neural net "[Net 159, Epoch 077, Hash 0x3ba7af1fe396](https://github.com/Ilya-Ruk/RukChessNets/blob/master/Nets%20159/rukchess_077.nnue)"
-37. New book file (587604 positions)
+20. Mate distance pruning after draw conditions and if not root node
+21. Added built-in performance test NNUE
+22. Save best moves only in master thread (function Search)
+23. Deleted use SaveBestMoves function from function QuiescenceSearch
+24. Changed MAX_THREADS from 128 to 64
+25. Corrected ComputerMove function
+26. Added allocate memory error check
+27. Changed time control from 65535 to 32767 nodes
+28. Corrected killer move
+29. Corrected aspiration window search
+30. Changed MIN_BOOK_GAMES from 50 to 30
+31. Null move bugfix
+32. ProbCut bugfix
+33. Corrected singular extension (added condition !SkipMove)
+34. Corrected the code
+35. New neural net "[Net 159, Epoch 077, Hash 0x3ba7af1fe396](https://github.com/Ilya-Ruk/RukChessNets/blob/master/Nets%20159/rukchess_077.nnue)"
+36. New book file (587604 positions)
 
 ## RukChess 3.0.19 (08.05.2024)
 
