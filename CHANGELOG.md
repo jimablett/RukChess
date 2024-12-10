@@ -36,8 +36,9 @@
 32. ProbCut bugfix
 33. Corrected singular extension (added condition !SkipMove)
 34. Corrected the code
-35. New neural net "[Net 159, Epoch 077, Hash 0x3ba7af1fe396](https://github.com/Ilya-Ruk/RukChessNets/blob/master/Nets%20159/rukchess_077.nnue)"
-36. New book file (587604 positions)
+35. Reduced hidden layer from 512 to 256
+36. New neural net "[Net 159, Epoch 077, Hash 0x3ba7af1fe396](https://github.com/Ilya-Ruk/RukChessNets/blob/master/Nets%20159/rukchess_077.nnue)"
+37. New book file (587604 positions)
 
 ## RukChess 3.0.19 (08.05.2024)
 

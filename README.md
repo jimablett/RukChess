@@ -1,8 +1,8 @@
 # RukChess
-Chess engine with console interface, UCI support and NNUE evaluation function.
+Chess engine with terminal user interface, UCI support and NNUE evaluation function.
 
 # Inspiration
-In 1999, I came across the source code of a chess program (now available at https://www.ioccc.org/years.html#1992_vern) and became interested in understanding how a computer could play chess. More than 25 years have passed since then, and many new things have appeared, including NNUE.
+In 1999, I came across the source code of a chess program (now available at https://www.ioccc.org/years.html#1992_vern) and became interested in how a computer could play chess. More than 25 years have passed since then, and many new things have appeared, including NNUE.
 
 # Terminal User Interface (TUI)
 ![print_screen_1](resources/print_screen_1.jpg)
@@ -19,11 +19,10 @@ In 1999, I came across the source code of a chess program (now available at http
 1. [RukChessWeb](https://github.com/Ilya-Ruk/RukChessWeb)
 
 # Architecture of efficiently updatable neural network (NNUE)
-
-((768 input layer x 256 hidden layer) x 2 perspectives) x 1 output layer
+((768 input x 256 hidden) x 2 perspectives) x 1 output
 
 Input layer: 2 colors x 6 pieces x 64 squares = 768  
-Hidden layer (ReLU): 256 hidden layer x 2 perspectives = 512  
+Hidden layer (ReLU): 256 hidden x 2 perspectives = 512  
 Output layer: 1
 
 Net file size: 4 bytes (magic) + 8 bytes (hash) + ((768 x 256) input weights + 256 input biases + (256 x 2) output weights + 1 output bias) x 4 bytes (float) = 789520 bytes
