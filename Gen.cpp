@@ -90,7 +90,7 @@ void GenerateAllMoves(const BoardItem* Board, int** CMH_Pointer, MoveItem* MoveL
     int From;
     int To;
 
-    // Pawns captures
+    // Pawns capture moves
 
     if (Board->CurrentColor == WHITE) {
         Attacks = PawnAttacks(Board->BB_Pieces[WHITE][PAWN], WHITE) & Board->BB_BlackPieces;
@@ -127,7 +127,7 @@ void GenerateAllMoves(const BoardItem* Board, int** CMH_Pointer, MoveItem* MoveL
         }
     }
 
-    // Pawns captures (en passant)
+    // Pawns capture moves (en passant)
 
     if (Board->PassantSquare != -1) {
         To = Board->PassantSquare;
@@ -202,7 +202,7 @@ void GenerateAllMoves(const BoardItem* Board, int** CMH_Pointer, MoveItem* MoveL
         }
     }
 
-    // Knights captures and quiet moves
+    // Knights capture and quiet moves
 
     Pieces = Board->BB_Pieces[Board->CurrentColor][KNIGHT];
 
@@ -239,7 +239,7 @@ void GenerateAllMoves(const BoardItem* Board, int** CMH_Pointer, MoveItem* MoveL
         Pieces &= Pieces - 1;
     }
 
-    // Bishops or Queens captures and quiet moves
+    // Bishops/Queens capture and quiet moves
 
     Pieces = Board->BB_Pieces[Board->CurrentColor][BISHOP];
     Pieces |= Board->BB_Pieces[Board->CurrentColor][QUEEN];
@@ -277,7 +277,7 @@ void GenerateAllMoves(const BoardItem* Board, int** CMH_Pointer, MoveItem* MoveL
         Pieces &= Pieces - 1;
     }
 
-    // Rooks or Queens captures and quiet moves
+    // Rooks/Queens capture and quiet moves
 
     Pieces = Board->BB_Pieces[Board->CurrentColor][ROOK];
     Pieces |= Board->BB_Pieces[Board->CurrentColor][QUEEN];
@@ -315,7 +315,7 @@ void GenerateAllMoves(const BoardItem* Board, int** CMH_Pointer, MoveItem* MoveL
         Pieces &= Pieces - 1;
     }
 
-    // King captures and quiet moves
+    // King capture and quiet moves
 
     From = LSB(Board->BB_Pieces[Board->CurrentColor][KING]);
 
@@ -395,7 +395,7 @@ void GenerateCaptureMoves(const BoardItem* Board, int** CMH_Pointer, MoveItem* M
     int From;
     int To;
 
-    // Pawns captures
+    // Pawns capture moves
 
     if (Board->CurrentColor == WHITE) {
         Attacks = PawnAttacks(Board->BB_Pieces[WHITE][PAWN], WHITE) & Board->BB_BlackPieces;
@@ -432,7 +432,7 @@ void GenerateCaptureMoves(const BoardItem* Board, int** CMH_Pointer, MoveItem* M
         }
     }
 
-    // Pawns captures (en passant)
+    // Pawns capture moves (en passant)
 
     if (Board->PassantSquare != -1) {
         To = Board->PassantSquare;
@@ -482,7 +482,7 @@ void GenerateCaptureMoves(const BoardItem* Board, int** CMH_Pointer, MoveItem* M
         }
     }
 
-    // Knights captures
+    // Knights capture moves
 
     Pieces = Board->BB_Pieces[Board->CurrentColor][KNIGHT];
 
@@ -509,7 +509,7 @@ void GenerateCaptureMoves(const BoardItem* Board, int** CMH_Pointer, MoveItem* M
         Pieces &= Pieces - 1;
     }
 
-    // Bishops or Queens captures
+    // Bishops/Queens capture moves
 
     Pieces = Board->BB_Pieces[Board->CurrentColor][BISHOP];
     Pieces |= Board->BB_Pieces[Board->CurrentColor][QUEEN];
@@ -537,7 +537,7 @@ void GenerateCaptureMoves(const BoardItem* Board, int** CMH_Pointer, MoveItem* M
         Pieces &= Pieces - 1;
     }
 
-    // Rooks or Queens captures
+    // Rooks/Queens capture moves
 
     Pieces = Board->BB_Pieces[Board->CurrentColor][ROOK];
     Pieces |= Board->BB_Pieces[Board->CurrentColor][QUEEN];
@@ -565,7 +565,7 @@ void GenerateCaptureMoves(const BoardItem* Board, int** CMH_Pointer, MoveItem* M
         Pieces &= Pieces - 1;
     }
 
-    // King captures
+    // King capture moves
 
     From = LSB(Board->BB_Pieces[Board->CurrentColor][KING]);
 
