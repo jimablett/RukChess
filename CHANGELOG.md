@@ -1,6 +1,6 @@
 # RukChess change log
 
-## RukChess 4.0.0dev
+## RukChess 4.0.0 (10.12.2024)
 
 1. OMP bugfix
 2. Using C17
