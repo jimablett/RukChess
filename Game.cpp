@@ -15,6 +15,11 @@
 #include "Types.h"
 #include "Utils.h"
 
+#ifdef _WIN32
+#include <pthread.h>
+#endif
+
+
 int MaxThreads;
 int MaxDepth;
 U64 MaxTime;
@@ -466,12 +471,25 @@ Done:
     return PrintResult(InCheck, BestMove, PonderMove, BestScore);
 }
 
+#ifdef _WIN32
 void ComputerMoveThread(void* ignored)
 {
     ComputerMove();
 
     _endthread();
 }
+
+#else
+
+#include <cstdlib>
+
+void* ComputerMoveThread(void* ignored)
+{
+    ComputerMove();
+    return nullptr;
+}
+#endif
+
 
 BOOL HumanMove(void)
 {

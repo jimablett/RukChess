@@ -18,6 +18,8 @@ U64 RandState = 0ULL; // The state can be seeded with any value
 /*
     Time in milliseconds since midnight (00:00:00), January 1, 1970, coordinated universal time (UTC)
 */
+
+#if defined(_WIN32)
 U64 Clock(void)
 {
     struct _timeb timebuffer;
@@ -26,6 +28,32 @@ U64 Clock(void)
 
     return timebuffer.time * 1000ULL + (U64)timebuffer.millitm;
 }
+#elif defined(__arm__) || defined(__aarch64__)
+
+typedef uint64_t U64;
+
+U64 Clock(void)
+{
+    struct timeval timebuffer;
+    gettimeofday(&timebuffer, NULL);
+
+    return timebuffer.tv_sec * 1000ULL + (U64)(timebuffer.tv_usec / 1000);
+}
+
+#else
+
+typedef uint64_t U64;
+
+U64 Clock(void)
+{
+    struct timeb timebuffer;
+
+    ftime(&timebuffer);
+
+    return timebuffer.time * 1000ULL + (U64)timebuffer.millitm;
+}
+
+#endif
 
 /*
     https://prng.di.unimi.it/splitmix64.c

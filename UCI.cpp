@@ -15,6 +15,10 @@
 #include "Types.h"
 #include "Utils.h"
 
+#ifndef _WIN32
+#include <pthread.h>
+#endif
+
 void UCI(void)
 {
     char Buf[4096];
@@ -363,7 +367,14 @@ void UCI(void)
                 continue; // Next command
             }
 
+            #ifdef _WIN32
             _beginthread(ComputerMoveThread, 0, NULL);
+            #else
+            pthread_t thread;
+            pthread_create(&thread, NULL, ComputerMoveThread, NULL);
+            pthread_join(thread, NULL); // Optionally wait for the thread to finish
+            #endif
+           
         }
         else if (strncmp(Part, "stop", 4) == 0) {
             StopSearch = TRUE;

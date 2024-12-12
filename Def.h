@@ -5,6 +5,114 @@
 #ifndef DEF_H
 #define DEF_H
 
+
+#if !defined(_WIN32) && !defined(USE_SIMDE) && !defined(_MSC_VER)
+#define __popcnt64(x)  __builtin_popcountll(x)
+#endif
+
+
+#if !defined(_WIN32)
+
+#include <cstdint>
+
+static inline unsigned char _BitScanForward64(unsigned long * Index, const uint64_t Mask) {
+    if (Mask == 0) {
+        return 0;
+    }
+    *Index = __builtin_ctzll(Mask);
+    return 1;
+}
+
+
+
+static inline unsigned char _BitScanReverse64(unsigned long * Index, const uint64_t Mask) {
+    if (Mask == 0) {
+        return 0;
+    }
+    *Index = 63 - __builtin_clzll(Mask);
+    return 1;
+}
+
+
+#include <cstring>
+#include <stdexcept>
+
+static void strcpy_s(char* dest, size_t destsz, const char* src) {
+    if (dest == nullptr || src == nullptr) {
+        throw std::invalid_argument("Null pointer argument");
+    }
+    size_t src_len = std::strlen(src);
+    if (src_len >= destsz) {
+        throw std::length_error("Destination buffer too small");
+    }
+    std::strcpy(dest, src);
+}
+
+
+#include <cstdio>
+#include <cstdarg>
+
+static int sprintf_s(char *buffer, size_t size, const char *format, ...) {
+    if (buffer == NULL || size == 0) {
+        return -1; // Error: invalid buffer
+    }
+
+    va_list args;
+    va_start(args, format);
+    int result = vsnprintf(buffer, size, format, args);
+    va_end(args);
+
+    if (result < 0 || result >= (int)size) {
+        return -1; // Error: output was truncated or an encoding error occurred
+    }
+
+    return result; // Success: return the number of characters written
+}
+
+
+#include <cstdio>
+#include <errno.h>
+#define fopen_s(file, filename, mode) ((*(file) = fopen((filename), (mode))) == NULL ? errno : 0)
+
+
+#define Sleep sleep
+
+
+#include <stdio.h>
+#include <stdarg.h>
+
+static int scanf_s(const char *format, ...) {
+    va_list args;
+    va_start(args, format);
+    int result = vscanf(format, args);
+    va_end(args);
+    return result;
+}
+
+
+
+#include <stddef.h>
+
+#define _countof(array) (sizeof(array) / sizeof((array)[0]))
+
+
+
+#include <pthread.h>
+
+static void _endthread() {
+    pthread_exit(NULL);
+}
+
+
+#define LARGE_INTEGER uint64_t 
+
+
+
+
+#endif
+
+
+
 // Features (enable/disable)
 
 // Debug
@@ -74,7 +182,7 @@
 // Program name, program version, evaluation function name and copyright information
 
 #define PROGRAM_NAME                            "RukChess"
-#define PROGRAM_VERSION                         "4.0.0"
+#define PROGRAM_VERSION                         "4.0.0 JA"
 
 /*
     https://github.com/Ilya-Ruk/RukChessTrainer

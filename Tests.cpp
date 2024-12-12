@@ -658,6 +658,8 @@ void PerformanceTest(void)
     }
 }
 
+#ifdef _WIN32
+
 void TestsEvaluate(const char* Tests[], const int TestCount)
 {
     int MaxCycles;
@@ -710,6 +712,58 @@ void TestsEvaluate(const char* Tests[], const int TestCount)
 
     printf("EPS %lld\n", 1000000LL * (I64)TestCount * (I64)MaxCycles / EvaluateTotalTime);
 }
+
+#else
+
+#include <iostream>
+#include <chrono>
+#include <algorithm>
+
+void TestsEvaluate(const char* Tests[], const int TestCount)
+{
+    int MaxCycles;
+
+    const char* Fen;
+
+    auto EvaluateTimeStart = std::chrono::high_resolution_clock::now();
+    auto EvaluateTimeStop = std::chrono::high_resolution_clock::now();
+
+    long long EvaluateTotalTime = 0LL;
+
+    std::cout << "\n";
+
+    std::cout << "Max. cycles: ";
+    std::cin >> MaxCycles;
+
+    MaxCycles = std::max(MaxCycles, 1);
+
+    std::cout << "\n";
+
+    for (int Cycle = 0; Cycle < MaxCycles; ++Cycle) {
+        std::cout << "Cycle = " << Cycle + 1 << "\n";
+
+        for (int TestNumber = 0; TestNumber < TestCount; ++TestNumber) {
+            Fen = Tests[TestNumber * 2];
+
+            SetFen(&CurrentBoard, Fen);
+
+            EvaluateTimeStart = std::chrono::high_resolution_clock::now();
+
+            Evaluate(&CurrentBoard);
+
+            EvaluateTimeStop = std::chrono::high_resolution_clock::now();
+
+            EvaluateTotalTime += std::chrono::duration_cast<std::chrono::microseconds>(EvaluateTimeStop - EvaluateTimeStart).count();
+        }
+    }
+
+    std::cout << "\n";
+
+    std::cout << "EPS " << (1000000LL * (long long)TestCount * (long long)MaxCycles / EvaluateTotalTime) << "\n";
+}
+
+#endif
+
 
 void PerformanceTestEvaluate(void)
 {

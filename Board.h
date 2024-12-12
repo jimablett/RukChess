@@ -132,7 +132,12 @@ typedef struct {
 } MoveItem; // 12 bytes
 
 typedef struct {
-    _declspec(align(64)) I16 Accumulation[2][256]; // [Perspective][Hidden dimension]
+	
+	#ifdef _MSC_VER
+	 _declspec(align(64)) I16 Accumulation[2][256]; // [Perspective][Hidden dimension]
+	 #else
+    __attribute__((aligned (64))) I16 Accumulation[2][256]; // [Perspective][Hidden dimension]
+    #endif
 
 #ifdef USE_NNUE_UPDATE
     BOOL AccumulationComputed;
